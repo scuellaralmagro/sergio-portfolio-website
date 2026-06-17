@@ -1,0 +1,37 @@
+---
+/**
+ * AuroraDivider — thin glow line using the vertical aurora gradient,
+ * transparent at both ends. Separates sections / decorates grids.
+ */
+interface Props {
+  orientation?: 'horizontal' | 'vertical';
+  class?: string;
+}
+
+const { orientation = 'horizontal', class: className } = Astro.props;
+---
+
+<span class:list={['aurora', orientation, className]} role="separator" aria-hidden="true"></span>
+
+<style>
+  .aurora {
+    display: block;
+    border: 0;
+  }
+  .horizontal {
+    width: 100%;
+    height: 1px;
+    /* aurora gradient runs vertically; rotate stops for a horizontal line */
+    background-image: linear-gradient(
+      90deg,
+      rgba(183, 164, 251, 0) 0%,
+      var(--color-lavender-accent) 50%,
+      rgba(183, 164, 251, 0) 100%
+    );
+  }
+  .vertical {
+    width: 1px;
+    height: 100%;
+    background-image: var(--gradient-aurora);
+  }
+</style>

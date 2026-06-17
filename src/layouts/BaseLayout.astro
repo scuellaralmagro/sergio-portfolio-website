@@ -13,9 +13,16 @@ interface Props {
   description?: string;
   /** Path-only OG image override, e.g. "/og/project-x.png" */
   ogImage?: string;
+  /** Exclude from search engines (e.g. internal styleguide). */
+  noindex?: boolean;
 }
 
-const { title, description = site.description, ogImage = site.ogImage } = Astro.props;
+const {
+  title,
+  description = site.description,
+  ogImage = site.ogImage,
+  noindex = false,
+} = Astro.props;
 
 const pageTitle = title ? `${title} — ${site.shortName}` : `${site.name} — ${site.role}`;
 const canonical = new URL(Astro.url.pathname, site.url).href;
@@ -34,6 +41,7 @@ const ogImageUrl = new URL(ogImage, site.url).href;
     <title>{pageTitle}</title>
     <meta name="description" content={description} />
     <meta name="author" content={site.name} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
     <link rel="canonical" href={canonical} />
 
     <!-- Open Graph -->

@@ -1,0 +1,46 @@
+---
+/**
+ * Badge — the "AI pill": 32px-radius pill on midnight surface with an iris
+ * border and inset violet glow. Slot for icon + short label text.
+ */
+import Icon, { type IconName } from './Icon.astro';
+
+interface Props {
+  icon?: IconName;
+  class?: string;
+}
+
+const { icon = 'sparkle', class: className } = Astro.props;
+---
+
+<span class:list={['badge', className]}>
+  {icon && <Icon name={icon} size={14} class="badge-icon" />}
+  <span class="badge-text"><slot /></span>
+</span>
+
+<style>
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-8);
+    padding: var(--spacing-8) var(--spacing-16);
+    border: 1px solid var(--color-iris);
+    border-radius: var(--radius-3xl-2);
+    background-color: var(--color-midnight-surface);
+    box-shadow: var(--glass-badge);
+    color: var(--color-lilac-white);
+    font-family: var(--font-inter-v);
+    font-size: var(--text-caption);
+    font-weight: 500;
+    line-height: 1;
+  }
+
+  .badge-icon {
+    color: var(--color-lavender-accent);
+    flex-shrink: 0;
+  }
+
+  .badge-text {
+    letter-spacing: 0.02em;
+  }
+</style>

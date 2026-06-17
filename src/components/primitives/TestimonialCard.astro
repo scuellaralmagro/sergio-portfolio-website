@@ -1,0 +1,100 @@
+---
+/**
+ * TestimonialCard — quote card on a midnight glass surface.
+ * Avatar (image or generated initials), name, handle, then the quote.
+ * @mentions inside the quote should be wrapped in <span class="mention">.
+ */
+import Card from './Card.astro';
+
+interface Props {
+  name: string;
+  handle?: string;
+  avatar?: string;
+  class?: string;
+}
+
+const { name, handle, avatar, class: className } = Astro.props;
+
+const initials = name
+  .split(' ')
+  .map((part) => part[0])
+  .filter(Boolean)
+  .slice(0, 2)
+  .join('')
+  .toUpperCase();
+---
+
+<Card class:list={['testimonial', className]}>
+  <header class="meta">
+    {
+      avatar ? (
+        <img class="avatar" src={avatar} alt={name} width="40" height="40" loading="lazy" />
+      ) : (
+        <span class="avatar avatar-fallback" aria-hidden="true">
+          {initials}
+        </span>
+      )
+    }
+    <div class="who">
+      <span class="name">{name}</span>
+      {handle && <span class="handle">{handle}</span>}
+    </div>
+  </header>
+  <blockquote class="quote"><slot /></blockquote>
+</Card>
+
+<style>
+  .testimonial {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-16);
+  }
+  .meta {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-12);
+  }
+  .avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-full);
+    object-fit: cover;
+    flex-shrink: 0;
+  }
+  .avatar-fallback {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--color-deep-indigo);
+    color: var(--color-lilac-white);
+    font-size: var(--text-body-sm);
+    font-weight: 500;
+    box-shadow: var(--glass-rim);
+  }
+  .who {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .name {
+    color: var(--color-lilac-white);
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 1.2;
+  }
+  .handle {
+    color: var(--color-fog);
+    font-size: var(--text-body-sm);
+    line-height: 1.2;
+  }
+  .quote {
+    margin: 0;
+    color: var(--color-lilac-white);
+    font-size: 15px;
+    line-height: 1.6;
+  }
+  /* Accent inline @mentions inside quotes. */
+  .quote :global(.mention) {
+    color: var(--color-lavender-accent);
+  }
+</style>

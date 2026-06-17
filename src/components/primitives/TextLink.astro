@@ -1,0 +1,45 @@
+---
+/**
+ * TextLink — lavender accent inline link with a trailing chevron.
+ * Hover transitions to lilac white. Use for "Learn more" / deep-links.
+ */
+import Icon from './Icon.astro';
+
+interface Props {
+  href: string;
+  external?: boolean;
+  class?: string;
+  [key: string]: unknown;
+}
+
+const { href, external = false, class: className, ...rest } = Astro.props;
+const externalAttrs = external ? { target: '_blank', rel: 'noopener noreferrer' } : {};
+---
+
+<a class:list={['text-link', className]} href={href} {...externalAttrs} {...rest}>
+  <span><slot /></span>
+  <Icon name={external ? 'arrow-up-right' : 'arrow-right'} size={16} class="chevron" />
+</a>
+
+<style>
+  .text-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-4);
+    font-family: var(--font-inter-v);
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--color-lavender-accent);
+    text-decoration: none;
+    transition: color 0.18s ease;
+  }
+  .text-link:hover {
+    color: var(--color-lilac-white);
+  }
+  .chevron {
+    transition: transform 0.18s ease;
+  }
+  .text-link:hover .chevron {
+    transform: translateX(2px);
+  }
+</style>

@@ -1,0 +1,41 @@
+---
+/**
+ * Card — glassmorphism surface. Elevation via inset rim-light glow,
+ * never a drop shadow. 16px radius, midnight surface, 24-32px padding.
+ */
+interface Props {
+  /** Stronger rim glow for the most prominent surfaces. */
+  strong?: boolean;
+  padding?: 'sm' | 'md' | 'lg';
+  as?: 'div' | 'article' | 'section' | 'li';
+  class?: string;
+}
+
+const { strong = false, padding = 'md', as: Tag = 'div', class: className }: Props = Astro.props;
+---
+
+<Tag class:list={['card', strong ? 'strong' : 'soft', `pad-${padding}`, className]}>
+  <slot />
+</Tag>
+
+<style>
+  .card {
+    background-color: var(--color-midnight-surface);
+    border-radius: var(--radius-2xl);
+  }
+  .soft {
+    box-shadow: var(--glass-rim);
+  }
+  .strong {
+    box-shadow: var(--glass-rim-strong);
+  }
+  .pad-sm {
+    padding: var(--spacing-16);
+  }
+  .pad-md {
+    padding: var(--spacing-24);
+  }
+  .pad-lg {
+    padding: var(--spacing-32);
+  }
+</style>

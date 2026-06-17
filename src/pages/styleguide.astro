@@ -1,0 +1,405 @@
+---
+/**
+ * /styleguide — internal component & token reference (noindex, not in sitemap).
+ * Renders every primitive and its states for visual review and regression.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Button from '../components/primitives/Button.astro';
+import Badge from '../components/primitives/Badge.astro';
+import Card from '../components/primitives/Card.astro';
+import SectionHeader from '../components/primitives/SectionHeader.astro';
+import AuroraDivider from '../components/primitives/AuroraDivider.astro';
+import TextLink from '../components/primitives/TextLink.astro';
+import Icon, { type IconName } from '../components/primitives/Icon.astro';
+import TestimonialCard from '../components/primitives/TestimonialCard.astro';
+import StarField from '../components/primitives/StarField.astro';
+import NavPill from '../components/primitives/NavPill.astro';
+
+const surfaces = [
+  { name: 'Void Canvas', token: '--color-void-canvas' },
+  { name: 'Midnight Surface', token: '--color-midnight-surface' },
+  { name: 'Deep Indigo', token: '--color-deep-indigo' },
+];
+const textColors = [
+  { name: 'Lilac White', token: '--color-lilac-white' },
+  { name: 'Ash', token: '--color-ash' },
+  { name: 'Fog', token: '--color-fog' },
+  { name: 'Steel', token: '--color-steel' },
+];
+const accents = [
+  { name: 'Lavender Accent', token: '--color-lavender-accent' },
+  { name: 'Iris', token: '--color-iris' },
+  { name: 'Mercury', token: '--color-mercury' },
+  { name: 'Dusk', token: '--color-dusk' },
+];
+
+const typeScale = [
+  { name: 'display', size: '--text-display' },
+  { name: 'heading-lg', size: '--text-heading-lg' },
+  { name: 'heading', size: '--text-heading' },
+  { name: 'heading-sm', size: '--text-heading-sm' },
+  { name: 'subheading', size: '--text-subheading' },
+  { name: 'body-lg', size: '--text-body-lg' },
+  { name: 'body', size: '--text-body' },
+  { name: 'body-sm', size: '--text-body-sm' },
+  { name: 'caption', size: '--text-caption' },
+];
+
+const iconNames: IconName[] = [
+  'sparkle',
+  'arrow-right',
+  'arrow-up-right',
+  'network',
+  'database',
+  'workflow',
+  'code',
+  'layers',
+  'bot',
+  'globe',
+  'mail',
+  'github',
+  'linkedin',
+];
+---
+
+<BaseLayout title="Styleguide" noindex>
+  <NavPill />
+  <main id="main" class="sg">
+    <header class="sg-head">
+      <Badge icon="layers">Component Library</Badge>
+      <h1>Styleguide</h1>
+      <p>Design tokens and primitive components — Phase 1.</p>
+    </header>
+
+    <!-- COLORS -->
+    <section class="sg-section">
+      <h2 class="sg-h">Color — Surfaces</h2>
+      <div class="swatches">
+        {
+          surfaces.map((c) => (
+            <div class="swatch">
+              <span class="chip" style={`background:var(${c.token})`} />
+              <span class="chip-name">{c.name}</span>
+              <code>{c.token}</code>
+            </div>
+          ))
+        }
+      </div>
+      <h2 class="sg-h">Color — Text</h2>
+      <div class="swatches">
+        {
+          textColors.map((c) => (
+            <div class="swatch">
+              <span class="chip ring" style={`background:var(${c.token})`} />
+              <span class="chip-name">{c.name}</span>
+              <code>{c.token}</code>
+            </div>
+          ))
+        }
+      </div>
+      <h2 class="sg-h">Color — Accents & Neutrals</h2>
+      <div class="swatches">
+        {
+          accents.map((c) => (
+            <div class="swatch">
+              <span class="chip" style={`background:var(${c.token})`} />
+              <span class="chip-name">{c.name}</span>
+              <code>{c.token}</code>
+            </div>
+          ))
+        }
+      </div>
+      <p class="note">
+        Accent text gradient: <span class="text-cosmic">cosmic gradient on text only</span>.
+      </p>
+    </section>
+
+    <AuroraDivider class="sg-rule" />
+
+    <!-- TYPOGRAPHY -->
+    <section class="sg-section">
+      <h2 class="sg-h">Typography</h2>
+      <div class="type-list">
+        {
+          typeScale.map((t) => (
+            <div class="type-row">
+              <code>{t.name}</code>
+              <span class="type-sample" style={`font-size:var(${t.size})`}>
+                Orchestrating agents
+              </span>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <AuroraDivider class="sg-rule" />
+
+    <!-- BUTTONS -->
+    <section class="sg-section">
+      <h2 class="sg-h">Buttons</h2>
+      <div class="row">
+        <Button>Primary</Button>
+        <Button size="sm">Primary sm</Button>
+        <Button variant="ghost">Ghost</Button>
+        <Button variant="ghost" size="sm">Ghost sm</Button>
+        <Button href="#">As link</Button>
+      </div>
+    </section>
+
+    <!-- BADGES -->
+    <section class="sg-section">
+      <h2 class="sg-h">Badges</h2>
+      <div class="row">
+        <Badge>AI-powered</Badge>
+        <Badge icon="network">LangGraph</Badge>
+        <Badge icon="database">RAG / pgvector</Badge>
+        <Badge icon="bot">Multi-agent</Badge>
+      </div>
+    </section>
+
+    <!-- CARDS -->
+    <section class="sg-section">
+      <h2 class="sg-h">Cards</h2>
+      <div class="grid-3">
+        <Card>
+          <h3 class="card-title">Soft glass</h3>
+          <p class="card-body">Inset rim-light glow, 16px radius, midnight surface.</p>
+        </Card>
+        <Card strong>
+          <h3 class="card-title">Strong glass</h3>
+          <p class="card-body">Brighter inset rim for prominent surfaces.</p>
+        </Card>
+        <Card padding="lg">
+          <h3 class="card-title">Large padding</h3>
+          <p class="card-body">32px padding variant.</p>
+        </Card>
+      </div>
+    </section>
+
+    <AuroraDivider class="sg-rule" />
+
+    <!-- SECTION HEADER -->
+    <section class="sg-section">
+      <h2 class="sg-h">Section Header</h2>
+      <SectionHeader
+        eyebrow="Reflect AI"
+        eyebrowIcon="sparkle"
+        title="A calm editorial voice"
+        subtitle="Medium-weight headings, fog subtitles, centered rhythm."
+      />
+    </section>
+
+    <!-- DIVIDERS -->
+    <section class="sg-section">
+      <h2 class="sg-h">Aurora Dividers</h2>
+      <AuroraDivider />
+      <div class="vrule-demo">
+        <span>left</span>
+        <AuroraDivider orientation="vertical" />
+        <span>right</span>
+      </div>
+    </section>
+
+    <!-- TEXT LINKS -->
+    <section class="sg-section">
+      <h2 class="sg-h">Text Links</h2>
+      <div class="row">
+        <TextLink href="#">Learn more</TextLink>
+        <TextLink href="https://github.com/scuellaralmagro" external>View on GitHub</TextLink>
+      </div>
+    </section>
+
+    <!-- ICONS -->
+    <section class="sg-section">
+      <h2 class="sg-h">Icons</h2>
+      <div class="icon-grid">
+        {
+          iconNames.map((n) => (
+            <div class="icon-cell">
+              <Icon name={n} title={n} />
+              <code>{n}</code>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <AuroraDivider class="sg-rule" />
+
+    <!-- TESTIMONIALS -->
+    <section class="sg-section">
+      <h2 class="sg-h">Testimonial Cards</h2>
+      <div class="grid-3">
+        <TestimonialCard name="Ada Lovelace" handle="@ada">
+          Shipped a multi-agent system with <span class="mention">@sergio</span> — reliable and fast.
+        </TestimonialCard>
+        <TestimonialCard name="Alan Turing" handle="@alan">
+          The RAG pipeline just worked. Clean retrieval, sharp answers.
+        </TestimonialCard>
+      </div>
+    </section>
+
+    <!-- STARFIELD -->
+    <section class="sg-section">
+      <h2 class="sg-h">Star Field</h2>
+      <div class="starfield-demo">
+        <StarField count={50} />
+        <span class="starfield-label">decorative backdrop</span>
+      </div>
+    </section>
+  </main>
+</BaseLayout>
+
+<style>
+  .sg {
+    max-width: 1000px;
+    margin-inline: auto;
+    padding: 140px var(--spacing-24) var(--spacing-108);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-56);
+  }
+  .sg-head {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-12);
+  }
+  .sg-head h1 {
+    font-size: var(--text-heading);
+  }
+  .sg-head p {
+    margin: 0;
+    color: var(--color-fog);
+  }
+  .sg-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-20);
+  }
+  .sg-h {
+    font-size: var(--text-subheading);
+    color: var(--color-lilac-white);
+  }
+  .sg-rule {
+    margin-block: var(--spacing-12);
+  }
+
+  code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: var(--text-caption);
+    color: var(--color-fog);
+  }
+
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--spacing-16);
+  }
+
+  .swatches {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: var(--spacing-16);
+  }
+  .swatch {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-8);
+  }
+  .chip {
+    height: 64px;
+    border-radius: var(--radius-2xl);
+    box-shadow: var(--glass-rim);
+  }
+  .chip.ring {
+    box-shadow: inset 0 0 0 1px var(--color-dusk);
+  }
+  .chip-name {
+    color: var(--color-ash);
+    font-size: var(--text-body-sm);
+  }
+  .note {
+    margin: 0;
+    color: var(--color-ash);
+  }
+
+  .type-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-16);
+  }
+  .type-row {
+    display: flex;
+    align-items: baseline;
+    gap: var(--spacing-20);
+  }
+  .type-row code {
+    width: 96px;
+    flex-shrink: 0;
+  }
+  .type-sample {
+    font-family: var(--font-aeonikpro);
+    font-weight: 500;
+    color: var(--color-lilac-white);
+    line-height: 1.1;
+  }
+
+  .grid-3 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: var(--spacing-16);
+  }
+  .card-title {
+    font-size: var(--text-body-lg);
+    margin-bottom: var(--spacing-8);
+  }
+  .card-body {
+    margin: 0;
+    color: var(--color-ash);
+    font-size: var(--text-body-sm);
+  }
+
+  .vrule-demo {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-20);
+    height: 48px;
+    color: var(--color-fog);
+  }
+
+  .icon-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+    gap: var(--spacing-12);
+  }
+  .icon-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-8);
+    padding: var(--spacing-16);
+    color: var(--color-lilac-white);
+    background-color: var(--color-midnight-surface);
+    border-radius: var(--radius-2xl);
+    box-shadow: var(--glass-rim);
+  }
+
+  .starfield-demo {
+    position: relative;
+    height: 200px;
+    border-radius: var(--radius-2xl);
+    background-color: var(--color-void-canvas);
+    box-shadow: var(--glass-rim);
+    overflow: hidden;
+  }
+  .starfield-label {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    color: var(--color-fog);
+    font-size: var(--text-body-sm);
+  }
+</style>

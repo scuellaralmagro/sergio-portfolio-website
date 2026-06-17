@@ -1,0 +1,55 @@
+---
+/**
+ * StarField — decorative constellation backdrop (tiny low-opacity dots on
+ * the void canvas). Static at this phase; parallax/twinkle motion is added
+ * as a React island in the motion phase. Purely decorative.
+ *
+ * Star positions are generated deterministically at build time (seeded PRNG)
+ * so SSR output is stable and hydration-safe.
+ */
+interface Props {
+  count?: number;
+  class?: string;
+}
+
+const { count = 70, class: className } = Astro.props;
+
+let seed = 20260618;
+const rand = () => {
+  seed = (seed * 1103515245 + 12345) & 0x7fffffff;
+  return seed / 0x7fffffff;
+};
+
+const stars = Array.from({ length: count }, () => ({
+  x: +(rand() * 100).toFixed(2),
+  y: +(rand() * 100).toFixed(2),
+  size: +(rand() * 1.6 + 0.4).toFixed(2),
+  opacity: +(rand() * 0.5 + 0.15).toFixed(2),
+}));
+---
+
+<div class:list={['starfield', className]} aria-hidden="true">
+  {
+    stars.map((star) => (
+      <span
+        class="star"
+        style={`left:${star.x}%;top:${star.y}%;width:${star.size}px;height:${star.size}px;opacity:${star.opacity}`}
+      />
+    ))
+  }
+</div>
+
+<style>
+  .starfield {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .star {
+    position: absolute;
+    border-radius: var(--radius-full);
+    background-color: var(--color-lilac-white);
+  }
+</style>

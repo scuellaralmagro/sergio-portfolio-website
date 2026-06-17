@@ -12,7 +12,14 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig({
   site: 'https://sergiocuellar.dev',
   output: 'static',
-  integrations: [react(), mdx(), sitemap()],
+  integrations: [
+    react(),
+    mdx(),
+    sitemap({
+      // Keep the internal component styleguide out of the sitemap.
+      filter: (page) => !page.includes('/styleguide'),
+    }),
+  ],
   vite: {
     plugins: [tailwindcss()],
   },

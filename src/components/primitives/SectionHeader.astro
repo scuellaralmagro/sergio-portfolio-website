@@ -1,0 +1,75 @@
+---
+/**
+ * SectionHeader — title block for each page section.
+ * Optional eyebrow badge, AeonikPro 500 title (48-56px), fog subtitle.
+ */
+import Badge from './Badge.astro';
+import type { IconName } from './Icon.astro';
+
+interface Props {
+  title: string;
+  subtitle?: string;
+  eyebrow?: string;
+  eyebrowIcon?: IconName;
+  align?: 'center' | 'left';
+  /** Heading level for correct document outline. */
+  as?: 'h1' | 'h2' | 'h3';
+  class?: string;
+}
+
+const {
+  title,
+  subtitle,
+  eyebrow,
+  eyebrowIcon = 'sparkle',
+  align = 'center',
+  as: Heading = 'h2',
+  class: className,
+}: Props = Astro.props;
+---
+
+<header class:list={['section-header', align, className]}>
+  {eyebrow && <Badge icon={eyebrowIcon}>{eyebrow}</Badge>}
+  <Heading class="title">{title}</Heading>
+  {subtitle && <p class="subtitle">{subtitle}</p>}
+</header>
+
+<style>
+  .section-header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-16);
+    max-width: 64ch;
+  }
+  .center {
+    align-items: center;
+    text-align: center;
+    margin-inline: auto;
+  }
+  .left {
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .title {
+    font-size: var(--text-heading);
+    line-height: var(--leading-heading);
+    letter-spacing: var(--tracking-heading);
+  }
+
+  .subtitle {
+    margin: 0;
+    color: var(--color-fog);
+    font-size: var(--text-body-lg);
+    line-height: var(--leading-body-lg);
+    max-width: 52ch;
+  }
+
+  @media (min-width: 768px) {
+    .title {
+      font-size: var(--text-heading-lg);
+      line-height: var(--leading-heading-lg);
+      letter-spacing: var(--tracking-heading-lg);
+    }
+  }
+</style>
