@@ -1,0 +1,10 @@
+dist/
+.astro/
+node_modules/
+package-lock.json
+resources/
+public/fonts/
+*.pdf
+
+# Verbatim design-system source of truth — do not reformat
+src/styles/theme.css

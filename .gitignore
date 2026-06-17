@@ -1,0 +1,31 @@
+# build output
+dist/
+.astro/
+.output/
+
+# dependencies
+node_modules/
+
+# env / secrets
+.env
+.env.*
+!.env.example
+
+# cloudflare / wrangler (Phase 9)
+.wrangler/
+.dev.vars
+
+# logs & os
+*.log
+npm-debug.log*
+.DS_Store
+Thumbs.db
+
+# editor
+.vscode/*
+!.vscode/extensions.json
+.idea/
+
+# private inputs — kept locally, never published to the repo
+ULTRAPLAN.md
+resources/user_info/

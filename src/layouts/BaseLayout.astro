@@ -1,0 +1,77 @@
+---
+/**
+ * BaseLayout — document shell for every page.
+ * Owns <head> (meta, OG/Twitter, JSON-LD), font loading, the skip-link,
+ * and the global stylesheet. Keep page components free of <head> concerns.
+ */
+import '@fontsource-variable/inter';
+import '../styles/global.css';
+import { site, personSchema } from '../data/site';
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** Path-only OG image override, e.g. "/og/project-x.png" */
+  ogImage?: string;
+}
+
+const { title, description = site.description, ogImage = site.ogImage } = Astro.props;
+
+const pageTitle = title ? `${title} — ${site.shortName}` : `${site.name} — ${site.role}`;
+const canonical = new URL(Astro.url.pathname, site.url).href;
+const ogImageUrl = new URL(ogImage, site.url).href;
+---
+
+<!doctype html>
+<html lang={site.locale}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="theme-color" content="#030014" />
+
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <meta name="author" content={site.name} />
+    <link rel="canonical" href={canonical} />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:locale" content="en_US" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
+
+    <!-- Structured data -->
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(personSchema)} />
+  </head>
+  <body>
+    <a href="#main" class="skip-link">Skip to content</a>
+    <slot />
+    <style>
+      .skip-link {
+        position: absolute;
+        top: -100%;
+        left: var(--spacing-16);
+        z-index: 100;
+        padding: var(--spacing-8) var(--spacing-16);
+        background-color: var(--color-deep-indigo);
+        color: var(--color-lilac-white);
+        border-radius: var(--radius-md);
+        box-shadow: var(--glass-rim-strong);
+      }
+      .skip-link:focus {
+        top: var(--spacing-16);
+      }
+    </style>
+  </body>
+</html>

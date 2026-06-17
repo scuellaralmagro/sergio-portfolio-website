@@ -1,0 +1,92 @@
+---
+/**
+ * Home — single-page scroll (Phase 0 placeholder).
+ * Sections (Hero, About, Expertise, AI Showcase, Projects, Experience,
+ * Contact) land in Phases 2–6. This placeholder verifies the design
+ * tokens, fonts, and glassmorphism render correctly on the void canvas.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { site } from '../data/site';
+---
+
+<BaseLayout>
+  <main id="main" class="shell">
+    <section class="hero">
+      <span class="badge">✦ AI / LLM Engineer</span>
+      <h1 class="headline">
+        I orchestrate AI agents into<br />
+        <span class="text-cosmic">systems that ship.</span>
+      </h1>
+      <p class="sub">
+        {site.role} — agentic systems, LLM orchestration, and RAG architectures, deployed in production.
+      </p>
+      <hr class="aurora-divider" />
+      <p class="scaffold-note glass">
+        Phase 0 scaffold · design tokens, fonts &amp; glassmorphism verified.
+      </p>
+    </section>
+  </main>
+
+  <style>
+    .shell {
+      max-width: 1200px;
+      margin-inline: auto;
+      padding-inline: var(--spacing-24);
+    }
+
+    .hero {
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: var(--spacing-24);
+      text-align: center;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--spacing-8);
+      padding: var(--spacing-8) var(--spacing-16);
+      border: 1px solid var(--color-iris);
+      border-radius: var(--radius-3xl-2);
+      background-color: var(--color-midnight-surface);
+      box-shadow: var(--glass-badge);
+      color: var(--color-lilac-white);
+      font-size: var(--text-body-sm);
+      font-weight: 500;
+    }
+
+    .headline {
+      font-size: var(--text-display);
+      line-height: var(--leading-display);
+      letter-spacing: var(--tracking-display);
+      max-width: 16ch;
+    }
+
+    .sub {
+      max-width: 52ch;
+      color: var(--color-ash);
+      font-size: var(--text-body-lg);
+      line-height: var(--leading-body-lg);
+    }
+
+    .aurora-divider {
+      max-width: 240px;
+    }
+
+    .scaffold-note {
+      padding: var(--spacing-12) var(--spacing-20);
+      color: var(--color-fog);
+      font-size: var(--text-body-sm);
+    }
+
+    @media (max-width: 640px) {
+      .headline {
+        font-size: var(--text-heading);
+        line-height: var(--leading-heading);
+      }
+    }
+  </style>
+</BaseLayout>

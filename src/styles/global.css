@@ -1,0 +1,169 @@
+/* ------------------------------------------------------------------ *
+ * Global stylesheet — Tailwind v4 entry + design tokens + base layer.
+ * Tokens live in ./theme.css (verbatim source of truth from the
+ * design system). Do not hardcode hex/spacing/radii in components —
+ * always reference a token (enforced by stylelint).
+ * ------------------------------------------------------------------ */
+
+@import 'tailwindcss';
+@import './theme.css';
+
+/* ------------------------------------------------------------------ *
+ * Decorative gradients — kept as full multi-stop gradients (the
+ * @theme token reduces these to a single solid for color utilities).
+ * Per the design system: gradients are used ONLY on text and thin
+ * strokes, never as large fills.
+ * ------------------------------------------------------------------ */
+:root {
+  /* Font-family resolution overrides.
+     @fontsource-variable/inter registers the family as 'Inter Variable',
+     so we prepend it to the token stacks (theme.css stays verbatim — this
+     only reflects which face is actually loaded). Per the design system,
+     Inter is the sanctioned AeonikPro substitute until a licensed AeonikPro
+     woff2 is added; dropping that file in will let 'AeonikPro' resolve first. */
+  --font-inter-v: 'Inter Variable', 'Inter V', 'Inter', ui-sans-serif, system-ui, -apple-system,
+    BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-aeonikpro: 'AeonikPro', 'Inter Variable', 'Inter V', 'Inter', ui-sans-serif, system-ui,
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  --gradient-cosmic: linear-gradient(90.01deg, #e59cff 0.01%, #ba9cff 50.01%, #9cb2ff 100%);
+  --gradient-aurora: linear-gradient(
+    180deg,
+    rgba(183, 164, 251, 0) 0%,
+    #b7a4fb 50%,
+    #8562ff 100%,
+    rgba(133, 98, 255, 0) 100%
+  );
+  --glass-rim: inset 0 0 24px rgba(255, 255, 255, 0.04);
+  --glass-rim-strong: inset 0 0 24px rgba(255, 255, 255, 0.06);
+  --glass-badge: inset 0 -7px 11px rgba(164, 143, 255, 0.12);
+
+  color-scheme: dark;
+}
+
+/* ------------------------------------------------------------------ *
+ * Base layer
+ * ------------------------------------------------------------------ */
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100dvh;
+    background-color: var(--color-void-canvas);
+    color: var(--color-ash);
+    font-family: var(--font-inter-v);
+    font-size: var(--text-body);
+    line-height: var(--leading-body);
+    font-weight: 400;
+    font-feature-settings:
+      'calt' 0,
+      'cv10',
+      'liga' 0,
+      'ss01';
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-aeonikpro);
+    font-weight: 500; /* medium — never bold; the medium weight IS the brand */
+    color: var(--color-lilac-white);
+    margin: 0;
+  }
+
+  a {
+    color: var(--color-lavender-accent);
+    text-decoration: none;
+  }
+
+  ::selection {
+    background-color: var(--color-iris);
+    color: var(--color-pearl);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-lavender-accent);
+    outline-offset: 2px;
+    border-radius: var(--radius-md);
+  }
+}
+
+/* ------------------------------------------------------------------ *
+ * Reusable primitives expressed as utilities
+ * ------------------------------------------------------------------ */
+@layer components {
+  /* Glassmorphism rim-light — the design system's core surface effect.
+     Elevation comes from inset glow, NOT drop shadows. */
+  .glass {
+    background-color: var(--color-midnight-surface);
+    box-shadow: var(--glass-rim);
+    border-radius: var(--radius-2xl);
+  }
+
+  .glass-strong {
+    background-color: var(--color-midnight-surface);
+    box-shadow: var(--glass-rim-strong);
+    border-radius: var(--radius-2xl);
+  }
+
+  /* Cosmic gradient text — for accent words only, never large fills. */
+  .text-cosmic {
+    background-image: var(--gradient-cosmic);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+  }
+
+  /* Aurora divider — thin glow line, transparent at both ends. */
+  .aurora-divider {
+    height: 1px;
+    width: 100%;
+    border: 0;
+    background-image: var(--gradient-aurora);
+  }
+}
+
+/* ------------------------------------------------------------------ *
+ * Accessibility — honor reduced-motion at the source.
+ * ------------------------------------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Visually-hidden helper for skip-links and screen-reader-only text. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
