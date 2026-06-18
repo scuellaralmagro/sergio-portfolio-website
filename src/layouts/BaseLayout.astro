@@ -34,6 +34,13 @@ const ogImageUrl = new URL(ogImage, site.url).href;
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    {
+      /* Set `.js` synchronously before first paint so scroll-reveal's hidden
+        initial state applies only when JS is available (no-JS = visible). */
+    }
+    <script is:inline>
+      document.documentElement.classList.add('js');
+    </script>
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <meta name="generator" content={Astro.generator} />
     <meta name="theme-color" content="#030014" />
@@ -81,5 +88,94 @@ const ogImageUrl = new URL(ogImage, site.url).href;
         top: var(--spacing-16);
       }
     </style>
+    <script>
+      // Site-wide motion, framework-free (bundled + deferred by Astro).
+      // Everything pointer/scroll-driven is gated on `pointer: fine` and
+      // reduced-motion; CSS keyframes (shimmer, twinkle) are frozen at the
+      // source by the global reduced-motion block.
+      const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const fine = matchMedia('(pointer: fine)').matches;
+
+      // Scroll-reveal — fade + rise as elements enter the viewport.
+      const reveals = document.querySelectorAll<HTMLElement>('[data-reveal]');
+      if (reduce) {
+        reveals.forEach((el) => el.classList.add('is-revealed'));
+      } else {
+        const revealIO = new IntersectionObserver(
+          (entries, obs) => {
+            for (const entry of entries) {
+              if (entry.isIntersecting) {
+                entry.target.classList.add('is-revealed');
+                obs.unobserve(entry.target);
+              }
+            }
+          },
+          { rootMargin: '0px 0px -10% 0px', threshold: 0.12 },
+        );
+        reveals.forEach((el) => revealIO.observe(el));
+      }
+
+      // Pause star-field twinkle while off-screen (cheap; runs regardless of
+      // reduced-motion since the animation may simply be frozen).
+      const fields = document.querySelectorAll<HTMLElement>('.starfield');
+      if (fields.length) {
+        const pauseIO = new IntersectionObserver((entries) => {
+          for (const entry of entries) {
+            entry.target.classList.toggle('is-paused', !entry.isIntersecting);
+          }
+        });
+        fields.forEach((el) => pauseIO.observe(el));
+      }
+
+      if (fine && !reduce) {
+        // Magnetic CTAs — translate toward the pointer, spring back on leave.
+        const MAGNET = 0.3;
+        document.querySelectorAll<HTMLElement>('[data-magnetic]').forEach((el) => {
+          el.addEventListener('pointermove', (e) => {
+            const r = el.getBoundingClientRect();
+            const dx = e.clientX - (r.left + r.width / 2);
+            const dy = e.clientY - (r.top + r.height / 2);
+            el.style.transform = `translate(${dx * MAGNET}px, ${dy * MAGNET}px)`;
+          });
+          el.addEventListener('pointerleave', () => {
+            el.style.transform = '';
+          });
+        });
+
+        // Card tilt — rotateX/Y from pointer position via CSS custom props.
+        const TILT = 5;
+        document.querySelectorAll<HTMLElement>('[data-tilt]').forEach((el) => {
+          el.addEventListener('pointermove', (e) => {
+            const r = el.getBoundingClientRect();
+            const px = (e.clientX - r.left) / r.width - 0.5;
+            const py = (e.clientY - r.top) / r.height - 0.5;
+            el.style.setProperty('--ry', `${(px * TILT).toFixed(2)}deg`);
+            el.style.setProperty('--rx', `${(-py * TILT).toFixed(2)}deg`);
+          });
+          el.addEventListener('pointerleave', () => {
+            el.style.setProperty('--rx', '0deg');
+            el.style.setProperty('--ry', '0deg');
+          });
+        });
+
+        // Hero star-field parallax — drift slower than the page on scroll.
+        const parallax = document.querySelector<HTMLElement>('[data-parallax]');
+        if (parallax) {
+          let ticking = false;
+          addEventListener(
+            'scroll',
+            () => {
+              if (ticking) return;
+              ticking = true;
+              requestAnimationFrame(() => {
+                parallax.style.transform = `translate3d(0, ${scrollY * 0.3}px, 0)`;
+                ticking = false;
+              });
+            },
+            { passive: true },
+          );
+        }
+      }
+    </script>
   </body>
 </html>

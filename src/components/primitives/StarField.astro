@@ -1,18 +1,22 @@
 ---
 /**
- * StarField — decorative constellation backdrop (tiny low-opacity dots on
- * the void canvas). Static at this phase; parallax/twinkle motion is added
- * as a React island in the motion phase. Purely decorative.
+ * StarField — decorative constellation backdrop (tiny low-opacity dots on the
+ * void canvas). Each star twinkles (opacity pulse) on a deterministic offset;
+ * the motion module pauses the whole field while it's off-screen and, when
+ * `parallax` is set, drifts it on scroll. Purely decorative (aria-hidden).
  *
- * Star positions are generated deterministically at build time (seeded PRNG)
- * so SSR output is stable and hydration-safe.
+ * Star data is generated deterministically at build time (seeded PRNG) so SSR
+ * output is stable; twinkle/parallax are pure CSS + transform, frozen to a
+ * static field under reduced-motion (handled globally).
  */
 interface Props {
   count?: number;
   class?: string;
+  /** Drift the field slower than the page on scroll (hero backdrop only). */
+  parallax?: boolean;
 }
 
-const { count = 70, class: className } = Astro.props;
+const { count = 70, class: className, parallax = false } = Astro.props;
 
 let seed = 20260618;
 const rand = () => {
@@ -25,15 +29,21 @@ const stars = Array.from({ length: count }, () => ({
   y: +(rand() * 100).toFixed(2),
   size: +(rand() * 1.6 + 0.4).toFixed(2),
   opacity: +(rand() * 0.5 + 0.15).toFixed(2),
+  delay: +(rand() * 6).toFixed(2),
+  dur: +(rand() * 3 + 3).toFixed(2),
 }));
 ---
 
-<div class:list={['starfield', className]} aria-hidden="true">
+<div
+  class:list={['starfield', className]}
+  aria-hidden="true"
+  data-parallax={parallax ? '' : undefined}
+>
   {
     stars.map((star) => (
       <span
         class="star"
-        style={`left:${star.x}%;top:${star.y}%;width:${star.size}px;height:${star.size}px;opacity:${star.opacity}`}
+        style={`left:${star.x}%;top:${star.y}%;width:${star.size}px;height:${star.size}px;--base:${star.opacity};--tw-delay:${star.delay}s;--tw-dur:${star.dur}s`}
       />
     ))
   }
@@ -46,10 +56,25 @@ const stars = Array.from({ length: count }, () => ({
     overflow: hidden;
     pointer-events: none;
     z-index: 0;
+    will-change: transform;
   }
   .star {
     position: absolute;
     border-radius: var(--radius-full);
     background-color: var(--color-lilac-white);
+    opacity: var(--base);
+    animation: twinkle var(--tw-dur) ease-in-out var(--tw-delay) infinite;
+  }
+  .starfield.is-paused .star {
+    animation-play-state: paused;
+  }
+  @keyframes twinkle {
+    0%,
+    100% {
+      opacity: var(--base);
+    }
+    50% {
+      opacity: calc(var(--base) * 0.35);
+    }
   }
 </style>
