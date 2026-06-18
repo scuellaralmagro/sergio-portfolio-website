@@ -2,7 +2,7 @@
 /**
  * Projects — flagship project grid. Reads from the typed `projects` content
  * collection (single source shared with /projects/[slug]); each card links to
- * its case study. Hover rim-light intensify is Phase 6.
+ * its case study, with a pointer-driven tilt + hover rim-light (Phase 6).
  */
 import Section from './Section.astro';
 import Card from '../primitives/Card.astro';
@@ -27,7 +27,7 @@ const projects = (await getCollection('projects', ({ data }) => !data.draft)).so
         const { title, summary, stack, repo, live, note } = entry.data;
         const href = `/projects/${entry.id}`;
         return (
-          <Card class="project" strong as="article">
+          <Card class="project" strong as="article" data-tilt>
             <div class="project-body">
               <h3 class="project-title">
                 <a href={href}>{title}</a>

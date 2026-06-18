@@ -17,25 +17,27 @@ import { heroNodes, heroEdges } from '../../data/diagrams';
 ---
 
 <section id="hero" class="hero">
-  <StarField count={90} class="hero-stars" />
+  <StarField count={90} class="hero-stars" parallax />
   <div class="hero-grid">
     <div class="hero-copy">
-      <Badge icon="sparkle">{site.role}</Badge>
-      <h1 class="headline">
+      <span class="reveal-item" data-reveal>
+        <Badge icon="sparkle">{site.role}</Badge>
+      </span>
+      <h1 class="headline" data-reveal style="--reveal-delay: 80ms">
         I orchestrate AI agents into<br />
         <span class="text-cosmic">systems that ship.</span>
       </h1>
-      <p class="sub">
-        Agentic systems, LangGraph orchestration, and RAG architectures — designed,
-        built, and deployed in production.
+      <p class="sub" data-reveal style="--reveal-delay: 160ms">
+        Agentic systems, LangGraph orchestration, and RAG architectures — designed, built, and
+        deployed in production.
       </p>
-      <div class="cta-row">
-        <Button href="#projects">View my work</Button>
+      <div class="cta-row" data-reveal style="--reveal-delay: 240ms">
+        <Button href="#projects" data-magnetic>View my work</Button>
         <Button variant="ghost" href="#contact">Get in touch</Button>
       </div>
     </div>
 
-    <Card strong class="hero-visual">
+    <Card strong class="hero-visual" data-reveal style="--reveal-delay: 140ms">
       <ArchDiagram
         client:visible
         nodes={heroNodes}

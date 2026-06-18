@@ -4,7 +4,8 @@
  * Markup is server-rendered; the inline <script> below adds scroll-spy
  * (active link) + a `data-scrolled` flag with zero framework cost, keeping the
  * page's near-zero JS baseline (ULTRAPLAN §9: nav shrink/blur = CSS + scroll).
- * Richer active-pill / magnetic-CTA motion lands in the motion phase (Phase 6).
+ * Phase 6 adds the animated active-link indicator and a subtle scroll shrink,
+ * still CSS-only (transitions freeze to a static pill under reduced-motion).
  */
 import Button from './Button.astro';
 import { site } from '../../data/site';
@@ -83,10 +84,15 @@ const links = [
     box-shadow: var(--glass-rim);
     transition:
       background-color 0.2s ease,
-      box-shadow 0.2s ease;
+      box-shadow 0.2s ease,
+      height 0.2s ease,
+      padding 0.2s ease;
   }
-  /* Tighten the pill once the page scrolls past the hero (set by NavScroll). */
+  /* Tighten + shrink the pill once the page scrolls past the hero (set by the
+     inline script via data-scrolled). */
   .pill[data-scrolled] {
+    height: 50px;
+    padding-left: var(--spacing-16);
     background-color: color-mix(in oklab, var(--color-midnight-surface) 92%, transparent);
     box-shadow: var(--glass-rim-strong);
   }
@@ -116,17 +122,37 @@ const links = [
     padding: 0;
   }
   .links a {
+    position: relative;
     color: var(--color-ash);
     text-decoration: none;
     font-size: 15px;
     transition: color 0.18s ease;
   }
+  /* Animated indicator: a thin cosmic underline that scales in from the left
+     on hover and for the active section. */
+  .links a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -4px;
+    height: 2px;
+    border-radius: var(--radius-full);
+    background-image: var(--gradient-cosmic);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.25s ease;
+  }
   .links a:hover {
     color: var(--color-lilac-white);
   }
-  /* Active section — set by the NavScroll island via scroll-spy. */
+  /* Active section — set by the inline scroll-spy script. */
   .links a[data-active] {
     color: var(--color-lilac-white);
+  }
+  .links a:hover::after,
+  .links a[data-active]::after {
+    transform: scaleX(1);
   }
 
   .actions {

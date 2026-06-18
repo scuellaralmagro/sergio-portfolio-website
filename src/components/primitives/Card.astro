@@ -9,12 +9,14 @@ interface Props {
   padding?: 'sm' | 'md' | 'lg';
   as?: 'div' | 'article' | 'section' | 'li';
   class?: string;
+  /** Forward arbitrary attributes (e.g. data-reveal, data-tilt). */
+  [key: string]: unknown;
 }
 
-const { strong = false, padding = 'md', as: Tag = 'div', class: className }: Props = Astro.props;
+const { strong = false, padding = 'md', as: Tag = 'div', class: className, ...rest } = Astro.props;
 ---
 
-<Tag class:list={['card', strong ? 'strong' : 'soft', `pad-${padding}`, className]}>
+<Tag class:list={['card', strong ? 'strong' : 'soft', `pad-${padding}`, className]} {...rest}>
   <slot />
 </Tag>
 
@@ -37,5 +39,18 @@ const { strong = false, padding = 'md', as: Tag = 'div', class: className }: Pro
   }
   .pad-lg {
     padding: var(--spacing-32);
+  }
+
+  /* Interactive cards (data-tilt) — pointer-driven tilt + hover rim-light.
+     The motion module sets --rx/--ry only on fine pointers without reduced
+     motion; otherwise the card rests flat and the hover glow is the fallback. */
+  [data-tilt] {
+    transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+    transition:
+      transform 0.25s ease,
+      box-shadow 0.25s ease;
+  }
+  [data-tilt]:hover {
+    box-shadow: var(--glass-rim-strong), var(--glass-badge);
   }
 </style>
