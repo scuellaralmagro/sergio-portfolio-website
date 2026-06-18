@@ -76,38 +76,5 @@ export const expertise: ExpertiseCluster[] = [
   },
 ];
 
-export interface Project {
-  title: string;
-  summary: string;
-  stack: string[];
-  /** Public repo URL. Omit for private/employer-owned projects. */
-  repo?: string;
-  /** Live deployment URL, if any. */
-  live?: string;
-  /** Tag shown when there is no public repo (e.g. "Private repo"). */
-  note?: string;
-}
-
-export const projects: Project[] = [
-  {
-    title: 'Kynetix — AI Gym Trainer & Nutrition Coach',
-    summary:
-      'A full-stack AI training and nutrition coach. A FastAPI + LangGraph backend runs a streaming, multi-node agent — supervisor routing, workout analysis, and plan generation — grounded by a RAG pipeline over a pgvector knowledge base, with a React PWA for chat, live workout tracking, and nutrition logging.',
-    stack: ['LangGraph', 'FastAPI', 'OpenAI', 'pgvector (RAG)', 'React PWA'],
-    note: 'Private repo',
-  },
-  {
-    title: 'Pneumonia Detection from Chest X-rays',
-    summary:
-      'Deep-learning classifier that flags pneumonia in chest X-rays — a from-scratch CNN plus MobileNetV2 transfer learning, with Grad-CAM heatmaps for explainability.',
-    stack: ['Python', 'Keras', 'OpenCV', 'MobileNetV2', 'Grad-CAM'],
-    repo: 'https://github.com/scuellaralmagro/chest-xray-pneumonia-classifier',
-  },
-  {
-    title: 'Airline Tweet Sentiment Analysis',
-    summary:
-      'Sentiment analysis and classification of airline tweets with NLTK, over the Twitter US Airline Sentiment dataset from Kaggle.',
-    stack: ['Python', 'NLTK', 'scikit-learn'],
-    repo: 'https://github.com/scuellaralmagro/airline-sentiment-analysis',
-  },
-];
+// Project case studies live in the `projects` content collection
+// (src/content/projects/*.mdx) — see src/content.config.ts.

@@ -1,13 +1,17 @@
 ---
 /**
- * Projects — flagship project grid. Phase 3 renders cards from
- * src/data/content.ts; deep case-study pages (/projects/[slug]) and the typed
- * content collection arrive in Phase 4. Hover rim-light intensify is Phase 6.
+ * Projects — flagship project grid. Reads from the typed `projects` content
+ * collection (single source shared with /projects/[slug]); each card links to
+ * its case study. Hover rim-light intensify is Phase 6.
  */
 import Section from './Section.astro';
 import Card from '../primitives/Card.astro';
 import TextLink from '../primitives/TextLink.astro';
-import { projects } from '../../data/content';
+import { getCollection } from 'astro:content';
+
+const projects = (await getCollection('projects', ({ data }) => !data.draft)).sort(
+  (a, b) => a.data.order - b.data.order,
+);
 ---
 
 <Section
@@ -15,37 +19,44 @@ import { projects } from '../../data/content';
   eyebrow="Projects"
   eyebrowIcon="layers"
   title="Flagship work"
-  subtitle="Selected projects I designed and built — from deep-learning vision to NLP."
+  subtitle="Selected projects I designed and built — from agentic systems to deep-learning vision and NLP."
 >
   <div class="grid">
     {
-      projects.map((project) => (
-        <Card class="project" strong>
-          <div class="project-body">
-            <h3 class="project-title">{project.title}</h3>
-            <p class="project-summary">{project.summary}</p>
-            <ul class="stack">
-              {project.stack.map((tech) => (
-                <li class="chip">{tech}</li>
-              ))}
-            </ul>
-          </div>
-          <div class="project-foot">
-            {project.repo ? (
-              <TextLink href={project.repo} external>
-                View code
-              </TextLink>
-            ) : (
-              <span class="note">{project.note}</span>
-            )}
-            {project.live && (
-              <TextLink href={project.live} external>
-                Live
-              </TextLink>
-            )}
-          </div>
-        </Card>
-      ))
+      projects.map((entry) => {
+        const { title, summary, stack, repo, live, note } = entry.data;
+        const href = `/projects/${entry.id}`;
+        return (
+          <Card class="project" strong as="article">
+            <div class="project-body">
+              <h3 class="project-title">
+                <a href={href}>{title}</a>
+              </h3>
+              <p class="project-summary">{summary}</p>
+              <ul class="stack">
+                {stack.map((tech) => (
+                  <li class="chip">{tech}</li>
+                ))}
+              </ul>
+            </div>
+            <div class="project-foot">
+              <TextLink href={href}>Case study</TextLink>
+              {repo ? (
+                <TextLink href={repo} external>
+                  Code
+                </TextLink>
+              ) : (
+                note && <span class="note">{note}</span>
+              )}
+              {live && (
+                <TextLink href={live} external>
+                  Live
+                </TextLink>
+              )}
+            </div>
+          </Card>
+        );
+      })
     }
   </div>
 </Section>
@@ -53,7 +64,7 @@ import { projects } from '../../data/content';
 <style>
   .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: var(--spacing-16);
     width: 100%;
   }
@@ -72,6 +83,14 @@ import { projects } from '../../data/content';
   }
   .project-title {
     font-size: var(--text-body-lg);
+  }
+  .project-title a {
+    color: var(--color-lilac-white);
+    text-decoration: none;
+    transition: color 0.18s ease;
+  }
+  .project-title a:hover {
+    color: var(--color-lavender-accent);
   }
   .project-summary {
     margin: 0;

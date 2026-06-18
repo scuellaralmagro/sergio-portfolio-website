@@ -8,11 +8,11 @@ import Icon from '../primitives/Icon.astro';
 import { site, socials } from '../../data/site';
 
 const navLinks = [
-  { label: 'About', href: '#about' },
-  { label: 'Expertise', href: '#expertise' },
-  { label: 'Projects', href: '#projects' },
-  { label: 'Experience', href: '#experience' },
-  { label: 'Contact', href: '#contact' },
+  { label: 'About', href: '/#about' },
+  { label: 'Expertise', href: '/#expertise' },
+  { label: 'Projects', href: '/#projects' },
+  { label: 'Experience', href: '/#experience' },
+  { label: 'Contact', href: '/#contact' },
 ];
 
 const socialLinks = [
@@ -28,7 +28,7 @@ const year = new Date().getFullYear();
   <StarField count={40} class="footer-stars" />
   <div class="footer-inner">
     <div class="top">
-      <a class="brand" href="#hero" aria-label={`${site.shortName} — back to top`}>
+      <a class="brand" href="/#hero" aria-label={`${site.shortName} — back to top`}>
         <span class="monogram">{site.monogram}</span>
         <span class="brand-name">{site.shortName}</span>
       </a>

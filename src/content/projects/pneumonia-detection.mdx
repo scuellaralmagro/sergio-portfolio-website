@@ -1,0 +1,46 @@
+---
+title: 'Pneumonia Detection from Chest X-rays'
+summary: 'A deep-learning pipeline that classifies chest X-rays as normal or pneumonia, with Grad-CAM heatmaps for explainability.'
+role: 'Solo — ML / computer vision'
+stack:
+  - Python
+  - Keras (PyTorch backend)
+  - OpenCV
+  - MobileNetV2
+  - Grad-CAM
+repo: 'https://github.com/scuellaralmagro/chest-xray-pneumonia-classifier'
+order: 2
+featured: true
+---
+
+## Problem
+
+Reading chest X-rays for pneumonia is a high-volume, repetitive task. A classifier can
+help triage — but for anything touching clinical images, a prediction isn't enough: you
+need to see *why* the model decided what it did.
+
+## Approach
+
+- **Data.** The Kaggle Chest X-Ray Pneumonia set (~5,863 images). The supplied validation
+  split is tiny (16 images), so a proper validation set is carved from the training data,
+  and **class weights** counter the heavy normal/pneumonia imbalance.
+- **Preprocessing with OpenCV** — CLAHE contrast enhancement, resize, normalize.
+  Augmentation is deliberately conservative: **no flips**, because chest X-rays have a
+  fixed anatomical orientation (a mirrored image is anatomically impossible).
+- **Two models, compared:** a from-scratch CNN as a baseline, and **MobileNetV2 transfer
+  learning** with fine-tuning.
+- **Keras on a PyTorch backend** to get GPU acceleration on Windows (RTX 4070 Super),
+  since plain TensorFlow no longer supports the GPU there.
+- **Explainability:** Grad-CAM heatmaps highlight the regions driving each prediction.
+
+## My role & decisions
+
+Built solo. The choices worth calling out: conservative augmentation that respects
+anatomy; class weighting rather than resampling for the imbalance; transfer learning to
+beat the scratch baseline; and Grad-CAM so the model is inspectable instead of a black box.
+
+## Outcome
+
+A reproducible training and evaluation pipeline — `train`, `evaluate`, and `gradcam` entry
+points plus a step-by-step notebook — that compares both models and produces confusion
+matrices, ROC curves, and interpretable Grad-CAM heatmaps.

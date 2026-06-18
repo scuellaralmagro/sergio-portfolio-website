@@ -1,0 +1,68 @@
+---
+title: 'Kynetix — AI Gym Trainer & Nutrition Coach'
+summary: 'A full-stack AI training and nutrition coach: a FastAPI + LangGraph backend running a streaming, multi-node agent grounded by RAG over pgvector, with a React PWA client.'
+role: 'Solo full-stack & AI engineer'
+period: '2026'
+stack:
+  - LangGraph
+  - LangChain
+  - FastAPI
+  - OpenAI
+  - PostgreSQL + pgvector
+  - Redis
+  - React PWA
+note: 'Private repo'
+order: 1
+featured: true
+---
+
+## Problem
+
+Good coaching — programming workouts, tracking progress, adjusting nutrition — is
+expensive and doesn't scale. Generic chatbots will happily give fitness advice, but
+it's ungrounded and forgets the context of your last session. Kynetix is a personal AI
+coach that plans training and nutrition, stays aware of a live workout, and grounds its
+answers in a real knowledge base — reliable enough to actually train with.
+
+## Architecture
+
+- **API & data.** FastAPI with async SQLAlchemy over PostgreSQL 17 (pgvector extension),
+  Redis for sessions and caching, all wired together with Docker Compose.
+- **The agent is a LangGraph state graph.** A **supervisor** node classifies intent and
+  extracts entities, then routes to specialized nodes: general chat, workout analysis
+  (aware of a live session if one is in progress), profile updates, a training branch
+  (single-session plans and full multi-day program generation), and a dual-path nutrition
+  sub-graph (semantic logging, human-in-the-loop confirmation, and manual logging).
+- **RAG.** Queries are embedded (OpenAI `text-embedding-3-small`) and matched against a
+  knowledge base via an **HNSW cosine index in pgvector**; the retrieved context grounds
+  the model's coaching answers.
+- **Memory.** Conversation state persists through an `AsyncPostgresSaver` checkpointer, so
+  multi-turn coaching survives across requests.
+- **Streaming.** Replies stream token-by-token to the client over SSE.
+- **Deterministic domain services.** The non-LLM math lives in plain code: 1RM estimation
+  (Epley/Brzycki), training-volume and fatigue / progressive-overload tracking, and TDEE
+  (Mifflin–St Jeor) with goal-based macro splits.
+- **Observability.** Per-node LLM metrics — prompts, tokens, cost, latency — stream to a
+  self-hosted Langfuse stack.
+
+## My role & decisions
+
+Designed and built end-to-end, solo. The decisions that mattered:
+
+- **LangGraph over a single mega-prompt.** Explicit supervisor routing plus specialized
+  nodes keeps each step testable and the agent's behavior legible — and every node is
+  traceable in Langfuse.
+- **Keep deterministic logic out of the LLM.** 1RM, volume, and TDEE are exact code; the
+  model orchestrates and explains, it doesn't do the arithmetic.
+- **One database for relational *and* vector.** pgvector instead of a separate vector store
+  keeps the stack simple and transactional.
+- **Human-in-the-loop on nutrition writes** to avoid silently logging the wrong thing.
+- **Production hygiene:** argon2 password hashing, Redis session cookies, Alembic
+  migrations applied at startup, and an ~870-exercise catalogue seeded on first run.
+
+## Outcome
+
+A working full-stack product: an installable React PWA (chat, live workout tracking,
+nutrition logging, exercise-catalogue browser) on the FastAPI + LangGraph backend, fully
+containerized for one-command local startup. It's the clearest end-to-end demonstration of
+the agentic + RAG stack I work in.
