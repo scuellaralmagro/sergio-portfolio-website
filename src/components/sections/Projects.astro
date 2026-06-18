@@ -1,0 +1,38 @@
+---
+/**
+ * Projects — flagship project grid (cards → case studies). Placeholder shell
+ * (Phase 2); real cards read from the typed content collection in Phase 4.
+ */
+import Section from './Section.astro';
+---
+
+<Section
+  id="projects"
+  eyebrow="Projects"
+  eyebrowIcon="layers"
+  title="Flagship work"
+  subtitle="Three deep case studies — agentic booking, RAG support, and conversational automation."
+>
+  <div class="grid">
+    <p class="placeholder glass">Project card — Phase 4</p>
+    <p class="placeholder glass">Project card — Phase 4</p>
+    <p class="placeholder glass">Project card — Phase 4</p>
+  </div>
+</Section>
+
+<style>
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: var(--spacing-16);
+  }
+  .placeholder {
+    display: grid;
+    place-items: center;
+    min-height: 200px;
+    padding: var(--spacing-24);
+    color: var(--color-fog);
+    font-size: var(--text-body-sm);
+    text-align: center;
+  }
+</style>

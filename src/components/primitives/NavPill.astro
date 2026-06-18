@@ -1,8 +1,10 @@
 ---
 /**
  * NavPill — floating, centered pill navigation.
- * Static structure here; scroll-state (shrink/blur, active-section
- * highlighting) is added as a React island in the motion phase.
+ * Markup is server-rendered; the inline <script> below adds scroll-spy
+ * (active link) + a `data-scrolled` flag with zero framework cost, keeping the
+ * page's near-zero JS baseline (ULTRAPLAN §9: nav shrink/blur = CSS + scroll).
+ * Richer active-pill / magnetic-CTA motion lands in the motion phase (Phase 6).
  */
 import Button from './Button.astro';
 import { site } from '../../data/site';
@@ -16,7 +18,7 @@ const links = [
 ---
 
 <nav class="nav-wrap" aria-label="Primary">
-  <div class="pill">
+  <div class="pill" data-nav-pill>
     <a class="brand" href="#hero" aria-label={`${site.shortName} — home`}>
       <svg class="brand-mark" width="22" height="22" viewBox="0 0 32 32" aria-hidden="true">
         <g stroke="currentColor" stroke-width="1.1" stroke-linecap="round" opacity="0.7">
@@ -39,7 +41,9 @@ const links = [
       {
         links.map((link) => (
           <li>
-            <a href={link.href}>{link.label}</a>
+            <a href={link.href} data-nav-link>
+              {link.label}
+            </a>
           </li>
         ))
       }
@@ -75,6 +79,14 @@ const links = [
     backdrop-filter: blur(12px);
     border-radius: var(--radius-full);
     box-shadow: var(--glass-rim);
+    transition:
+      background-color 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+  /* Tighten the pill once the page scrolls past the hero (set by NavScroll). */
+  .pill[data-scrolled] {
+    background-color: color-mix(in oklab, var(--color-midnight-surface) 92%, transparent);
+    box-shadow: var(--glass-rim-strong);
   }
 
   .brand {
@@ -110,6 +122,10 @@ const links = [
   .links a:hover {
     color: var(--color-lilac-white);
   }
+  /* Active section — set by the NavScroll island via scroll-spy. */
+  .links a[data-active] {
+    color: var(--color-lilac-white);
+  }
 
   .actions {
     display: flex;
@@ -127,3 +143,45 @@ const links = [
     }
   }
 </style>
+
+<script>
+  // Scroll-spy + scrolled-state for the nav pill. Plain DOM, no framework —
+  // bundled & minified by Astro, deferred (type=module). Reduced-motion is
+  // honored globally (smooth scroll disabled in global.css).
+  const pill = document.querySelector('[data-nav-pill]');
+  const links = Array.from(document.querySelectorAll('[data-nav-link]'));
+
+  const sections = links
+    .map((link) => {
+      const id = link.getAttribute('href')?.slice(1);
+      return id ? document.getElementById(id) : null;
+    })
+    .filter((el): el is HTMLElement => el !== null);
+
+  const setActive = (id: string) => {
+    for (const link of links) {
+      const active = link.getAttribute('href') === `#${id}`;
+      link.toggleAttribute('data-active', active);
+      if (active) link.setAttribute('aria-current', 'location');
+      else link.removeAttribute('aria-current');
+    }
+  };
+
+  // The section crossing the viewport's vertical middle is the active one.
+  const observer = new IntersectionObserver(
+    (entries) => {
+      const top = entries
+        .filter((entry) => entry.isIntersecting)
+        .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+      if (top) setActive(top.target.id);
+    },
+    { rootMargin: '-45% 0px -45% 0px', threshold: [0, 0.25, 0.5, 0.75, 1] },
+  );
+  sections.forEach((section) => observer.observe(section));
+
+  const onScroll = () => {
+    pill?.toggleAttribute('data-scrolled', window.scrollY > 24);
+  };
+  onScroll();
+  window.addEventListener('scroll', onScroll, { passive: true });
+</script>

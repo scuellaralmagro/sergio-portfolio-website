@@ -1,0 +1,160 @@
+---
+/**
+ * Footer — closing band. Monogram + wordmark, in-page nav, socials, and a
+ * colophon, over a subtle star-field. Mirrors the NavPill link set.
+ */
+import StarField from '../primitives/StarField.astro';
+import Icon from '../primitives/Icon.astro';
+import { site, socials } from '../../data/site';
+
+const navLinks = [
+  { label: 'About', href: '#about' },
+  { label: 'Expertise', href: '#expertise' },
+  { label: 'Projects', href: '#projects' },
+  { label: 'Experience', href: '#experience' },
+  { label: 'Contact', href: '#contact' },
+];
+
+const socialLinks = [
+  { label: 'GitHub', href: socials.github, icon: 'github' as const },
+  { label: 'LinkedIn', href: socials.linkedin, icon: 'linkedin' as const },
+  { label: 'Email', href: socials.email, icon: 'mail' as const },
+];
+
+const year = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <StarField count={40} class="footer-stars" />
+  <div class="footer-inner">
+    <div class="top">
+      <a class="brand" href="#hero" aria-label={`${site.shortName} — back to top`}>
+        <span class="monogram">{site.monogram}</span>
+        <span class="brand-name">{site.shortName}</span>
+      </a>
+
+      <nav class="footer-nav" aria-label="Footer">
+        <ul>
+          {navLinks.map((link) => (
+            <li>
+              <a href={link.href}>{link.label}</a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+
+      <ul class="socials">
+        {
+          socialLinks.map((s) => (
+            <li>
+              <a
+                href={s.href}
+                aria-label={s.label}
+                {...(s.icon === 'mail' ? {} : { target: '_blank', rel: 'noopener noreferrer' })}
+              >
+                <Icon name={s.icon} size={18} title={s.label} />
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <hr class="aurora-divider" />
+
+    <p class="colophon">
+      © {year} {site.name} · {site.role} · Built with Astro on Cloudflare.
+    </p>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    position: relative;
+    overflow: hidden;
+    background-color: var(--color-midnight-surface);
+    box-shadow: var(--glass-rim);
+  }
+
+  .footer-inner {
+    position: relative;
+    z-index: 1;
+    max-width: 1200px;
+    margin-inline: auto;
+    padding: var(--spacing-64) var(--spacing-24) var(--spacing-48);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-32);
+  }
+
+  .top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-24);
+  }
+
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-12);
+    color: var(--color-lilac-white);
+    text-decoration: none;
+    font-family: var(--font-aeonikpro);
+    font-weight: 500;
+  }
+  .monogram {
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-full);
+    border: 1px solid var(--color-iris);
+    box-shadow: var(--glass-badge);
+    font-size: var(--text-body-sm);
+    color: var(--color-lavender-accent);
+  }
+
+  .footer-nav ul,
+  .socials {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--spacing-20);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .footer-nav a {
+    color: var(--color-ash);
+    text-decoration: none;
+    font-size: var(--text-body-sm);
+    transition: color 0.18s ease;
+  }
+  .footer-nav a:hover {
+    color: var(--color-lilac-white);
+  }
+
+  .socials a {
+    display: inline-flex;
+    color: var(--color-ash);
+    transition: color 0.18s ease;
+  }
+  .socials a:hover {
+    color: var(--color-lavender-accent);
+  }
+
+  .colophon {
+    margin: 0;
+    color: var(--color-fog);
+    font-size: var(--text-caption);
+  }
+
+  @media (max-width: 640px) {
+    .top {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+</style>

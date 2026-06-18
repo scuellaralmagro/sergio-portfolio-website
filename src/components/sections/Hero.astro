@@ -1,0 +1,90 @@
+---
+/**
+ * Hero — the agentic hook. Full-height, star-field backdrop, gradient
+ * headline, sub, and dual CTA. Copy is final-ish but may be refined in
+ * Phase 3; the orchestration visual (right/over) lands in Phase 5.
+ */
+import StarField from '../primitives/StarField.astro';
+import Button from '../primitives/Button.astro';
+import Badge from '../primitives/Badge.astro';
+import { site } from '../../data/site';
+---
+
+<section id="hero" class="hero">
+  <StarField count={90} class="hero-stars" />
+  <div class="hero-inner">
+    <Badge icon="sparkle">{site.role}</Badge>
+    <h1 class="headline">
+      I orchestrate AI agents into<br />
+      <span class="text-cosmic">systems that ship.</span>
+    </h1>
+    <p class="sub">
+      Agentic systems, LangGraph orchestration, and RAG architectures — designed,
+      built, and deployed in production.
+    </p>
+    <div class="cta-row">
+      <Button href="#projects">View my work</Button>
+      <Button variant="ghost" href="#contact">Get in touch</Button>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    min-height: 100dvh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-108) var(--spacing-24) var(--spacing-72);
+    overflow: hidden;
+  }
+
+  .hero-stars {
+    /* StarField is absolutely positioned within its relative parent. */
+    z-index: 0;
+  }
+
+  .hero-inner {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-24);
+    text-align: center;
+    max-width: 60ch;
+  }
+
+  .headline {
+    font-size: var(--text-heading);
+    line-height: var(--leading-heading);
+    letter-spacing: var(--tracking-heading);
+    max-width: 16ch;
+  }
+
+  .sub {
+    margin: 0;
+    max-width: 52ch;
+    color: var(--color-ash);
+    font-size: var(--text-body-lg);
+    line-height: var(--leading-body-lg);
+  }
+
+  .cta-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-16);
+    margin-top: var(--spacing-8);
+  }
+
+  @media (min-width: 768px) {
+    .headline {
+      font-size: var(--text-display);
+      line-height: var(--leading-display);
+      letter-spacing: var(--tracking-display);
+    }
+  }
+</style>

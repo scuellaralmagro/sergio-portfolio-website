@@ -1,0 +1,49 @@
+---
+/**
+ * Contact — conversion point. The hero and nav CTA both target #contact, so
+ * this ships with working affordances now; résumé download + final copy and
+ * polish land in Phase 3.
+ */
+import Section from './Section.astro';
+import Button from '../primitives/Button.astro';
+import TextLink from '../primitives/TextLink.astro';
+import { site, socials } from '../../data/site';
+---
+
+<Section
+  id="contact"
+  eyebrow="Contact"
+  eyebrowIcon="mail"
+  title="Let's build something"
+  subtitle="Open to AI/LLM engineering roles. The fastest way to reach me is email."
+>
+  <div class="contact-actions">
+    <Button href={socials.email}>Email me</Button>
+    <div class="links">
+      <TextLink href={socials.github} external>GitHub</TextLink>
+      <TextLink href={socials.linkedin} external>LinkedIn</TextLink>
+    </div>
+    <p class="loc">{site.location}</p>
+  </div>
+</Section>
+
+<style>
+  .contact-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-20);
+    text-align: center;
+  }
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--spacing-24);
+  }
+  .loc {
+    margin: 0;
+    color: var(--color-fog);
+    font-size: var(--text-body-sm);
+  }
+</style>

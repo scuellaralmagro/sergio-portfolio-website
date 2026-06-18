@@ -1,0 +1,29 @@
+---
+/**
+ * About — narrative + portrait. Placeholder shell (Phase 2); copy and the
+ * rim-lit portrait land in Phase 3.
+ */
+import Section from './Section.astro';
+---
+
+<Section
+  id="about"
+  eyebrow="About"
+  title="Who I am"
+  subtitle="An AI/LLM engineer who turns manual processes into scalable agentic architectures."
+  align="left"
+>
+  <p class="placeholder glass">Narrative &amp; portrait — Phase 3.</p>
+</Section>
+
+<style>
+  .placeholder {
+    display: grid;
+    place-items: center;
+    min-height: 180px;
+    padding: var(--spacing-24);
+    color: var(--color-fog);
+    font-size: var(--text-body-sm);
+    text-align: center;
+  }
+</style>

@@ -1,0 +1,30 @@
+---
+/**
+ * Experience — career timeline (BoosterPrompt → Weebu → Freelance).
+ * Placeholder shell (Phase 2); aurora-divided timeline rows land in Phase 3.
+ */
+import Section from './Section.astro';
+---
+
+<Section
+  id="experience"
+  eyebrow="Experience"
+  eyebrowIcon="code"
+  title="Where I've shipped"
+  subtitle="A short spine of AI-first roles, most-recent first."
+  align="left"
+>
+  <p class="placeholder glass">Timeline rows — Phase 3.</p>
+</Section>
+
+<style>
+  .placeholder {
+    display: grid;
+    place-items: center;
+    min-height: 200px;
+    padding: var(--spacing-24);
+    color: var(--color-fog);
+    font-size: var(--text-body-sm);
+    text-align: center;
+  }
+</style>
