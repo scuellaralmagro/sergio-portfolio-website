@@ -1,31 +1,49 @@
 ---
 /**
- * Hero — the agentic hook. Full-height, star-field backdrop, gradient
- * headline, sub, and dual CTA. Copy is final-ish but may be refined in
- * Phase 3; the orchestration visual (right/over) lands in Phase 5.
+ * Hero — the agentic hook. Full-height, star-field backdrop, gradient headline,
+ * sub, and dual CTA. The signature visual (Phase 5) replaces the usual product
+ * screenshot: a compact, animated agent graph in a rim-lit glass panel, sitting
+ * to the right of the copy on desktop and stacking beneath it on mobile.
+ * The graph is decorative (ArchDiagram renders an aria-hidden SVG) — the
+ * headline and sub carry the message.
  */
 import StarField from '../primitives/StarField.astro';
 import Button from '../primitives/Button.astro';
 import Badge from '../primitives/Badge.astro';
+import Card from '../primitives/Card.astro';
+import ArchDiagram from '../islands/ArchDiagram.tsx';
 import { site } from '../../data/site';
+import { heroNodes, heroEdges } from '../../data/diagrams';
 ---
 
 <section id="hero" class="hero">
   <StarField count={90} class="hero-stars" />
-  <div class="hero-inner">
-    <Badge icon="sparkle">{site.role}</Badge>
-    <h1 class="headline">
-      I orchestrate AI agents into<br />
-      <span class="text-cosmic">systems that ship.</span>
-    </h1>
-    <p class="sub">
-      Agentic systems, LangGraph orchestration, and RAG architectures — designed,
-      built, and deployed in production.
-    </p>
-    <div class="cta-row">
-      <Button href="#projects">View my work</Button>
-      <Button variant="ghost" href="#contact">Get in touch</Button>
+  <div class="hero-grid">
+    <div class="hero-copy">
+      <Badge icon="sparkle">{site.role}</Badge>
+      <h1 class="headline">
+        I orchestrate AI agents into<br />
+        <span class="text-cosmic">systems that ship.</span>
+      </h1>
+      <p class="sub">
+        Agentic systems, LangGraph orchestration, and RAG architectures — designed,
+        built, and deployed in production.
+      </p>
+      <div class="cta-row">
+        <Button href="#projects">View my work</Button>
+        <Button variant="ghost" href="#contact">Get in touch</Button>
+      </div>
     </div>
+
+    <Card strong class="hero-visual">
+      <ArchDiagram
+        client:visible
+        nodes={heroNodes}
+        edges={heroEdges}
+        viewWidth={790}
+        viewHeight={308}
+      />
+    </Card>
   </div>
 </section>
 
@@ -45,15 +63,29 @@ import { site } from '../../data/site';
     z-index: 0;
   }
 
-  .hero-inner {
+  .hero-grid {
     position: relative;
     z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-48);
+    width: 100%;
+    max-width: 1120px;
+  }
+
+  .hero-copy {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: var(--spacing-24);
     text-align: center;
     max-width: 60ch;
+  }
+
+  .hero-visual {
+    width: 100%;
+    max-width: 560px;
   }
 
   .headline {
@@ -85,6 +117,25 @@ import { site } from '../../data/site';
       font-size: var(--text-display);
       line-height: var(--leading-display);
       letter-spacing: var(--tracking-display);
+    }
+  }
+
+  /* Two-column hero: copy left, agent graph right. */
+  @media (min-width: 960px) {
+    .hero-grid {
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+    }
+    .hero-copy {
+      flex: 1 1 0;
+      align-items: flex-start;
+      text-align: left;
+      max-width: 34rem;
+    }
+    .hero-visual {
+      flex: 1 1 0;
+      max-width: 540px;
     }
   }
 </style>

@@ -16,6 +16,10 @@ order: 1
 featured: true
 ---
 
+import ArchDiagram from '../../components/islands/ArchDiagram.tsx';
+import Card from '../../components/primitives/Card.astro';
+import { orchestrationNodes, orchestrationEdges } from '../../data/diagrams';
+
 ## Problem
 
 Good coaching — programming workouts, tracking progress, adjusting nutrition — is
@@ -25,6 +29,23 @@ coach that plans training and nutrition, stays aware of a live workout, and grou
 answers in a real knowledge base — reliable enough to actually train with.
 
 ## Architecture
+
+<figure class="diagram">
+  <Card strong padding="lg">
+    <ArchDiagram
+      client:visible
+      nodes={orchestrationNodes}
+      edges={orchestrationEdges}
+      viewWidth={800}
+      viewHeight={330}
+    />
+  </Card>
+  <figcaption>
+    The LangGraph supervisor classifies each message and routes it to a specialized
+    agent — general chat, workout analysis, training, or nutrition — grounded by a
+    pgvector RAG store and deterministic domain services (1RM, TDEE).
+  </figcaption>
+</figure>
 
 - **API & data.** FastAPI with async SQLAlchemy over PostgreSQL 17 (pgvector extension),
   Redis for sessions and caching, all wired together with Docker Compose.

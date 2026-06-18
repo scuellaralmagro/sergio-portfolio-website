@@ -1,9 +1,21 @@
 ---
 /**
- * AIShowcase — "How I build agentic systems". Placeholder shell (Phase 2);
- * the animated LangGraph/RAG architecture diagrams land in Phase 5.
+ * AIShowcase — "How I build agentic systems". Two animated, annotated diagrams
+ * of the real architectures behind Kynetix and the RAG support work:
+ *  1. a LangGraph multi-agent orchestration graph
+ *  2. a RAG retrieval pipeline
+ * Diagrams are ArchDiagram islands (client:visible); each sits in a rim-lit
+ * glass panel with a text caption that doubles as the accessible description.
  */
 import Section from './Section.astro';
+import Card from '../primitives/Card.astro';
+import ArchDiagram from '../islands/ArchDiagram.tsx';
+import {
+  orchestrationNodes,
+  orchestrationEdges,
+  ragNodes,
+  ragEdges,
+} from '../../data/diagrams';
 ---
 
 <Section
@@ -11,19 +23,70 @@ import Section from './Section.astro';
   eyebrow="AI Showcase"
   eyebrowIcon="workflow"
   title="How I build agentic systems"
-  subtitle="Animated, annotated walkthroughs of the real orchestration and retrieval pipelines I ship."
+  subtitle="The real architectures behind my work — agents are stars, orchestration is the lines between them."
 >
-  <p class="placeholder glass">Animated architecture diagrams — Phase 5.</p>
+  <div class="diagrams">
+    <figure class="diagram">
+      <h3 class="diagram-title">Multi-agent orchestration</h3>
+      <Card strong class="panel">
+        <ArchDiagram
+          client:visible
+          nodes={orchestrationNodes}
+          edges={orchestrationEdges}
+          viewWidth={800}
+          viewHeight={330}
+        />
+      </Card>
+      <figcaption>
+        A LangGraph supervisor classifies each message and routes it to a specialized agent
+        — general chat, workout analysis, training, or nutrition — which draw on a pgvector
+        RAG store and deterministic domain services (1RM, TDEE).
+      </figcaption>
+    </figure>
+
+    <figure class="diagram">
+      <h3 class="diagram-title">RAG retrieval pipeline</h3>
+      <Card strong class="panel">
+        <ArchDiagram
+          client:visible
+          nodes={ragNodes}
+          edges={ragEdges}
+          viewWidth={900}
+          viewHeight={150}
+        />
+      </Card>
+      <figcaption>
+        A query is embedded, matched against a pgvector HNSW index, and the top-k results
+        ground the model's answer — no ungrounded guessing.
+      </figcaption>
+    </figure>
+  </div>
 </Section>
 
 <style>
-  .placeholder {
-    display: grid;
-    place-items: center;
-    min-height: 260px;
-    padding: var(--spacing-24);
+  .diagrams {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-48);
+    width: 100%;
+  }
+  .diagram {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-16);
+  }
+  .diagram-title {
+    font-size: var(--text-body-lg);
+    color: var(--color-lilac-white);
+  }
+  .panel {
+    padding: var(--spacing-32);
+  }
+  figcaption {
     color: var(--color-fog);
     font-size: var(--text-body-sm);
-    text-align: center;
+    line-height: var(--leading-body-sm);
+    max-width: 64ch;
   }
 </style>
