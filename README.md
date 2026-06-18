@@ -2,8 +2,6 @@
 
 AI / LLM Engineer portfolio. Dark "starlit violet cosmos" design system, built with **Astro + React islands** and deployed on **Cloudflare Pages**.
 
-> Architecture & roadmap: see [`ULTRAPLAN.md`](./ULTRAPLAN.md) — the source of truth for the build.
-
 ## Stack
 
 - **Astro 5** (static output) + **React 19** islands for interactive/animated parts
