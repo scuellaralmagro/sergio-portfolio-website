@@ -1,9 +1,11 @@
 ---
 /**
- * Experience — career timeline (BoosterPrompt → Weebu → Freelance).
- * Placeholder shell (Phase 2); aurora-divided timeline rows land in Phase 3.
+ * Experience — career timeline (BoosterPrompt → Weebu → Freelance), most-AI
+ * first. Aurora-divided rows, content from src/data/content.ts.
  */
 import Section from './Section.astro';
+import AuroraDivider from '../primitives/AuroraDivider.astro';
+import { experience } from '../../data/content';
 ---
 
 <Section
@@ -11,20 +13,95 @@ import Section from './Section.astro';
   eyebrow="Experience"
   eyebrowIcon="code"
   title="Where I've shipped"
-  subtitle="A short spine of AI-first roles, most-recent first."
+  subtitle="A short spine of AI-first roles, most recent and most relevant first."
   align="left"
 >
-  <p class="placeholder glass">Timeline rows — Phase 3.</p>
+  <ol class="timeline">
+    {
+      experience.map((job, i) => (
+        <li class="row">
+          {i > 0 && <AuroraDivider class="row-rule" />}
+          <div class="row-grid">
+            <div class="meta">
+              <h3 class="company">{job.company}</h3>
+              <p class="role">{job.role}</p>
+              <p class="period">{job.period}</p>
+            </div>
+            <ul class="highlights">
+              {job.highlights.map((point) => (
+                <li>{point}</li>
+              ))}
+            </ul>
+          </div>
+        </li>
+      ))
+    }
+  </ol>
 </Section>
 
 <style>
-  .placeholder {
+  .timeline {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-32);
+  }
+  .row {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-32);
+  }
+  .row-rule {
+    opacity: 0.6;
+  }
+
+  .row-grid {
     display: grid;
-    place-items: center;
-    min-height: 200px;
-    padding: var(--spacing-24);
+    grid-template-columns: 1fr;
+    gap: var(--spacing-16);
+  }
+
+  .meta {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-4);
+  }
+  .company {
+    font-size: var(--text-subheading);
+    line-height: var(--leading-subheading);
+  }
+  .role {
+    margin: 0;
+    color: var(--color-lilac-white);
+    font-size: var(--text-body);
+  }
+  .period {
+    margin: 0;
     color: var(--color-fog);
     font-size: var(--text-body-sm);
-    text-align: center;
+  }
+
+  .highlights {
+    margin: 0;
+    padding-left: var(--spacing-20);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-12);
+    color: var(--color-ash);
+  }
+  .highlights li {
+    line-height: var(--leading-body);
+  }
+  .highlights li::marker {
+    color: var(--color-lavender-accent);
+  }
+
+  @media (min-width: 768px) {
+    .row-grid {
+      grid-template-columns: 280px 1fr;
+      gap: var(--spacing-48);
+    }
   }
 </style>

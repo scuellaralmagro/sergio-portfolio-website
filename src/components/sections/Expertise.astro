@@ -1,9 +1,13 @@
 ---
 /**
- * Expertise — capabilities as a constellation node graph. Placeholder shell
- * (Phase 2); the static graph lands in Phase 3, interactivity in Phase 5.
+ * Expertise — capabilities grouped into four clusters (the "constellations").
+ * Static, content-driven layout for Phase 3; the interactive node graph lands
+ * in Phase 5. Data from src/data/content.ts.
  */
 import Section from './Section.astro';
+import Card from '../primitives/Card.astro';
+import Icon from '../primitives/Icon.astro';
+import { expertise } from '../../data/content';
 ---
 
 <Section
@@ -11,19 +15,78 @@ import Section from './Section.astro';
   eyebrow="Expertise"
   eyebrowIcon="network"
   title="Capabilities, mapped like a constellation"
-  subtitle="Orchestration · Retrieval · Engineering · Automation & Ops."
+  subtitle="Agents are stars; orchestration is the lines between them. Four clusters define how I build."
 >
-  <p class="placeholder glass">Capability constellation — Phase 3 (static) / Phase 5 (interactive).</p>
+  <div class="grid">
+    {
+      expertise.map((cluster) => (
+        <Card class="cluster">
+          <div class="cluster-head">
+            <span class="cluster-icon">
+              <Icon name={cluster.icon} size={20} title={cluster.name} />
+            </span>
+            <h3 class="cluster-name">{cluster.name}</h3>
+          </div>
+          <ul class="skills">
+            {cluster.skills.map((skill) => (
+              <li>{skill}</li>
+            ))}
+          </ul>
+        </Card>
+      ))
+    }
+  </div>
 </Section>
 
 <style>
-  .placeholder {
+  .grid {
     display: grid;
-    place-items: center;
-    min-height: 220px;
-    padding: var(--spacing-24);
-    color: var(--color-fog);
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: var(--spacing-16);
+    width: 100%;
+  }
+
+  .cluster {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-20);
+    height: 100%;
+  }
+  .cluster-head {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-12);
+  }
+  .cluster-icon {
+    display: inline-flex;
+    color: var(--color-lavender-accent);
+  }
+  .cluster-name {
+    font-size: var(--text-body-lg);
+  }
+
+  .skills {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-8);
+  }
+  .skills li {
+    color: var(--color-ash);
     font-size: var(--text-body-sm);
-    text-align: center;
+    padding-left: var(--spacing-16);
+    position: relative;
+  }
+  .skills li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.6em;
+    width: 4px;
+    height: 4px;
+    border-radius: var(--radius-full);
+    background-color: var(--color-lavender-accent);
   }
 </style>

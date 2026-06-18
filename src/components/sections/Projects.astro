@@ -1,9 +1,13 @@
 ---
 /**
- * Projects — flagship project grid (cards → case studies). Placeholder shell
- * (Phase 2); real cards read from the typed content collection in Phase 4.
+ * Projects — flagship project grid. Phase 3 renders cards from
+ * src/data/content.ts; deep case-study pages (/projects/[slug]) and the typed
+ * content collection arrive in Phase 4. Hover rim-light intensify is Phase 6.
  */
 import Section from './Section.astro';
+import Card from '../primitives/Card.astro';
+import TextLink from '../primitives/TextLink.astro';
+import { projects } from '../../data/content';
 ---
 
 <Section
@@ -11,28 +15,96 @@ import Section from './Section.astro';
   eyebrow="Projects"
   eyebrowIcon="layers"
   title="Flagship work"
-  subtitle="Three deep case studies — agentic booking, RAG support, and conversational automation."
+  subtitle="Selected projects I designed and built — from deep-learning vision to NLP."
 >
   <div class="grid">
-    <p class="placeholder glass">Project card — Phase 4</p>
-    <p class="placeholder glass">Project card — Phase 4</p>
-    <p class="placeholder glass">Project card — Phase 4</p>
+    {
+      projects.map((project) => (
+        <Card class="project" strong>
+          <div class="project-body">
+            <h3 class="project-title">{project.title}</h3>
+            <p class="project-summary">{project.summary}</p>
+            <ul class="stack">
+              {project.stack.map((tech) => (
+                <li class="chip">{tech}</li>
+              ))}
+            </ul>
+          </div>
+          <div class="project-foot">
+            {project.repo ? (
+              <TextLink href={project.repo} external>
+                View code
+              </TextLink>
+            ) : (
+              <span class="note">{project.note}</span>
+            )}
+            {project.live && (
+              <TextLink href={project.live} external>
+                Live
+              </TextLink>
+            )}
+          </div>
+        </Card>
+      ))
+    }
   </div>
 </Section>
 
 <style>
   .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
     gap: var(--spacing-16);
+    width: 100%;
   }
-  .placeholder {
-    display: grid;
-    place-items: center;
-    min-height: 200px;
-    padding: var(--spacing-24);
+
+  .project {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: var(--spacing-20);
+    height: 100%;
+  }
+  .project-body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-12);
+  }
+  .project-title {
+    font-size: var(--text-body-lg);
+  }
+  .project-summary {
+    margin: 0;
+    color: var(--color-ash);
+    font-size: var(--text-body-sm);
+    line-height: var(--leading-body-sm);
+  }
+
+  .stack {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-8);
+  }
+  .chip {
+    padding: var(--spacing-4) var(--spacing-12);
+    border: 1px solid var(--color-iris);
+    border-radius: var(--radius-3xl-2);
+    color: var(--color-mercury);
+    font-size: var(--text-caption);
+    line-height: 1.4;
+  }
+
+  .project-foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--spacing-20);
+  }
+  .note {
     color: var(--color-fog);
     font-size: var(--text-body-sm);
-    text-align: center;
   }
 </style>

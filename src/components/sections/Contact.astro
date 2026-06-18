@@ -18,7 +18,10 @@ import { site, socials } from '../../data/site';
   subtitle="Open to AI/LLM engineering roles. The fastest way to reach me is email."
 >
   <div class="contact-actions">
-    <Button href={socials.email}>Email me</Button>
+    <div class="cta-buttons">
+      <Button href={socials.email}>Email me</Button>
+      <Button variant="ghost" href={site.resumeUrl} download>Download résumé (PDF)</Button>
+    </div>
     <div class="links">
       <TextLink href={socials.github} external>GitHub</TextLink>
       <TextLink href={socials.linkedin} external>LinkedIn</TextLink>
@@ -34,6 +37,13 @@ import { site, socials } from '../../data/site';
     align-items: center;
     gap: var(--spacing-20);
     text-align: center;
+  }
+  .cta-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-16);
   }
   .links {
     display: flex;
