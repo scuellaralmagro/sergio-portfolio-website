@@ -1,0 +1,14 @@
+{
+  // Cloudflare Workers config. Phase 1: static-only deployment — the Worker
+  // serves the prebuilt `dist/` via Static Assets, with no Worker script.
+  // Phase 9 (live RAG `/api/chat`) will add the @astrojs/cloudflare adapter and
+  // a `main` entry here; the `assets` binding below stays as-is.
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "sergio-portfolio",
+  "compatibility_date": "2026-06-18",
+  "assets": {
+    "directory": "./dist",
+    // Serve dist/404.html for unknown paths (add src/pages/404.astro to use it).
+    "not_found_handling": "404-page"
+  }
+}

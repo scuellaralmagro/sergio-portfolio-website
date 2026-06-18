@@ -5,9 +5,10 @@ import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 
-// Static-first build. Output is `dist/` served directly by Cloudflare Pages.
-// The @astrojs/cloudflare adapter is intentionally deferred to Phase 9, when
-// the live RAG demo introduces an on-demand `/api/chat` endpoint.
+// Static-first build. Output is `dist/`, served on Cloudflare Workers via
+// Static Assets (see wrangler.jsonc). The @astrojs/cloudflare adapter is
+// intentionally deferred to Phase 9, when the live RAG demo introduces an
+// on-demand `/api/chat` endpoint.
 // https://astro.build/config
 export default defineConfig({
   site: 'https://sergiocuellar.dev',
