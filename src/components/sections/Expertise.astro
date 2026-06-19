@@ -22,11 +22,14 @@ import { expertise } from '../../data/content';
     <Constellation client:visible clusters={expertise} />
   </Card>
 
-  <ul class="sr-only">
+  {/* Readable list: the screen-reader alternative on desktop; the primary view
+      on phones, where ~20 labels in one graph would be too small. */}
+  <ul class="capability-list">
     {
       expertise.map((cluster) => (
         <li>
-          {cluster.name}: {cluster.skills.join(', ')}.
+          <span class="cap-name">{cluster.name}</span>
+          <span class="cap-skills">{cluster.skills.join(' · ')}</span>
         </li>
       ))
     }
@@ -35,7 +38,51 @@ import { expertise } from '../../data/content';
 
 <style>
   .panel {
-    padding: var(--spacing-32);
+    display: none;
+  }
+
+  /* Mobile-first: show the list, hide the graph. */
+  .capability-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-24);
     width: 100%;
+  }
+  .cap-name {
+    display: block;
+    font-size: var(--text-caption);
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-lavender-accent);
+    margin-bottom: var(--spacing-4);
+  }
+  .cap-skills {
+    display: block;
+    color: var(--color-ash);
+    line-height: var(--leading-body);
+  }
+
+  /* From 640px up: show the constellation, collapse the list to sr-only. */
+  @media (min-width: 640px) {
+    .panel {
+      display: block;
+      padding: var(--spacing-32);
+      width: 100%;
+    }
+    .capability-list {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
   }
 </style>
