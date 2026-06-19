@@ -55,24 +55,30 @@ export interface ExpertiseCluster {
 
 export const expertise: ExpertiseCluster[] = [
   {
-    name: 'Orchestration',
+    name: 'Agent Orchestration',
     icon: 'network',
-    skills: ['LangChain', 'LangGraph', 'Tool-use', 'Multi-agent systems'],
+    skills: ['LangGraph', 'LangChain', 'Multi-agent routing', 'Tool use', 'Human-in-the-loop'],
   },
   {
-    name: 'Retrieval',
+    name: 'Retrieval / RAG',
     icon: 'database',
-    skills: ['RAG / RAFT', 'pgvector', 'Supabase', 'Semantic search'],
+    skills: ['RAG', 'RAFT', 'pgvector / HNSW', 'Embeddings', 'Semantic search'],
+  },
+  {
+    name: 'LLM in Production',
+    icon: 'workflow',
+    skills: [
+      'Prompt engineering',
+      'Streaming (SSE)',
+      'Observability (Langfuse)',
+      'Evals (LLM-as-judge)',
+      'WhatsApp / Meta API',
+    ],
   },
   {
     name: 'Engineering',
     icon: 'code',
-    skills: ['Python', 'TypeScript', 'Node.js', 'React / Next.js'],
-  },
-  {
-    name: 'Automation & Ops',
-    icon: 'workflow',
-    skills: ['N8N', 'Docker', 'Meta API', 'OpenAI API'],
+    skills: ['Python', 'FastAPI', 'TypeScript', 'React / Next.js', 'PostgreSQL', 'Docker'],
   },
 ];
 

@@ -146,6 +146,55 @@
     border: 0;
     background-image: var(--gradient-aurora);
   }
+
+  /* Capability constellation (Expertise) — one connected network: core →
+     clusters → skills. Hover/focus ignites a branch and dims the rest (classes
+     toggled by the island). */
+  .constellation-net {
+    width: 100%;
+  }
+  .constellation-net svg {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .cl-group {
+    transition:
+      opacity 0.25s ease,
+      filter 0.25s ease;
+    outline: none;
+  }
+  .cl-group.is-dim {
+    opacity: 0.3;
+  }
+  .cl-group.is-active {
+    filter: brightness(1.3) saturate(1.12);
+  }
+  .cl-name {
+    font: 500 12px var(--font-inter-v);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    fill: var(--color-lavender-accent);
+  }
+  .sk-label {
+    font: 400 11px var(--font-inter-v);
+    fill: var(--color-ash);
+  }
+  /* Star twinkle — opacity pulse around each star's base brightness; frozen to
+     the base value by the global reduced-motion block. */
+  .cf-twinkle {
+    animation: constellation-twinkle var(--dur, 4s) ease-in-out var(--delay, 0s) infinite;
+  }
+}
+
+@keyframes constellation-twinkle {
+  0%,
+  100% {
+    opacity: var(--base, 0.8);
+  }
+  50% {
+    opacity: calc(var(--base, 0.8) * 0.45);
+  }
 }
 
 /* ------------------------------------------------------------------ *
