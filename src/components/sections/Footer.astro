@@ -1,9 +1,9 @@
 ---
 /**
  * Footer — closing band. Monogram + wordmark, in-page nav, socials, and a
- * colophon, over a subtle star-field. Mirrors the NavPill link set.
+ * colophon, over a subtle living constellation. Mirrors the NavPill link set.
  */
-import StarField from '../primitives/StarField.astro';
+import ConstellationField from '../primitives/ConstellationField.astro';
 import Icon from '../primitives/Icon.astro';
 import { site, socials } from '../../data/site';
 
@@ -25,7 +25,7 @@ const year = new Date().getFullYear();
 ---
 
 <footer class="footer">
-  <StarField count={40} class="footer-stars" />
+  <ConstellationField class="footer-stars" density={0.7} />
   <div class="footer-inner">
     <div class="top">
       <a class="brand" href="/#hero" aria-label={`${site.shortName} — back to top`}>

@@ -1,13 +1,13 @@
 ---
 /**
- * Hero — the agentic hook. Full-height, star-field backdrop, gradient headline,
+ * Hero — the agentic hook. Full-height, living constellation backdrop, gradient headline,
  * sub, and dual CTA. The signature visual (Phase 5) replaces the usual product
  * screenshot: a compact, animated agent graph in a rim-lit glass panel, sitting
  * to the right of the copy on desktop and stacking beneath it on mobile.
  * The graph is decorative (ArchDiagram renders an aria-hidden SVG) — the
  * headline and sub carry the message.
  */
-import StarField from '../primitives/StarField.astro';
+import ConstellationField from '../primitives/ConstellationField.astro';
 import Button from '../primitives/Button.astro';
 import Badge from '../primitives/Badge.astro';
 import Card from '../primitives/Card.astro';
@@ -17,7 +17,7 @@ import { heroNodes, heroEdges } from '../../data/diagrams';
 ---
 
 <section id="hero" class="hero">
-  <StarField count={90} class="hero-stars" parallax />
+  <ConstellationField class="hero-stars" />
   <div class="hero-grid">
     <div class="hero-copy">
       <span class="reveal-item" data-reveal>
@@ -61,7 +61,7 @@ import { heroNodes, heroEdges } from '../../data/diagrams';
   }
 
   .hero-stars {
-    /* StarField is absolutely positioned within its relative parent. */
+    /* ConstellationField is absolutely positioned within its relative parent. */
     z-index: 0;
   }
 
