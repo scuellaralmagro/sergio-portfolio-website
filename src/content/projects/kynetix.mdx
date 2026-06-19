@@ -36,14 +36,17 @@ answers in a real knowledge base — reliable enough to actually train with.
       client:visible
       nodes={orchestrationNodes}
       edges={orchestrationEdges}
-      viewWidth={800}
-      viewHeight={330}
+      viewWidth={830}
+      viewHeight={440}
     />
   </Card>
   <figcaption>
-    The LangGraph supervisor classifies each message and routes it to a specialized
-    agent — general chat, workout analysis, training, or nutrition — grounded by a
-    pgvector RAG store and deterministic domain services (1RM, TDEE).
+    The LangGraph supervisor classifies each message and routes it to one of six
+    specialists — single-workout or full-week programming, profile updates, the
+    nutrition sub-graph, post-workout analysis, or general chat. Programming grounds
+    plans in a pgvector RAG store and deterministic services (1RM, fatigue, TDEE);
+    analysis reads the relational workout history; nutrition commits via a
+    human-in-the-loop confirm.
   </figcaption>
 </figure>
 
