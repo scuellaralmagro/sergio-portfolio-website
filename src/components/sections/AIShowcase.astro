@@ -25,6 +25,11 @@ import {
   title="How I build agentic systems"
   subtitle="The real architectures behind my work — agents are stars, orchestration is the lines between them."
 >
+  <p class="diagrams-source">
+    Both are the real architecture behind <a href="/projects/kynetix">Kynetix</a> — my
+    full-stack AI training &amp; nutrition coach.
+  </p>
+
   <div class="diagrams">
     <figure class="diagram">
       <h3 class="diagram-title">Multi-agent orchestration</h3>
@@ -33,14 +38,17 @@ import {
           client:visible
           nodes={orchestrationNodes}
           edges={orchestrationEdges}
-          viewWidth={800}
-          viewHeight={330}
+          viewWidth={830}
+          viewHeight={440}
         />
       </Card>
       <figcaption>
-        A LangGraph supervisor classifies each message and routes it to a specialized agent
-        — general chat, workout analysis, training, or nutrition — which draw on a pgvector
-        RAG store and deterministic domain services (1RM, TDEE).
+        A LangGraph supervisor classifies each message and routes it to one of six specialists
+        — single-workout or full-week programming, profile updates, the nutrition sub-graph,
+        post-workout analysis, or general chat. Programming grounds plans in a pgvector RAG
+        store and deterministic services (1RM, fatigue, TDEE); analysis reads the relational
+        workout history; nutrition commits via a human-in-the-loop confirm. Conversation state
+        persists through a Postgres checkpointer and replies stream token-by-token over SSE.
       </figcaption>
     </figure>
 
@@ -51,13 +59,14 @@ import {
           client:visible
           nodes={ragNodes}
           edges={ragEdges}
-          viewWidth={900}
-          viewHeight={150}
+          viewWidth={1000}
+          viewHeight={158}
         />
       </Card>
       <figcaption>
-        A query is embedded, matched against a pgvector HNSW index, and the top-k results
-        ground the model's answer — no ungrounded guessing.
+        Reference knowledge (kinesiology, nutrition) is embedded and stored once; at query
+        time the question is embedded, matched against a pgvector HNSW index, and the top-k
+        chunks ground the model's answer — no ungrounded guessing.
       </figcaption>
     </figure>
   </div>
@@ -87,6 +96,11 @@ import {
     color: var(--color-fog);
     font-size: var(--text-body-sm);
     line-height: var(--leading-body-sm);
-    max-width: 64ch;
+  }
+  .diagrams-source {
+    margin: 0 0 var(--spacing-32);
+    color: var(--color-ash);
+    font-size: var(--text-body-sm);
+    line-height: var(--leading-body-sm);
   }
 </style>
