@@ -1,51 +1,34 @@
 ---
 /**
- * Hero — the agentic hook. Full-height, living constellation backdrop, gradient headline,
- * sub, and dual CTA. The signature visual (Phase 5) replaces the usual product
- * screenshot: a compact, animated agent graph in a rim-lit glass panel, sitting
- * to the right of the copy on desktop and stacking beneath it on mobile.
- * The graph is decorative (ArchDiagram renders an aria-hidden SVG) — the
- * headline and sub carry the message.
+ * Hero — the agentic hook. Full-height, with the living constellation as the
+ * signature visual: badge, gradient headline, sub, and dual CTA centered over
+ * the drifting star-graph. (The Kynetix agent diagram lives in AI Showcase and
+ * the case study — no need to duplicate it here.)
  */
 import ConstellationField from '../primitives/ConstellationField.astro';
 import Button from '../primitives/Button.astro';
 import Badge from '../primitives/Badge.astro';
-import Card from '../primitives/Card.astro';
-import ArchDiagram from '../islands/ArchDiagram.tsx';
 import { site } from '../../data/site';
-import { heroNodes, heroEdges } from '../../data/diagrams';
 ---
 
 <section id="hero" class="hero">
   <ConstellationField class="hero-stars" />
-  <div class="hero-grid">
-    <div class="hero-copy">
-      <span class="reveal-item" data-reveal>
-        <Badge icon="sparkle">{site.role}</Badge>
-      </span>
-      <h1 class="headline" data-reveal style="--reveal-delay: 80ms">
-        I orchestrate AI agents into<br />
-        <span class="text-cosmic">systems that ship.</span>
-      </h1>
-      <p class="sub" data-reveal style="--reveal-delay: 160ms">
-        Agentic systems, LangGraph orchestration, and RAG architectures — designed, built, and
-        deployed in production.
-      </p>
-      <div class="cta-row" data-reveal style="--reveal-delay: 240ms">
-        <Button href="#projects" data-magnetic>View my work</Button>
-        <Button variant="ghost" href="#contact">Get in touch</Button>
-      </div>
+  <div class="hero-copy">
+    <span data-reveal>
+      <Badge icon="sparkle">{site.role}</Badge>
+    </span>
+    <h1 class="headline" data-reveal style="--reveal-delay: 80ms">
+      I orchestrate AI agents into<br />
+      <span class="text-cosmic">systems that ship.</span>
+    </h1>
+    <p class="sub" data-reveal style="--reveal-delay: 160ms">
+      Agentic systems, LangGraph orchestration, and RAG architectures — designed, built, and
+      deployed in production.
+    </p>
+    <div class="cta-row" data-reveal style="--reveal-delay: 240ms">
+      <Button href="#projects" data-magnetic>View my work</Button>
+      <Button variant="ghost" href="#contact">Get in touch</Button>
     </div>
-
-    <Card strong class="hero-visual" data-reveal style="--reveal-delay: 140ms">
-      <ArchDiagram
-        client:visible
-        nodes={heroNodes}
-        edges={heroEdges}
-        viewWidth={790}
-        viewHeight={308}
-      />
-    </Card>
   </div>
 </section>
 
@@ -65,41 +48,28 @@ import { heroNodes, heroEdges } from '../../data/diagrams';
     z-index: 0;
   }
 
-  .hero-grid {
+  .hero-copy {
     position: relative;
     z-index: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: var(--spacing-48);
-    width: 100%;
-    max-width: 1120px;
-  }
-
-  .hero-copy {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
     gap: var(--spacing-24);
-    text-align: center;
-    max-width: 60ch;
-  }
-
-  .hero-visual {
     width: 100%;
-    max-width: 560px;
+    max-width: 68ch;
+    text-align: center;
   }
 
   .headline {
     font-size: var(--text-heading);
     line-height: var(--leading-heading);
     letter-spacing: var(--tracking-heading);
-    max-width: 16ch;
+    max-width: 22ch;
   }
 
   .sub {
     margin: 0;
-    max-width: 52ch;
+    max-width: 60ch;
     color: var(--color-ash);
     font-size: var(--text-body-lg);
     line-height: var(--leading-body-lg);
@@ -119,25 +89,6 @@ import { heroNodes, heroEdges } from '../../data/diagrams';
       font-size: var(--text-display);
       line-height: var(--leading-display);
       letter-spacing: var(--tracking-display);
-    }
-  }
-
-  /* Two-column hero: copy left, agent graph right. */
-  @media (min-width: 960px) {
-    .hero-grid {
-      flex-direction: row;
-      align-items: center;
-      justify-content: center;
-    }
-    .hero-copy {
-      flex: 1 1 0;
-      align-items: flex-start;
-      text-align: left;
-      max-width: 34rem;
-    }
-    .hero-visual {
-      flex: 1 1 0;
-      max-width: 540px;
     }
   }
 </style>

@@ -28,29 +28,6 @@ export const orchestrationEdges: DiagramEdge[] = [
   { from: 'nutrition', to: 'rag' },
 ];
 
-/**
- * Compact agent graph for the Hero — a hero-scale subset of the orchestration
- * diagram (drops the training branch) so it reads cleanly beside the headline.
- */
-export const heroNodes: DiagramNode[] = [
-  { id: 'user', x: 0, y: 128, label: 'User', sub: 'chat', kind: 'io' },
-  { id: 'supervisor', x: 205, y: 128, label: 'Supervisor', sub: 'routes intent', kind: 'agent' },
-  { id: 'general', x: 420, y: 18, label: 'General', sub: 'chat', kind: 'agent' },
-  { id: 'analysis', x: 420, y: 128, label: 'Analysis', sub: 'live session', kind: 'agent' },
-  { id: 'nutrition', x: 420, y: 238, label: 'Nutrition', sub: 'HITL log', kind: 'agent' },
-  { id: 'rag', x: 630, y: 40, label: 'RAG', sub: 'pgvector', kind: 'store' },
-  { id: 'services', x: 630, y: 200, label: 'Services', sub: '1RM · TDEE', kind: 'tool' },
-];
-export const heroEdges: DiagramEdge[] = [
-  { from: 'user', to: 'supervisor' },
-  { from: 'supervisor', to: 'general' },
-  { from: 'supervisor', to: 'analysis' },
-  { from: 'supervisor', to: 'nutrition' },
-  { from: 'general', to: 'rag' },
-  { from: 'analysis', to: 'services' },
-  { from: 'nutrition', to: 'rag' },
-];
-
 /** The RAG retrieval pipeline: embed → match → retrieve → ground. */
 export const ragNodes: DiagramNode[] = [
   { id: 'query', x: 0, y: 48, label: 'Query', kind: 'io' },
