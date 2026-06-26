@@ -78,23 +78,32 @@ const links = [
     gap: var(--spacing-24);
     height: 56px;
     padding: var(--spacing-8) var(--spacing-8) var(--spacing-8) var(--spacing-20);
-    background-color: color-mix(in oklab, var(--color-midnight-surface) 80%, transparent);
-    backdrop-filter: blur(12px);
+    background-color: color-mix(in oklab, var(--color-midnight-surface) 58%, transparent);
+    backdrop-filter: blur(16px) saturate(1.6);
+    -webkit-backdrop-filter: blur(16px) saturate(1.6);
     border-radius: var(--radius-full);
-    box-shadow: var(--glass-rim);
+    box-shadow:
+      var(--glass-rim),
+      var(--glass-edge);
     transition:
       background-color 0.2s ease,
+      backdrop-filter 0.2s ease,
       box-shadow 0.2s ease,
       height 0.2s ease,
       padding 0.2s ease;
   }
   /* Tighten + shrink the pill once the page scrolls past the hero (set by the
-     inline script via data-scrolled). */
+     inline script via data-scrolled); firm the glass up a touch so it stays
+     legible over content. */
   .pill[data-scrolled] {
     height: 50px;
     padding-left: var(--spacing-16);
-    background-color: color-mix(in oklab, var(--color-midnight-surface) 92%, transparent);
-    box-shadow: var(--glass-rim-strong);
+    background-color: color-mix(in oklab, var(--color-midnight-surface) 78%, transparent);
+    backdrop-filter: blur(18px) saturate(1.7);
+    -webkit-backdrop-filter: blur(18px) saturate(1.7);
+    box-shadow:
+      var(--glass-rim-strong),
+      var(--glass-edge);
   }
 
   .brand {
