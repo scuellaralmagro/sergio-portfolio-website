@@ -1,10 +1,16 @@
 ---
 /**
- * Experience — career timeline (BoosterPrompt → Weebu → Freelance), most-AI
- * first. Aurora-divided rows, content from src/data/content.ts.
+ * Experience — vertical aurora-spine timeline (Simply Trade IN → BoosterPrompt
+ * → Freelance), strict reverse-chronological. A single glowing aurora line
+ * threads through "star" nodes, one per role — the constellation metaphor
+ * applied to a career. Content from src/data/content.ts.
+ *
+ * Nodes breathe gently and brighten on hover; entries reveal on scroll via a
+ * small vanilla IntersectionObserver. All motion is gated on
+ * prefers-reduced-motion, and the spine/nodes are decorative (aria-hidden) —
+ * the ordered list carries the real sequence.
  */
 import Section from './Section.astro';
-import AuroraDivider from '../primitives/AuroraDivider.astro';
 import { experience } from '../../data/content';
 ---
 
@@ -13,20 +19,18 @@ import { experience } from '../../data/content';
   eyebrow="Experience"
   eyebrowIcon="code"
   title="Where I've shipped"
-  subtitle="A short spine of AI-first roles, most recent and most relevant first."
+  subtitle="A short spine of AI-first roles, most recent first."
   align="left"
 >
   <ol class="timeline">
     {
       experience.map((job, i) => (
-        <li class="row">
-          {i > 0 && <AuroraDivider class="row-rule" />}
-          <div class="row-grid">
-            <div class="meta">
-              <h3 class="company">{job.company}</h3>
-              <p class="role">{job.role}</p>
-              <p class="period">{job.period}</p>
-            </div>
+        <li class="entry" style={`--i:${i}`}>
+          <span class="node" aria-hidden="true" />
+          <div class="content">
+            <h3 class="company">{job.company}</h3>
+            <p class="role">{job.role}</p>
+            <p class="period">{job.period}</p>
             <ul class="highlights">
               {job.highlights.map((point) => (
                 <li>{point}</li>
@@ -41,50 +45,104 @@ import { experience } from '../../data/content';
 
 <style>
   .timeline {
+    position: relative;
     list-style: none;
     margin: 0;
     padding: 0;
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-32);
   }
-  .row {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-32);
-  }
-  .row-rule {
-    opacity: 0.6;
+  /* The spine: one continuous aurora line down the node column, soft at both
+     ends. Sits behind the nodes (no z-index needed — nodes paint after). */
+  .timeline::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0.875rem;
+    width: 1px;
+    transform: translateX(-50%);
+    background-image: linear-gradient(
+      180deg,
+      rgba(147, 130, 255, 0) 0%,
+      rgba(147, 130, 255, 0.55) 10%,
+      rgba(147, 130, 255, 0.55) 88%,
+      rgba(147, 130, 255, 0) 100%
+    );
   }
 
-  .row-grid {
+  .entry {
+    position: relative;
     display: grid;
-    grid-template-columns: 1fr;
-    gap: var(--spacing-16);
+    grid-template-columns: 1.75rem 1fr;
+    column-gap: var(--spacing-16);
+    align-items: start;
+    padding-bottom: var(--spacing-48);
+  }
+  .entry:last-child {
+    padding-bottom: 0;
   }
 
-  .meta {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-4);
+  /* Star node — small lilac core with a breathing lavender halo. */
+  .node {
+    grid-column: 1;
+    justify-self: center;
+    margin-top: 0.55rem; /* drop onto the company line */
+    position: relative;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--color-lilac-white);
+    box-shadow: 0 0 8px 1px rgba(147, 130, 255, 0.6);
+    transition:
+      background 0.25s ease,
+      box-shadow 0.25s ease;
+  }
+  .node::after {
+    content: '';
+    position: absolute;
+    inset: -6px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(147, 130, 255, 0.45), transparent 70%);
+    animation: node-pulse 4s ease-in-out infinite;
+    animation-delay: calc(var(--i) * -1.3s);
+  }
+  .entry:hover .node {
+    background: var(--color-pearl);
+    box-shadow: 0 0 12px 2px rgba(147, 130, 255, 0.85);
+  }
+
+  @keyframes node-pulse {
+    0%,
+    100% {
+      opacity: 0.4;
+      transform: scale(0.85);
+    }
+    50% {
+      opacity: 0.9;
+      transform: scale(1.15);
+    }
+  }
+
+  .content {
+    grid-column: 2;
+    min-width: 0;
   }
   .company {
     font-size: var(--text-subheading);
     line-height: var(--leading-subheading);
   }
   .role {
-    margin: 0;
+    margin: var(--spacing-4) 0 0;
     color: var(--color-lilac-white);
     font-size: var(--text-body);
   }
   .period {
-    margin: 0;
+    margin: var(--spacing-4) 0 0;
     color: var(--color-fog);
     font-size: var(--text-body-sm);
   }
 
   .highlights {
-    margin: 0;
+    margin: var(--spacing-16) 0 0;
     padding-left: var(--spacing-20);
     display: flex;
     flex-direction: column;
@@ -98,10 +156,64 @@ import { experience } from '../../data/content';
     color: var(--color-lavender-accent);
   }
 
+  /* Reveal-on-scroll — only armed once the script confirms IO is active, so
+     the timeline is fully visible without JS. Staggered per entry. */
+  .timeline.js-reveal .entry {
+    opacity: 0;
+    transform: translateY(10px);
+    transition:
+      opacity 0.6s ease,
+      transform 0.6s ease;
+    transition-delay: calc(var(--i) * 80ms);
+  }
+  .timeline.js-reveal .entry.in-view {
+    opacity: 1;
+    transform: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .node::after {
+      animation: none;
+    }
+    .timeline.js-reveal .entry {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+  }
+
   @media (min-width: 768px) {
-    .row-grid {
-      grid-template-columns: 280px 1fr;
-      gap: var(--spacing-48);
+    .entry {
+      grid-template-columns: 2rem 1fr;
+      column-gap: var(--spacing-24);
+    }
+    .timeline::before {
+      left: 1rem;
     }
   }
 </style>
+
+<script>
+  function initTimeline() {
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const list = document.querySelector<HTMLElement>('.timeline');
+    if (!list || reduce || !('IntersectionObserver' in window)) return;
+
+    list.classList.add('js-reveal');
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting) {
+            e.target.classList.add('in-view');
+            io.unobserve(e.target);
+          }
+        }
+      },
+      { threshold: 0.2, rootMargin: '0px 0px -10% 0px' },
+    );
+    list.querySelectorAll('.entry').forEach((el) => io.observe(el));
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initTimeline);
+  else initTimeline();
+</script>

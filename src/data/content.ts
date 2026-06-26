@@ -10,11 +10,21 @@ export interface ExperienceEntry {
   role: string;
   company: string;
   period: string;
-  /** Most-AI → least; rendered top-to-bottom. */
   highlights: string[];
 }
 
+// Strict reverse-chronological by start date (most recent first).
 export const experience: ExperienceEntry[] = [
+  {
+    role: 'AI Automation Developer',
+    company: 'Simply Trade IN',
+    period: 'Nov 2025 – Mar 2026',
+    highlights: [
+      'Built RAG support agents that encode domain expertise into grounded, accurate answers.',
+      'Implemented semantic retrieval on Supabase with Postgres + pgvector.',
+      'Shipped a conversational sales engine and automated social content through N8N pipelines.',
+    ],
+  },
   {
     role: 'Web App Developer — Backend / Agentic Systems',
     company: 'BoosterPrompt',
@@ -23,16 +33,6 @@ export const experience: ExperienceEntry[] = [
       'Built a multi-agent conversational booking system with LangChain and LangGraph, orchestrating tool-use across specialized agents.',
       'Delivered end-to-end WhatsApp booking through the Meta API, taking the system to real users in production.',
       'Hardened agent reliability with systematic prompt engineering.',
-    ],
-  },
-  {
-    role: 'AI Automation Developer',
-    company: 'Simply Trade IN / Weebu',
-    period: 'Nov 2025 – Mar 2026',
-    highlights: [
-      'Built RAG support agents that encode domain expertise into grounded, accurate answers.',
-      'Implemented semantic retrieval on Supabase with Postgres + pgvector.',
-      'Shipped a conversational sales engine and automated social content through N8N pipelines.',
     ],
   },
   {
