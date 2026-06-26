@@ -49,36 +49,57 @@ export const experience: ExperienceEntry[] = [
 export interface ExpertiseCluster {
   name: string;
   icon: IconName;
-  /** The "stars" in this constellation — concrete tools/skills. */
+  /** Concrete tools/skills in this capability area. */
   skills: string[];
+  /** Subset of `skills` to emphasise (filled, glowing chips). */
+  flagships: string[];
 }
 
 export const expertise: ExpertiseCluster[] = [
   {
     name: 'Agent Orchestration',
     icon: 'network',
-    skills: ['LangGraph', 'LangChain', 'Multi-agent routing', 'Tool use', 'Human-in-the-loop'],
+    skills: [
+      'LangGraph',
+      'LangChain',
+      'Multi-agent routing',
+      'Tool use',
+      'Stateful agents (memory)',
+      'Human-in-the-loop',
+    ],
+    flagships: ['LangGraph', 'LangChain'],
   },
   {
     name: 'Retrieval / RAG',
     icon: 'database',
     skills: ['RAG', 'RAFT', 'pgvector / HNSW', 'Embeddings', 'Semantic search'],
+    flagships: ['RAG', 'pgvector / HNSW'],
   },
   {
     name: 'LLM in Production',
     icon: 'workflow',
     skills: [
       'Prompt engineering',
-      'Streaming (SSE)',
-      'Observability (Langfuse)',
       'Evals (LLM-as-judge)',
+      'Observability (Langfuse)',
+      'SSE streaming',
       'WhatsApp / Meta API',
     ],
+    flagships: ['Prompt engineering', 'Evals (LLM-as-judge)'],
   },
   {
-    name: 'Engineering',
+    name: 'Engineering & Automation',
     icon: 'code',
-    skills: ['Python', 'FastAPI', 'TypeScript', 'React / Next.js', 'PostgreSQL', 'Docker'],
+    skills: [
+      'Python',
+      'N8N',
+      'FastAPI',
+      'TypeScript / Node.js',
+      'React / Next.js',
+      'PostgreSQL / Supabase',
+      'Docker',
+    ],
+    flagships: ['Python', 'N8N'],
   },
 ];
 

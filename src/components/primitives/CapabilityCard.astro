@@ -1,0 +1,84 @@
+---
+/**
+ * CapabilityCard — one glass card per capability area: an outlined category
+ * icon + name, then the skills as chips. Flagship skills render as filled,
+ * softly glowing chips; the rest are quiet outlines. Plain text content, so
+ * it's natively scannable and accessible (no decorative-only fallback needed).
+ */
+import Card from './Card.astro';
+import Icon from './Icon.astro';
+import type { IconName } from './Icon.astro';
+
+interface Props {
+  name: string;
+  icon: IconName;
+  skills: string[];
+  flagships?: string[];
+}
+
+const { name, icon, skills, flagships = [] } = Astro.props;
+---
+
+<Card strong as="li" class="cap-card">
+  <div class="cap-head">
+    <span class="cap-icon"><Icon name={icon} size={20} /></span>
+    <h3 class="cap-title">{name}</h3>
+  </div>
+  <ul class="cap-skills">
+    {
+      skills.map((skill) => (
+        <li class:list={['chip', flagships.includes(skill) && 'flag']}>{skill}</li>
+      ))
+    }
+  </ul>
+</Card>
+
+<style>
+  .cap-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-16);
+    height: 100%;
+  }
+  .cap-head {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-12);
+  }
+  .cap-icon {
+    display: inline-flex;
+    color: var(--color-lavender-accent);
+  }
+  .cap-title {
+    font-size: var(--text-body-lg);
+    line-height: var(--leading-body-lg);
+    color: var(--color-lilac-white);
+  }
+
+  .cap-skills {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-8);
+  }
+  .chip {
+    padding: var(--spacing-4) var(--spacing-12);
+    border: 1px solid var(--color-iris);
+    border-radius: var(--radius-3xl-2);
+    background-color: transparent;
+    color: var(--color-ash);
+    font-size: var(--text-body-sm);
+    line-height: 1.4;
+  }
+  /* Flagship — filled lavender tint with a soft outer glow so the eye lands
+     on the signature skills first. */
+  .chip.flag {
+    border-color: var(--color-lavender-accent);
+    background-color: color-mix(in oklab, var(--color-lavender-accent) 18%, transparent);
+    color: var(--color-lilac-white);
+    font-weight: 500;
+    box-shadow: 0 0 10px rgba(147, 130, 255, 0.22);
+  }
+</style>
