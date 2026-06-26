@@ -101,7 +101,7 @@ const { class: className, density = 1, reach = 1 } = Astro.props;
 
     function step() {
       t += 1;
-      const R = linkDist * 1.4;
+      const REPEL = linkDist * 0.7; // smaller bubble than the link reach
       for (const p of particles) {
         p.x += p.vx;
         p.y += p.vy;
@@ -110,11 +110,13 @@ const { class: className, density = 1, reach = 1 } = Astro.props;
         if (p.y < -12) p.y = h + 12;
         else if (p.y > h + 12) p.y = -12;
         if (pointer.on) {
-          const dx = pointer.x - p.x;
-          const dy = pointer.y - p.y;
+          // Gentle repulsion within a small bubble around the pointer: nudge
+          // particles away, easing to nothing at the edge of the radius.
+          const dx = p.x - pointer.x;
+          const dy = p.y - pointer.y;
           const d2 = dx * dx + dy * dy;
-          if (d2 < R * R && d2 > 1) {
-            const f = (1 - Math.sqrt(d2) / R) * 0.035;
+          if (d2 < REPEL * REPEL && d2 > 1) {
+            const f = (1 - Math.sqrt(d2) / REPEL) * 0.03;
             p.x += dx * f;
             p.y += dy * f;
           }
