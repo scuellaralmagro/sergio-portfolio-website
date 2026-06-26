@@ -14,7 +14,7 @@ export const site = {
   url: 'https://sergiocuellar.dev',
   locale: 'en',
   location: 'Marbella, Spain',
-  email: 'scuellaralmagro@gmail.com',
+  email: 'info@sergiocuellar.dev',
   ogImage: '/og/default.png',
   resumeUrl: '/SergioCuellar_AIDev_EN.pdf',
 } as const;
