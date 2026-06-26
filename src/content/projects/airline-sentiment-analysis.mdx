@@ -1,10 +1,11 @@
 ---
 title: 'Airline Tweet Sentiment Analysis'
-summary: 'Sentiment classification of airline tweets with NLTK, on the Twitter US Airline Sentiment dataset.'
+summary: 'A three-model sentiment bake-off (VADER vs. Naive Bayes vs. linear SVM) on 14,640 airline tweets — the SVM wins at ~79% on held-out data.'
 role: 'Solo — NLP / data'
 stack:
   - Python
   - NLTK
+  - scikit-learn
   - pandas
   - Jupyter
 repo: 'https://github.com/scuellaralmagro/airline-sentiment-analysis'
@@ -14,23 +15,64 @@ featured: true
 
 ## Problem
 
-Airlines field huge volumes of public feedback on Twitter. Classifying the sentiment of
-each tweet turns that noisy stream into a usable signal — for support triage and
-reputation tracking.
+Airlines field huge volumes of public feedback on Twitter — and when people bother to
+tweet at an airline, it skews negative. Turning that noisy stream into a usable signal —
+for support triage and reputation tracking — means classifying each tweet's sentiment
+reliably, despite sarcasm, domain slang, and a heavily imbalanced set of labels.
+
+## The data
+
+- **Twitter US Airline Sentiment** (Kaggle / CrowdFlower): **14,640 tweets** about six US
+  airlines, scraped February 2015 and human-labelled positive, neutral, or negative.
+- **Heavily imbalanced** — roughly **63% negative, 21% neutral, 16% positive** — so raw
+  accuracy flatters a lazy model, and per-class metrics matter more than a single number.
+- Where a tweet was labelled negative, contributors also tagged a *reason*. A quick EDA
+  (in its own notebook) shows the pain is overwhelmingly service and delays: **Customer
+  Service Issue (2,910)** and **Late Flight (1,665)** dominate, ahead of cancellations and
+  lost luggage.
 
 ## Approach
 
-- **Data.** The Twitter US Airline Sentiment dataset (Kaggle), with tweets labelled
-  positive, neutral, and negative.
-- **NLP with NLTK** — text cleaning, tokenization, and stopword handling, feeding a
-  sentiment classifier trained over the labelled set.
+- **EDA first.** A separate notebook maps class balance, sentiment per airline, and the
+  negative-reason breakdown above — so the modelling choices are grounded in the data.
+- **Preprocessing (NLTK).** Lowercase → tokenize → drop punctuation and English stopwords
+  → **strip airline handles** (e.g. `@AmericanAir`) so the model keys on sentiment words
+  rather than which carrier is mentioned. For the SVM, tokens are additionally
+  **lemmatized** to shrink the feature space.
+- **Features.** Binary bag-of-words (word presence), the format NLTK's classifiers expect.
+- **Three models, compared** on an 80/20 split: a **VADER** lexicon baseline (no training),
+  an **NLTK Naive Bayes** classifier, and a **linear SVM** (scikit-learn `SVC` wrapped as
+  an NLTK classifier).
+
+## Results
+
+| Model | Features | Held-out accuracy |
+| --- | --- | --- |
+| VADER (lexicon, untrained) | — | 44.5% |
+| Naive Bayes | Bag-of-words | 78.3% |
+| **Linear SVM** | Lemmatized bag-of-words | **78.6%** |
+
+Because the classes are imbalanced, the decision leaned on per-class precision/recall and
+F1, not just headline accuracy. The pattern held across models: the **negative** majority
+class is easy to catch, while **neutral** — the fuzzy middle — is consistently the hardest
+to separate. VADER's failure is the instructive one: an off-the-shelf lexicon nominally
+"catches" positive tweets (high recall) but with such low precision that it's unusable on
+domain text — a baseline, not a solution. The linear SVM edged out Naive Bayes and was
+chosen for deployment.
 
 ## My role & decisions
 
-Built solo as an applied NLP exercise, taking the dataset end-to-end from raw tweets to a
-trained sentiment classifier in a notebook.
+Built solo as an applied NLP exercise. The decisions worth calling out: stripping airline
+handles so the classifier learns *sentiment* rather than *carrier identity*; benchmarking
+a lexicon baseline against two trained models instead of reaching for just one; selecting
+the model on per-class F1 under imbalance rather than on a flattering accuracy figure; and
+lemmatizing only where it earned its keep (the SVM). The winning model is exported with
+`joblib` behind a small CLI (`sentiment_analyzer.py`) that runs the exact training-time
+preprocessing on a fresh tweet and returns a label.
 
 ## Outcome
 
-A working sentiment classifier over the airline dataset, taken end-to-end from raw tweets
-through cleaning and feature extraction to predicted positive / neutral / negative labels.
+An end-to-end, reproducible pipeline — EDA, preprocessing, a three-model bake-off, and a
+deployable classifier — that lands a **linear SVM at ~79% accuracy on held-out airline
+tweets**, comfortably past the VADER baseline, with the per-class behaviour understood
+rather than hidden behind a single number.
