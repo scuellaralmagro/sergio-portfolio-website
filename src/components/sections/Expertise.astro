@@ -1,13 +1,11 @@
 ---
 /**
- * Expertise — capabilities mapped as a constellation: four hubs (clusters), each
- * with its skills as "stars". The Constellation island carries the visual; the
- * SVG is decorative (aria-hidden), so the .sr-only list below is the accessible
- * text alternative and the no-JS fallback. Data from src/data/content.ts.
+ * Expertise — capabilities as four glass cards, one per area, each with its
+ * skills as chips (flagship tools highlighted). Plain, scannable content at
+ * every breakpoint. Data from src/data/content.ts.
  */
 import Section from './Section.astro';
-import Card from '../primitives/Card.astro';
-import Constellation from '../islands/Constellation.tsx';
+import CapabilityCard from '../primitives/CapabilityCard.astro';
 import { expertise } from '../../data/content';
 ---
 
@@ -15,90 +13,36 @@ import { expertise } from '../../data/content';
   id="expertise"
   eyebrow="Expertise"
   eyebrowIcon="network"
-  title="Capabilities, mapped like a constellation"
-  subtitle="Agents are stars; orchestration is the lines between them. Four clusters define how I build."
+  title="Capabilities"
+  subtitle="Four areas where I build — flagship tools highlighted."
 >
-  <Card strong class="panel">
-    <Constellation client:visible clusters={expertise} />
-  </Card>
-
-  {/* Readable list: the screen-reader alternative on desktop; the primary view
-      on phones, where ~20 labels in one graph would be too small. */}
-  <ul class="capability-list">
+  <ul class="cap-grid">
     {
       expertise.map((cluster) => (
-        <li>
-          <span class="cap-name">{cluster.name}</span>
-          <ul class="cap-chips">
-            {cluster.skills.map((skill) => (
-              <li class="cap-chip">{skill}</li>
-            ))}
-          </ul>
-        </li>
+        <CapabilityCard
+          name={cluster.name}
+          icon={cluster.icon}
+          skills={cluster.skills}
+          flagships={cluster.flagships}
+        />
       ))
     }
   </ul>
 </Section>
 
 <style>
-  .panel {
-    display: none;
-  }
-
-  /* Mobile-first: show the list, hide the graph. */
-  .capability-list {
+  .cap-grid {
     list-style: none;
     margin: 0;
     padding: 0;
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-32);
-    width: 100%;
-  }
-  .cap-name {
-    display: block;
-    font-size: var(--text-caption);
-    font-weight: 500;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--color-lavender-accent);
-    margin-bottom: var(--spacing-12);
-  }
-  .cap-chips {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--spacing-8);
-  }
-  .cap-chip {
-    padding: var(--spacing-4) var(--spacing-12);
-    border: 1px solid var(--color-iris);
-    border-radius: var(--radius-3xl-2);
-    background-color: var(--color-midnight-surface);
-    color: var(--color-mercury);
-    font-size: var(--text-caption);
-    line-height: 1.4;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--spacing-24);
   }
 
-  /* From 640px up: show the constellation, collapse the list to sr-only. */
-  @media (min-width: 640px) {
-    .panel {
-      display: block;
-      padding: var(--spacing-32);
-      width: 100%;
-    }
-    .capability-list {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      padding: 0;
-      margin: -1px;
-      overflow: hidden;
-      clip: rect(0, 0, 0, 0);
-      white-space: nowrap;
-      border: 0;
+  @media (min-width: 768px) {
+    .cap-grid {
+      grid-template-columns: repeat(2, 1fr);
     }
   }
 </style>
