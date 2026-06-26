@@ -14,7 +14,7 @@ import { expertise } from '../../data/content';
   eyebrow="Expertise"
   eyebrowIcon="network"
   title="Capabilities"
-  subtitle="Four areas where I build — flagship tools highlighted."
+  subtitle="Six areas where I build — flagship tools highlighted."
 >
   <ul class="cap-grid">
     {
@@ -43,6 +43,13 @@ import { expertise } from '../../data/content';
   @media (min-width: 768px) {
     .cap-grid {
       grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  /* Six cards tile into an even 3x2 on wide screens. */
+  @media (min-width: 1080px) {
+    .cap-grid {
+      grid-template-columns: repeat(3, 1fr);
     }
   }
 </style>
