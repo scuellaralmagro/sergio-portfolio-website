@@ -3,43 +3,50 @@
  * About — narrative + rim-lit portrait. Two short paragraphs (ULTRAPLAN §5):
  * what I build + the philosophy, then the full-stack/data foundation.
  *
+ * The section header lives inside the left column (not via Section's own
+ * header slot) so the portrait can span the full height of the column —
+ * from the title down to the end of the text — rather than only the body.
+ *
  * Portrait: drop a square image at public/portrait.jpg (or .webp) and set
  * `portrait` below to its path — the monogram placeholder renders until then.
  */
 import Section from './Section.astro';
+import SectionHeader from '../primitives/SectionHeader.astro';
 import { site } from '../../data/site';
 
 const portrait: string | null = '/portrait.jpg';
 ---
 
-<Section
-  id="about"
-  eyebrow="About"
-  title="Who I am"
-  subtitle="An AI/LLM engineer who turns manual processes into scalable agentic architectures."
-  align="left"
->
+<Section id="about" align="left">
   <div class="about-grid">
-    <div class="prose">
-      <p>
-        I build the systems that make AI <em>act</em> — multi-agent orchestrations and
-        retrieval pipelines that move from prototype to production. My focus is agentic
-        design with LangChain and LangGraph, RAG over Postgres and pgvector, and the
-        prompt engineering that makes all of it reliable enough to put in front of real
-        users over channels like WhatsApp.
-      </p>
-      <p>
-        Underneath the AI work is a full-stack and data foundation — Python, TypeScript,
-        Node, and React, plus the database and automation tooling to wire services
-        together end-to-end. It means I can take an idea from architecture through
-        deployment myself, rather than stopping at the demo.
-      </p>
+    <div class="about-main">
+      <SectionHeader
+        eyebrow="About"
+        title="Who I am"
+        subtitle="An AI/LLM engineer who turns manual processes into scalable agentic architectures."
+        align="left"
+      />
+      <div class="prose">
+        <p>
+          I build the systems that make AI <em>act</em> — multi-agent orchestrations and
+          retrieval pipelines that move from prototype to production. My focus is agentic
+          design with LangChain and LangGraph, RAG over Postgres and pgvector, and the
+          prompt engineering that makes all of it reliable enough to put in front of real
+          users over channels like WhatsApp.
+        </p>
+        <p>
+          Underneath the AI work is a full-stack and data foundation — Python, TypeScript,
+          Node, and React, plus the database and automation tooling to wire services
+          together end-to-end. It means I can take an idea from architecture through
+          deployment myself, rather than stopping at the demo.
+        </p>
+      </div>
     </div>
 
     <figure class="portrait">
       {
         portrait ? (
-          <img src={portrait} alt={`${site.name} — portrait`} width="320" height="320" />
+          <img src={portrait} alt={`${site.name} — portrait`} width="1261" height="1595" />
         ) : (
           <span class="portrait-placeholder" aria-hidden="true">
             {site.monogram}
@@ -56,6 +63,12 @@ const portrait: string | null = '/portrait.jpg';
     grid-template-columns: 1fr;
     gap: var(--spacing-48);
     align-items: start;
+  }
+
+  .about-main {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-32);
   }
 
   .prose {
@@ -77,9 +90,9 @@ const portrait: string | null = '/portrait.jpg';
 
   .portrait {
     margin: 0;
-    aspect-ratio: 1;
+    aspect-ratio: 4 / 5;
     width: 100%;
-    max-width: 320px;
+    max-width: 360px;
     border-radius: var(--radius-3xl);
     overflow: hidden;
     background-color: var(--color-midnight-surface);
@@ -91,6 +104,7 @@ const portrait: string | null = '/portrait.jpg';
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: center top; /* keep the face when the frame crops */
   }
   .portrait-placeholder {
     font-family: var(--font-aeonikpro);
@@ -102,7 +116,15 @@ const portrait: string | null = '/portrait.jpg';
 
   @media (min-width: 880px) {
     .about-grid {
-      grid-template-columns: 1fr 320px;
+      grid-template-columns: 1fr 360px;
+      align-items: stretch;
+    }
+    /* Portrait spans the full height of the left column — title to text-end —
+       instead of hanging below the shorter body text. */
+    .portrait {
+      aspect-ratio: auto;
+      max-width: none;
+      height: 100%;
     }
   }
 </style>
