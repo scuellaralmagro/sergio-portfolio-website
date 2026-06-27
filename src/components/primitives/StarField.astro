@@ -2,21 +2,19 @@
 /**
  * StarField — decorative constellation backdrop (tiny low-opacity dots on the
  * void canvas). Each star twinkles (opacity pulse) on a deterministic offset;
- * the motion module pauses the whole field while it's off-screen and, when
- * `parallax` is set, drifts it on scroll. Purely decorative (aria-hidden).
+ * the motion module pauses the whole field while it's off-screen. Purely
+ * decorative (aria-hidden).
  *
  * Star data is generated deterministically at build time (seeded PRNG) so SSR
- * output is stable; twinkle/parallax are pure CSS + transform, frozen to a
- * static field under reduced-motion (handled globally).
+ * output is stable; twinkle is pure CSS, frozen to a static field under
+ * reduced-motion (handled globally).
  */
 interface Props {
   count?: number;
   class?: string;
-  /** Drift the field slower than the page on scroll (hero backdrop only). */
-  parallax?: boolean;
 }
 
-const { count = 70, class: className, parallax = false } = Astro.props;
+const { count = 70, class: className } = Astro.props;
 
 let seed = 20260618;
 const rand = () => {
@@ -34,11 +32,7 @@ const stars = Array.from({ length: count }, () => ({
 }));
 ---
 
-<div
-  class:list={['starfield', className]}
-  aria-hidden="true"
-  data-parallax={parallax ? '' : undefined}
->
+<div class:list={['starfield', className]} aria-hidden="true">
   {
     stars.map((star) => (
       <span
@@ -56,7 +50,6 @@ const stars = Array.from({ length: count }, () => ({
     overflow: hidden;
     pointer-events: none;
     z-index: 0;
-    will-change: transform;
   }
   .star {
     position: absolute;

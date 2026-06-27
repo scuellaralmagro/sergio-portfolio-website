@@ -13,7 +13,13 @@ interface Props {
   [key: string]: unknown;
 }
 
-const { strong = false, padding = 'md', as: Tag = 'div', class: className, ...rest } = Astro.props;
+const {
+  strong = false,
+  padding = 'md',
+  as: Tag = 'div',
+  class: className,
+  ...rest
+}: Props = Astro.props;
 ---
 
 <Tag class:list={['card', strong ? 'strong' : 'soft', `pad-${padding}`, className]} {...rest}>

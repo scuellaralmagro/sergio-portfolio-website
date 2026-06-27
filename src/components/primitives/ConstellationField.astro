@@ -190,7 +190,10 @@ const { class: className, density = 1, reach = 1 } = Astro.props;
 
     new IntersectionObserver(
       (entries) => {
-        for (const e of entries) (e.isIntersecting ? start() : stop());
+        for (const e of entries) {
+          if (e.isIntersecting) start();
+          else stop();
+        }
       },
       { threshold: 0 },
     ).observe(canvas);
