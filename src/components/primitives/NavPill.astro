@@ -1,11 +1,12 @@
 ---
 /**
  * NavPill — floating, centered pill navigation.
- * Markup is server-rendered; the inline <script> below adds scroll-spy
- * (active link) + a `data-scrolled` flag with zero framework cost, keeping the
- * page's near-zero JS baseline (ULTRAPLAN §9: nav shrink/blur = CSS + scroll).
- * Phase 6 adds the animated active-link indicator and a subtle scroll shrink,
- * still CSS-only (transitions freeze to a static pill under reduced-motion).
+ * Markup is server-rendered; the inline <script> adds scroll-spy (active link),
+ * a `data-scrolled` flag, and the mobile dropdown menu — all framework-free,
+ * keeping the page's near-zero JS baseline (ULTRAPLAN §9). Below 720px the
+ * inline section links collapse into a hamburger-triggered glass dropdown; the
+ * desktop pill is unchanged. Transitions freeze to a static pill/panel under
+ * reduced-motion (global block).
  */
 import Button from './Button.astro';
 import { site } from '../../data/site';
@@ -54,8 +55,34 @@ const links = [
     </ul>
 
     <div class="actions">
-      <Button href="/#contact" size="sm">Get in touch</Button>
+      <Button class="nav-cta" href="/#contact" size="sm">Get in touch</Button>
+      <button
+        type="button"
+        class="menu-toggle"
+        data-menu-toggle
+        aria-label="Open menu"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+      >
+        <span class="bars" aria-hidden="true"></span>
+      </button>
     </div>
+  </div>
+
+  <div class="menu" id="mobile-menu" data-menu>
+    <ul class="menu-links">
+      {
+        links.map((link) => (
+          <li>
+            <a href={link.href} data-nav-link data-menu-link>
+              {link.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+    <hr class="aurora-divider" />
+    <Button href="/#contact" data-menu-link>Get in touch</Button>
   </div>
 </nav>
 
@@ -67,7 +94,9 @@ const links = [
     right: 0;
     z-index: 50;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-12);
     padding-inline: var(--spacing-16);
     pointer-events: none;
   }
@@ -176,22 +205,147 @@ const links = [
     border-radius: var(--radius-full);
   }
 
-  /* Collapse the inline links on narrow viewports; a mobile menu island
-     replaces them in a later phase. */
+  /* Hamburger toggle — only rendered ≤720px (display set in the media query). */
+  .menu-toggle {
+    display: none;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    margin-right: -4px; /* optical: nudge the icon toward the pill edge */
+    padding: 0;
+    background: transparent;
+    border: 0;
+    border-radius: var(--radius-full);
+    color: var(--color-lilac-white);
+    cursor: pointer;
+    transition: color 0.18s ease;
+  }
+  .menu-toggle:hover {
+    color: var(--color-lavender-accent);
+  }
+  /* Three bars: the span is the middle bar, ::before/::after the outer two. */
+  .bars,
+  .bars::before,
+  .bars::after {
+    content: '';
+    display: block;
+    width: 18px;
+    height: 2px;
+    border-radius: var(--radius-full);
+    background-color: currentColor;
+    transition:
+      transform 0.2s ease,
+      opacity 0.2s ease,
+      background-color 0.2s ease;
+  }
+  .bars {
+    position: relative;
+  }
+  .bars::before {
+    position: absolute;
+    left: 0;
+    top: -6px;
+  }
+  .bars::after {
+    position: absolute;
+    left: 0;
+    top: 6px;
+  }
+  /* Open — bars morph into an ✕. */
+  .menu-toggle[aria-expanded='true'] .bars {
+    background-color: transparent;
+  }
+  .menu-toggle[aria-expanded='true'] .bars::before {
+    transform: translateY(6px) rotate(45deg);
+  }
+  .menu-toggle[aria-expanded='true'] .bars::after {
+    transform: translateY(-6px) rotate(-45deg);
+  }
+
+  /* Mobile dropdown panel — hidden entirely on desktop. */
+  .menu {
+    display: none;
+  }
+  .menu-links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .menu-links a {
+    display: flex;
+    align-items: center;
+    min-height: 44px; /* touch target (§8.5) */
+    padding: var(--spacing-4) var(--spacing-8);
+    border-radius: var(--radius-md);
+    color: var(--color-ash);
+    text-decoration: none;
+    font-size: var(--text-body);
+    transition:
+      color 0.18s ease,
+      background-color 0.18s ease;
+  }
+  .menu-links a:hover,
+  .menu-links a[data-active] {
+    color: var(--color-lilac-white);
+  }
+  .menu-links a[data-active] {
+    background-color: color-mix(in oklab, var(--color-lavender-accent) 12%, transparent);
+  }
+  .menu .aurora-divider {
+    margin: 0;
+  }
+  .menu :global(.btn) {
+    width: 100%;
+  }
+
+  /* Below 720px: section links collapse into the hamburger dropdown. */
   @media (max-width: 720px) {
     .links {
       display: none;
     }
-    .brand-name {
+    /* CTA moves into the dropdown; the hamburger takes its place in the pill. */
+    .nav-cta {
       display: none;
+    }
+    .menu-toggle {
+      display: grid;
+    }
+
+    .menu {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-12);
+      width: min(320px, calc(100vw - var(--spacing-32)));
+      padding: var(--spacing-16);
+      pointer-events: none;
+      background-color: color-mix(in oklab, var(--color-midnight-surface) 80%, transparent);
+      backdrop-filter: blur(18px) saturate(1.7);
+      -webkit-backdrop-filter: blur(18px) saturate(1.7);
+      border-radius: var(--radius-3xl);
+      box-shadow:
+        var(--glass-rim-strong),
+        var(--glass-edge);
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-8px);
+      transition:
+        opacity 0.2s ease,
+        transform 0.2s ease,
+        visibility 0.2s ease;
+    }
+    .menu.is-open {
+      opacity: 1;
+      visibility: visible;
+      transform: none;
+      pointer-events: auto;
     }
   }
 </style>
 
 <script>
-  // Scroll-spy + scrolled-state for the nav pill. Plain DOM, no framework —
-  // bundled & minified by Astro, deferred (type=module). Reduced-motion is
-  // honored globally (smooth scroll disabled in global.css).
+  // Scroll-spy + scrolled-state + mobile menu for the nav pill. Plain DOM, no
+  // framework — bundled & minified by Astro, deferred (type=module). Reduced
+  // motion is honored globally (smooth scroll + transitions frozen in CSS).
   const pill = document.querySelector('[data-nav-pill]');
   const links = Array.from(document.querySelectorAll<HTMLAnchorElement>('[data-nav-link]'));
 
@@ -228,4 +382,69 @@ const links = [
   };
   onScroll();
   window.addEventListener('scroll', onScroll, { passive: true });
+
+  // --- Mobile dropdown menu -------------------------------------------------
+  const toggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
+  const menu = document.querySelector<HTMLElement>('[data-menu]');
+
+  if (toggle && menu) {
+    const focusables = () =>
+      Array.from(menu.querySelectorAll<HTMLElement>('a[href], button:not([disabled])'));
+    const isOpen = () => menu.classList.contains('is-open');
+
+    const open = () => {
+      menu.classList.add('is-open');
+      toggle.setAttribute('aria-expanded', 'true');
+      toggle.setAttribute('aria-label', 'Close menu');
+      focusables()[0]?.focus();
+    };
+    const close = (returnFocus = true) => {
+      if (!isOpen()) return;
+      menu.classList.remove('is-open');
+      toggle.setAttribute('aria-expanded', 'false');
+      toggle.setAttribute('aria-label', 'Open menu');
+      if (returnFocus) toggle.focus();
+    };
+
+    toggle.addEventListener('click', () => (isOpen() ? close() : open()));
+
+    // Tapping any link / the CTA navigates within the page → close the menu.
+    menu
+      .querySelectorAll('[data-menu-link]')
+      .forEach((el) => el.addEventListener('click', () => close(false)));
+
+    // Escape closes; Tab cycles within the open panel (lightweight focus trap).
+    document.addEventListener('keydown', (e) => {
+      if (!isOpen()) return;
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        close();
+        return;
+      }
+      if (e.key === 'Tab') {
+        const items = focusables();
+        if (!items.length) return;
+        const first = items[0];
+        const last = items[items.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    });
+
+    // Click outside the pill/menu closes.
+    document.addEventListener('click', (e) => {
+      const target = e.target as Node;
+      if (isOpen() && !menu.contains(target) && !pill?.contains(target)) close(false);
+    });
+
+    // Leaving the mobile breakpoint resets the menu to a clean desktop state.
+    matchMedia('(min-width: 721px)').addEventListener('change', (e) => {
+      if (e.matches) close(false);
+    });
+  }
 </script>
