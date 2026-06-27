@@ -166,24 +166,6 @@ const ogImageUrl = new URL(ogImage, site.url).href;
             el.style.setProperty('--ry', '0deg');
           });
         });
-
-        // Hero star-field parallax — drift slower than the page on scroll.
-        const parallax = document.querySelector<HTMLElement>('[data-parallax]');
-        if (parallax) {
-          let ticking = false;
-          addEventListener(
-            'scroll',
-            () => {
-              if (ticking) return;
-              ticking = true;
-              requestAnimationFrame(() => {
-                parallax.style.transform = `translate3d(0, ${scrollY * 0.3}px, 0)`;
-                ticking = false;
-              });
-            },
-            { passive: true },
-          );
-        }
       }
     </script>
   </body>

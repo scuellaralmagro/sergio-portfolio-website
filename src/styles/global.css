@@ -14,7 +14,7 @@
  * signature weight. font-display: swap renders Inter first, then swaps.
  * ------------------------------------------------------------------ */
 @font-face {
-  font-family: 'AeonikPro';
+  font-family: AeonikPro;
   src: url('/fonts/aeonik-pro-regular.woff2') format('woff2');
   font-weight: 400;
   font-style: normal;
@@ -22,7 +22,7 @@
 }
 
 @font-face {
-  font-family: 'AeonikPro';
+  font-family: AeonikPro;
   src: url('/fonts/aeonik-pro-medium.woff2') format('woff2');
   font-weight: 500;
   font-style: normal;
@@ -155,6 +155,7 @@
     color: transparent;
     animation: cosmic-shimmer 8s linear infinite;
   }
+
   @keyframes cosmic-shimmer {
     to {
       background-position: 200% center;
@@ -175,29 +176,35 @@
   .constellation-net {
     width: 100%;
   }
+
   .constellation-net svg {
     display: block;
     width: 100%;
     height: auto;
   }
+
   .cl-group {
     transition:
       opacity 0.25s ease,
       filter 0.25s ease;
     outline: none;
   }
+
   .cl-group.is-dim {
     opacity: 0.3;
   }
+
   .cl-group.is-active {
     filter: brightness(1.3) saturate(1.12);
   }
+
   .cl-name {
     font: 500 12px var(--font-inter-v);
     letter-spacing: 0.08em;
     text-transform: uppercase;
     fill: var(--color-lavender-accent);
   }
+
   .sk-label {
     font: 400 11px var(--font-inter-v);
     fill: var(--color-ash);
@@ -214,6 +221,7 @@
   100% {
     opacity: var(--base, 0.8);
   }
+
   50% {
     opacity: calc(var(--base, 0.8) * 0.45);
   }
@@ -253,10 +261,12 @@
   transition-delay: var(--reveal-delay, 0ms);
   will-change: opacity, transform;
 }
+
 .js [data-reveal].is-revealed {
   opacity: 1;
   transform: none;
 }
+
 @media (prefers-reduced-motion: reduce) {
   .js [data-reveal] {
     opacity: 1;
