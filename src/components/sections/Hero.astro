@@ -35,7 +35,12 @@ import { site } from '../../data/site';
 <style>
   .hero {
     position: relative;
-    min-height: 100dvh;
+    /* `svh` (small viewport height) is stable as mobile browsers collapse their
+       toolbar on scroll; `dvh` tracks the toolbar frame-by-frame, which forced
+       the ConstellationField canvas to resize+reseed every frame and stuttered
+       the scroll. `vh` is the fallback for browsers without `svh`. */
+    min-height: 100vh;
+    min-height: 100svh;
     display: flex;
     align-items: center;
     justify-content: center;

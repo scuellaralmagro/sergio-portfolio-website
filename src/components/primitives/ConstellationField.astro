@@ -65,6 +65,7 @@ const { class: className, density = 1, reach = 1 } = Astro.props;
 
     let w = 0;
     let h = 0;
+    let lastW = 0;
     let particles: P[] = [];
     let linkDist = 140;
     let raf = 0;
@@ -95,7 +96,16 @@ const { class: className, density = 1, reach = 1 } = Astro.props;
       canvas.width = Math.round(w * dpr);
       canvas.height = Math.round(h * dpr);
       ctx!.setTransform(dpr, 0, 0, dpr, 0, 0);
-      seed();
+      // Mobile browsers collapse their toolbar on scroll, which changes only the
+      // viewport *height*. Reseeding the whole field on every such resize is what
+      // stuttered the scroll — so only re-seed when the width actually changes
+      // (orientation/resize); height-only changes just refresh the link reach.
+      if (Math.abs(w - lastW) > 1) {
+        lastW = w;
+        seed();
+      } else {
+        linkDist = Math.min(150, Math.hypot(w, h) / 9) * reach;
+      }
       if (reduce) draw();
     }
 
