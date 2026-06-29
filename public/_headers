@@ -1,0 +1,13 @@
+# Security headers for all responses (Cloudflare Workers Static Assets).
+# Astro copies public/_headers → dist/_headers, which wrangler reads as the
+# assets header rules. See https://developers.cloudflare.com/workers/static-assets/headers/
+#
+# Note: a Content-Security-Policy is intentionally omitted for now — a strict
+# policy needs careful allow-listing (the CF Web Analytics beacon, inline
+# bootstrap scripts, JSON-LD) and is tracked as a follow-up hardening item.
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Frame-Options: DENY
+  Permissions-Policy: geolocation=(), camera=(), microphone=()
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
