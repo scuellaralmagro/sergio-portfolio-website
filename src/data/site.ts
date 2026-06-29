@@ -23,7 +23,7 @@ export const site = {
    * and paste its token here. Left empty = disabled; the beacon only loads in
    * production builds when this is set, so dev/preview stays untracked.
    */
-  analyticsToken: '',
+  analyticsToken: '07a9662dd6b74570b96994dc4bfe39f5',
 } as const;
 
 export const socials = {
