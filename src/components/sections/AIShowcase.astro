@@ -4,8 +4,12 @@
  * of the real architectures behind Kynetix and the RAG support work:
  *  1. a LangGraph multi-agent orchestration graph
  *  2. a RAG retrieval pipeline
- * Diagrams are ArchDiagram islands (client:visible); each sits in a rim-lit
- * glass panel with a text caption that doubles as the accessible description.
+ * Diagrams are ArchDiagram islands hydrated `client:idle` — the heavy
+ * framer-motion chunk is parsed during post-load idle time rather than
+ * mid-scroll as the section enters view, which removes a scroll stutter on
+ * mobile. The draw-on animation still fires on scroll via framer's whileInView.
+ * Each sits in a rim-lit glass panel with a caption that doubles as the
+ * accessible description (the SVG itself is aria-hidden).
  */
 import Section from './Section.astro';
 import Card from '../primitives/Card.astro';
@@ -35,7 +39,7 @@ import {
       <h3 class="diagram-title">Multi-agent orchestration</h3>
       <Card strong class="panel">
         <ArchDiagram
-          client:visible
+          client:idle
           nodes={orchestrationNodes}
           edges={orchestrationEdges}
           viewWidth={830}
@@ -56,7 +60,7 @@ import {
       <h3 class="diagram-title">RAG retrieval pipeline</h3>
       <Card strong class="panel">
         <ArchDiagram
-          client:visible
+          client:idle
           nodes={ragNodes}
           edges={ragEdges}
           viewWidth={1000}

@@ -7,14 +7,17 @@
  * header slot) so the portrait can span the full height of the column —
  * from the title down to the end of the text — rather than only the body.
  *
- * Portrait: drop a square image at public/portrait.jpg (or .webp) and set
- * `portrait` below to its path — the monogram placeholder renders until then.
+ * Portrait: optimized at build time via astro:assets (responsive AVIF/WebP,
+ * intrinsic width/height to avoid CLS). Swap the import to change the photo;
+ * set `portrait` to null to fall back to the monogram placeholder.
  */
+import { Picture } from 'astro:assets';
 import Section from './Section.astro';
 import SectionHeader from '../primitives/SectionHeader.astro';
 import { site } from '../../data/site';
+import portraitImg from '../../assets/portrait.jpg';
 
-const portrait: string | null = '/portrait.jpg';
+const portrait: ImageMetadata | null = portraitImg;
 ---
 
 <Section id="about" align="left">
@@ -46,7 +49,15 @@ const portrait: string | null = '/portrait.jpg';
     <figure class="portrait">
       {
         portrait ? (
-          <img src={portrait} alt={`${site.name} — portrait`} width="1261" height="1595" />
+          <Picture
+            src={portrait}
+            formats={['avif', 'webp']}
+            widths={[360, 720]}
+            sizes="(max-width: 400px) 90vw, 360px"
+            alt={`${site.name} — portrait`}
+            loading="lazy"
+            decoding="async"
+          />
         ) : (
           <span class="portrait-placeholder" aria-hidden="true">
             {site.monogram}

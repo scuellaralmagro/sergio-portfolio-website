@@ -33,7 +33,7 @@ const { title, summary, role, company, period, stack, repo, live, note } = entry
 const meta = [role, company, period].filter(Boolean).join(' · ');
 ---
 
-<BaseLayout title={title} description={summary}>
+<BaseLayout title={title} description={summary} ogImage={`/og/${entry.id}.png`}>
   <NavPill />
   <main id="main" class="case">
     <article>

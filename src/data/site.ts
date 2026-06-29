@@ -17,6 +17,13 @@ export const site = {
   email: 'info@sergiocuellar.dev',
   ogImage: '/og/default.png',
   resumeUrl: '/SergioCuellar_AIDev_EN.pdf',
+  /**
+   * Cloudflare Web Analytics beacon token (privacy-first, cookieless — no
+   * consent banner needed). Create a site under CF dashboard → Web Analytics
+   * and paste its token here. Left empty = disabled; the beacon only loads in
+   * production builds when this is set, so dev/preview stays untracked.
+   */
+  analyticsToken: '',
 } as const;
 
 export const socials = {
