@@ -7,7 +7,8 @@ interface TurnstileApi {
     el: HTMLElement,
     opts: {
       sitekey: string;
-      size?: 'invisible' | 'normal' | 'compact';
+      execution?: 'render' | 'execute';
+      appearance?: 'always' | 'execute' | 'interaction-only';
       callback?: (token: string) => void;
       'error-callback'?: () => void;
       'expired-callback'?: () => void;
@@ -53,9 +54,13 @@ export function useTurnstile(sitekey: string) {
     loadScript()
       .then(() => {
         if (cancelled || !containerRef.current || !window.turnstile || widgetId.current) return;
+        // `execution: 'execute'` defers the challenge until we call execute();
+        // `appearance: 'interaction-only'` keeps the widget hidden unless the
+        // visitor is challenged. (There is no `size: 'invisible'` — that was the bug.)
         widgetId.current = window.turnstile.render(containerRef.current, {
           sitekey,
-          size: 'invisible',
+          execution: 'execute',
+          appearance: 'interaction-only',
           callback: (token) => {
             pending.current?.resolve(token);
             pending.current = null;
