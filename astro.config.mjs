@@ -17,8 +17,8 @@ export default defineConfig({
     react(),
     mdx(),
     sitemap({
-      // Keep the internal component styleguide out of the sitemap.
-      filter: (page) => !page.includes('/styleguide'),
+      // Keep internal-only pages (styleguide, admin vault) out of the sitemap.
+      filter: (page) => !page.includes('/styleguide') && !page.includes('/vault'),
     }),
   ],
   vite: {

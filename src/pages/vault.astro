@@ -1,0 +1,201 @@
+---
+/**
+ * /vault — private, unlisted conversation-history panel (noindex, not in nav).
+ * Gated client-side by an access key; the real check is server-side on the API.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import AdminConsole from '../components/islands/admin/AdminConsole';
+---
+
+<BaseLayout title="Vault" noindex>
+  <main id="main" class="vault-page">
+    <AdminConsole client:load />
+  </main>
+</BaseLayout>
+
+<style>
+  .vault-page {
+    max-width: 900px;
+    margin-inline: auto;
+    padding: 120px var(--spacing-24) var(--spacing-56);
+    min-height: 100vh;
+  }
+
+  /* Gate */
+  .vault-page :global(.vault-gate) {
+    max-width: 360px;
+    margin: 10vh auto 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-12);
+    padding: var(--spacing-32);
+    background-color: var(--color-midnight-surface);
+    border-radius: var(--radius-2xl);
+    box-shadow: var(--glass-rim);
+  }
+  .vault-page :global(.vault-gate-title) {
+    font-size: var(--text-subheading);
+    color: var(--color-lilac-white);
+  }
+  .vault-page :global(.vault-gate-hint) {
+    margin: 0;
+    color: var(--color-fog);
+    font-size: var(--text-body-sm);
+  }
+
+  /* Shared controls */
+  .vault-page :global(.vault-input) {
+    width: 100%;
+    padding: var(--spacing-8) var(--spacing-12);
+    background-color: var(--color-void-canvas);
+    color: var(--color-lilac-white);
+    border: 1px solid var(--color-dusk);
+    border-radius: var(--radius-md);
+    font: inherit;
+  }
+  .vault-page :global(.vault-btn) {
+    align-self: flex-start;
+    padding: var(--spacing-8) var(--spacing-20);
+    background-color: var(--color-lavender-accent);
+    color: var(--color-void-canvas);
+    border-radius: var(--radius-md);
+    font-weight: 500;
+    cursor: pointer;
+  }
+  .vault-page :global(.vault-btn.ghost) {
+    background: transparent;
+    color: var(--color-ash);
+    box-shadow: inset 0 0 0 1px var(--color-dusk);
+  }
+  .vault-page :global(.vault-btn:disabled) {
+    opacity: 0.6;
+    cursor: default;
+  }
+  .vault-page :global(.vault-error) {
+    margin: 0;
+    color: #ff9d9d;
+    font-size: var(--text-body-sm);
+  }
+  .vault-page :global(.vault-empty) {
+    color: var(--color-fog);
+    font-size: var(--text-body-sm);
+  }
+
+  /* Header + summary */
+  .vault-page :global(.vault-header) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--spacing-24);
+  }
+  .vault-page :global(.vault-title) {
+    font-size: var(--text-heading-sm);
+    color: var(--color-lilac-white);
+  }
+  .vault-page :global(.vault-summary) {
+    display: flex;
+    gap: var(--spacing-16);
+    margin-bottom: var(--spacing-24);
+  }
+  .vault-page :global(.vault-stat) {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-4);
+    padding: var(--spacing-16);
+    background-color: var(--color-midnight-surface);
+    border-radius: var(--radius-2xl);
+    box-shadow: var(--glass-rim);
+  }
+  .vault-page :global(.vault-stat-value) {
+    font-size: var(--text-subheading);
+    color: var(--color-lilac-white);
+  }
+  .vault-page :global(.vault-stat-label) {
+    font-size: var(--text-caption);
+    color: var(--color-fog);
+  }
+
+  /* Filters */
+  .vault-page :global(.vault-filters) {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: var(--spacing-12);
+    margin-bottom: var(--spacing-24);
+  }
+  .vault-page :global(.vault-filters .vault-input) {
+    width: auto;
+  }
+  .vault-page :global(.vault-field) {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-4);
+    font-size: var(--text-caption);
+    color: var(--color-fog);
+  }
+
+  /* List */
+  .vault-page :global(.vault-list) {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-8);
+  }
+  .vault-page :global(.vault-row) {
+    background-color: var(--color-midnight-surface);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--glass-rim);
+    overflow: hidden;
+  }
+  .vault-page :global(.vault-row-head) {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-4);
+    padding: var(--spacing-12) var(--spacing-16);
+    text-align: left;
+    cursor: pointer;
+    color: inherit;
+  }
+  .vault-page :global(.vault-row-preview) {
+    color: var(--color-lilac-white);
+    font-size: var(--text-body-sm);
+  }
+  .vault-page :global(.vault-row-meta) {
+    color: var(--color-steel);
+    font-size: var(--text-caption);
+  }
+  .vault-page :global(.vault-detail) {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-12);
+    padding: var(--spacing-16);
+    border-top: 1px solid var(--color-dusk);
+  }
+  .vault-page :global(.vault-msg) {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-4);
+  }
+  .vault-page :global(.vault-msg-role) {
+    font-size: var(--text-caption);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-lavender-accent);
+  }
+  .vault-page :global(.vault-msg-user) :global(.vault-msg-role) {
+    color: var(--color-iris);
+  }
+  .vault-page :global(.vault-msg-content) {
+    margin: 0;
+    color: var(--color-ash);
+    font-size: var(--text-body-sm);
+    white-space: pre-wrap;
+  }
+  .vault-page :global(.vault-sources) {
+    margin: 0;
+    color: var(--color-fog);
+    font-size: var(--text-caption);
+  }
+</style>
