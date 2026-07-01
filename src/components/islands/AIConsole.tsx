@@ -1,8 +1,12 @@
 import { useReducer, useRef, useState } from 'react';
-import { reducer, initialState, type Status } from '@lib/askPortfolio/conversation';
+import { AnimatePresence, LayoutGroup, motion, useReducedMotion } from 'framer-motion';
+import { reducer, initialState } from '@lib/askPortfolio/conversation';
 import { streamChat } from '@lib/askPortfolio/client';
 import { site } from '@data/site';
 import { useTurnstile } from './useTurnstile';
+import HeroIdle from './console/HeroIdle';
+import Transcript from './console/Transcript';
+import Composer from './console/Composer';
 
 const SITE_KEY = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
 
@@ -12,19 +16,14 @@ const STARTERS = [
   'Is Sergio available for work?',
 ];
 
-const STATUS_BANNER: Partial<Record<Status, string>> = {
-  budget_exceeded:
-    'This live demo has hit its daily limit. You can reach Sergio at info@sergiocuellar.dev.',
-  rate_limited: "You're going a bit fast — try again in a moment.",
-  error: 'Something went wrong. Please try again, or email info@sergiocuellar.dev.',
-};
-
 export default function AIConsole() {
   const [state, dispatch] = useReducer(reducer, initialState);
   const [input, setInput] = useState('');
   const { containerRef, getToken } = useTurnstile(SITE_KEY);
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const reduce = useReducedMotion();
   const streaming = state.status === 'streaming';
+  const started = state.messages.length > 0;
 
   async function ask(text: string) {
     const trimmed = text.trim();
@@ -41,99 +40,57 @@ export default function AIConsole() {
         dispatch({ type: 'event', event });
       }
     } catch {
-      dispatch({ type: 'streamError', code: 'server_error', message: STATUS_BANNER.error });
+      dispatch({
+        type: 'streamError',
+        code: 'server_error',
+        message: 'Something went wrong. Please try again, or email info@sergiocuellar.dev.',
+      });
     } finally {
       inputRef.current?.focus();
     }
   }
 
-  const banner = STATUS_BANNER[state.status];
+  const fade = reduce
+    ? {}
+    : {
+        initial: { opacity: 0 },
+        animate: { opacity: 1 },
+        exit: { opacity: 0 },
+        transition: { duration: 0.25 },
+      };
 
   return (
     <div className="ai-console">
-      {state.messages.length === 0 ? (
-        <div className="intro">
-          <p className="intro-lead">
-            Ask this assistant anything about Sergio — his experience, projects, or stack. Prefer
-            email? <a href="mailto:info@sergiocuellar.dev">info@sergiocuellar.dev</a>.
-          </p>
-          <ul className="starters">
-            {STARTERS.map((q) => (
-              <li key={q}>
-                <button type="button" className="starter" onClick={() => void ask(q)}>
-                  {q}
-                </button>
-              </li>
-            ))}
-          </ul>
+      <LayoutGroup>
+        <div className="console-stage">
+          <AnimatePresence mode="wait" initial={false}>
+            {started ? (
+              <motion.div key="chat" className="stage-pane" {...fade}>
+                <Transcript
+                  messages={state.messages}
+                  status={state.status}
+                  sources={state.sources}
+                  errorMessage={state.errorMessage}
+                />
+              </motion.div>
+            ) : (
+              <motion.div key="hero" className="stage-pane" {...fade}>
+                <HeroIdle starters={STARTERS} onPick={(q) => void ask(q)} />
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
-      ) : (
-        <ol className="transcript" aria-live="polite" aria-label="Conversation">
-          {state.messages.map((m, i) => (
-            <li key={i} className={`turn turn-${m.role}`}>
-              <span className="role">{m.role === 'user' ? 'You' : 'Assistant'}</span>
-              <p className="bubble">
-                {m.content}
-                {streaming && i === state.messages.length - 1 && m.role === 'assistant' && (
-                  <span className="caret" aria-hidden="true" />
-                )}
-              </p>
-            </li>
-          ))}
-          {state.sources.length > 0 && (
-            <li className="sources" aria-label="Sources">
-              <span className="sources-label">Sources</span>
-              {state.sources.map((s, i) => (
-                <span key={i} className="source-chip">
-                  {s.title}
-                </span>
-              ))}
-            </li>
-          )}
-        </ol>
-      )}
 
-      {banner && (
-        <p className="banner" role="status">
-          {banner}
-        </p>
-      )}
-
-      <form
-        className="composer"
-        onSubmit={(e) => {
-          e.preventDefault();
-          void ask(input);
-        }}
-      >
-        <label className="sr-only" htmlFor="ai-input">
-          Ask a question about Sergio
-        </label>
-        <input
-          id="ai-input"
-          ref={inputRef}
-          className="input"
-          type="text"
+        <Composer
           value={input}
-          placeholder="Ask about Sergio…"
-          autoComplete="off"
-          disabled={streaming}
-          onChange={(e) => setInput(e.target.value)}
+          onChange={setInput}
+          onSubmit={() => void ask(input)}
+          streaming={streaming}
+          canReset={started}
+          onReset={() => dispatch({ type: 'reset' })}
+          inputRef={inputRef}
         />
-        <button type="submit" className="send" disabled={streaming || input.trim() === ''}>
-          {streaming ? 'Thinking…' : 'Ask'}
-        </button>
-        {state.messages.length > 0 && (
-          <button
-            type="button"
-            className="clear"
-            onClick={() => dispatch({ type: 'reset' })}
-            disabled={streaming}
-          >
-            Clear
-          </button>
-        )}
-      </form>
+      </LayoutGroup>
 
       <div ref={containerRef} className="turnstile-host" />
     </div>
