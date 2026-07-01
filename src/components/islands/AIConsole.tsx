@@ -21,6 +21,7 @@ export default function AIConsole() {
   const [input, setInput] = useState('');
   const { containerRef, getToken } = useTurnstile(SITE_KEY);
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const sessionIdRef = useRef<string>(crypto.randomUUID());
   const reduce = useReducedMotion();
   const streaming = state.status === 'streaming';
   const started = state.messages.length > 0;
@@ -34,6 +35,7 @@ export default function AIConsole() {
     try {
       for await (const event of streamChat({
         messages: history,
+        sessionId: sessionIdRef.current,
         getToken,
         apiBaseUrl: site.apiBaseUrl,
       })) {
@@ -87,7 +89,10 @@ export default function AIConsole() {
           onSubmit={() => void ask(input)}
           streaming={streaming}
           canReset={started}
-          onReset={() => dispatch({ type: 'reset' })}
+          onReset={() => {
+            sessionIdRef.current = crypto.randomUUID();
+            dispatch({ type: 'reset' });
+          }}
           inputRef={inputRef}
         />
       </LayoutGroup>
