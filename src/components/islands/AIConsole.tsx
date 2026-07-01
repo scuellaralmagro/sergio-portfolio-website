@@ -60,10 +60,10 @@ export default function AIConsole() {
       };
 
   return (
-    <div className="ai-console">
+    <div className={`ai-console${started ? ' started' : ''}`}>
       <LayoutGroup>
         <div className="console-stage">
-          <AnimatePresence mode="wait" initial={false}>
+          <AnimatePresence mode="popLayout" initial={false}>
             {started ? (
               <motion.div key="chat" className="stage-pane" {...fade}>
                 <Transcript

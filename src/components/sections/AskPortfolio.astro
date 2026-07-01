@@ -46,21 +46,26 @@ import AIConsole from '../islands/AIConsole.tsx';
     min-width: 0;
   }
 
-  /* --- Orb ------------------------------------------------------------ */
+  /* --- Orb (outer = layout-morph box; core = gradient + breathing) ---- */
   .ask-card :global(.orb) {
-    display: inline-block;
+    display: inline-flex;
     border-radius: 50%;
-    background: radial-gradient(circle at 30% 30%, var(--color-cosmic-gradient), var(--color-iris));
     flex: 0 0 auto;
   }
-  .ask-card :global(.orb-hero) {
+  .ask-card :global(.orb-core) {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, var(--color-cosmic-gradient), var(--color-iris));
+  }
+  .ask-card :global(.orb-hero .orb-core) {
     box-shadow: 0 0 34px color-mix(in oklab, var(--color-iris) 55%, transparent);
   }
-  .ask-card :global(.orb-avatar) {
+  .ask-card :global(.orb-avatar .orb-core) {
     box-shadow: 0 0 10px color-mix(in oklab, var(--color-iris) 45%, transparent);
   }
-  .ask-card :global(.orb-active) {
-    box-shadow: 0 0 44px color-mix(in oklab, var(--color-lavender-accent) 70%, transparent);
+  .ask-card :global(.orb-active .orb-core) {
+    box-shadow: 0 0 18px color-mix(in oklab, var(--color-lavender-accent) 65%, transparent);
   }
 
   /* --- Hero (idle) ---------------------------------------------------- */
@@ -121,7 +126,9 @@ import AIConsole from '../islands/AIConsole.tsx';
     gap: var(--spacing-16);
     list-style: none;
     margin: 0;
-    padding: var(--spacing-4);
+    /* Inline padding leaves room for the avatar orb's glow — the vertical scroll
+       (overflow-y) forces overflow-x to clip, so the glow needs breathing room. */
+    padding: var(--spacing-8) var(--spacing-20);
     max-height: 460px;
     overflow-y: auto;
   }
@@ -218,6 +225,16 @@ import AIConsole from '../islands/AIConsole.tsx';
     border: 1px solid color-mix(in oklab, var(--color-lavender-accent) 50%, transparent);
     border-radius: var(--radius-full);
     padding: var(--spacing-8) var(--spacing-8) var(--spacing-8) var(--spacing-20);
+    transition: max-width 0.3s ease;
+  }
+  /* Once the conversation starts, the composer widens to the full card width. */
+  .ask-card :global(.ai-console.started .composer) {
+    max-width: 100%;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ask-card :global(.composer) {
+      transition: none;
+    }
   }
   .ask-card :global(.input) {
     flex: 1;
