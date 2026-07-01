@@ -24,6 +24,11 @@ export const site = {
    * production builds when this is set, so dev/preview stays untracked.
    */
   analyticsToken: '07a9662dd6b74570b96994dc4bfe39f5',
+  /**
+   * Base URL of the "Ask my portfolio" RAG API (Part A). Defaults to production;
+   * set PUBLIC_API_BASE_URL (e.g. http://localhost:8787) to target a local Worker.
+   */
+  apiBaseUrl: import.meta.env.PUBLIC_API_BASE_URL ?? 'https://api.sergiocuellar.dev',
 } as const;
 
 export const socials = {
