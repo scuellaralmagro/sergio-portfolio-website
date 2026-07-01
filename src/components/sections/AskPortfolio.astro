@@ -163,8 +163,12 @@ import AIConsole from '../islands/AIConsole.tsx';
     background-color: transparent;
     color: var(--color-ash);
   }
+  /* Do NOT display:none this — with appearance:'interaction-only' the widget is
+     already invisible for visitors who pass silently, and it must be able to
+     render an interactive challenge (centered) for those who don't. */
   .ask-card :global(.turnstile-host) {
-    display: none;
+    display: flex;
+    justify-content: center;
   }
   .ask-card :global(.sr-only) {
     position: absolute;
