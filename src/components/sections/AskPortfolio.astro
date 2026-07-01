@@ -2,7 +2,7 @@
 /**
  * AskPortfolio — the live "proof of self" demo. A React island streams grounded
  * answers about Sergio from the api.sergiocuellar.dev RAG endpoint. The island is
- * server-rendered (client:visible), so its intro + email CTA are the no-JS baseline.
+ * server-rendered (client:visible), so its hero + email CTA are the no-JS baseline.
  */
 import Section from './Section.astro';
 import Card from '../primitives/Card.astro';
@@ -24,39 +24,77 @@ import AIConsole from '../islands/AIConsole.tsx';
 <style>
   .ask-card {
     width: 100%;
-    max-width: 720px;
-    margin-inline: auto;
   }
 
-  /* Console styles are global (:global) because the transcript is rendered by the
-     React island, whose DOM is outside this component's scoped-style reach. */
   .ask-card :global(.ai-console) {
     display: flex;
     flex-direction: column;
     gap: var(--spacing-20);
+    min-height: 460px;
   }
-  .ask-card :global(.intro-lead),
-  .ask-card :global(.banner) {
+
+  /* Stage holds either the hero or the transcript; both fade-swap here. */
+  .ask-card :global(.console-stage) {
+    position: relative;
+    flex: 1;
+    display: flex;
+  }
+  .ask-card :global(.stage-pane) {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  /* --- Orb ------------------------------------------------------------ */
+  .ask-card :global(.orb) {
+    display: inline-block;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, var(--color-cosmic-gradient), var(--color-iris));
+    flex: 0 0 auto;
+  }
+  .ask-card :global(.orb-hero) {
+    box-shadow: 0 0 34px color-mix(in oklab, var(--color-iris) 55%, transparent);
+  }
+  .ask-card :global(.orb-avatar) {
+    box-shadow: 0 0 10px color-mix(in oklab, var(--color-iris) 45%, transparent);
+  }
+  .ask-card :global(.orb-active) {
+    box-shadow: 0 0 44px color-mix(in oklab, var(--color-lavender-accent) 70%, transparent);
+  }
+
+  /* --- Hero (idle) ---------------------------------------------------- */
+  .ask-card :global(.hero) {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: var(--spacing-16);
+    padding: var(--spacing-24) 0;
+  }
+  .ask-card :global(.hero-label) {
     margin: 0;
-    color: var(--color-fog);
-    font-size: var(--text-body-sm);
-    line-height: var(--leading-body-sm);
-  }
-  .ask-card :global(.intro-lead a) {
-    color: var(--color-lavender-accent);
+    font-size: var(--text-caption);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-ash);
   }
   .ask-card :global(.starters) {
     display: flex;
     flex-wrap: wrap;
+    justify-content: center;
     gap: var(--spacing-8);
     list-style: none;
     margin: 0;
     padding: 0;
+    max-width: 480px;
   }
   .ask-card :global(.starter) {
-    padding: var(--spacing-8) var(--spacing-12);
-    background-color: color-mix(in oklab, var(--color-lavender-accent) 10%, transparent);
-    border: 0;
+    padding: var(--spacing-8) var(--spacing-16);
+    background-color: color-mix(in oklab, var(--color-lavender-accent) 12%, transparent);
+    border: 1px solid color-mix(in oklab, var(--color-lavender-accent) 40%, transparent);
     border-radius: var(--radius-full);
     color: var(--color-lilac-white);
     font-size: var(--text-body-sm);
@@ -64,38 +102,62 @@ import AIConsole from '../islands/AIConsole.tsx';
     transition: background-color 0.18s ease;
   }
   .ask-card :global(.starter:hover) {
-    background-color: color-mix(in oklab, var(--color-lavender-accent) 18%, transparent);
+    background-color: color-mix(in oklab, var(--color-lavender-accent) 22%, transparent);
   }
+  .ask-card :global(.hero-contact) {
+    margin: 0;
+    font-size: var(--text-caption);
+    color: var(--color-fog);
+  }
+  .ask-card :global(.hero-contact a) {
+    color: var(--color-lavender-accent);
+  }
+
+  /* --- Transcript (active) ------------------------------------------- */
   .ask-card :global(.transcript) {
+    flex: 1;
     display: flex;
     flex-direction: column;
     gap: var(--spacing-16);
     list-style: none;
     margin: 0;
-    padding: 0;
-    max-height: 420px;
+    padding: var(--spacing-4);
+    max-height: 460px;
     overflow-y: auto;
   }
   .ask-card :global(.turn) {
     display: flex;
-    flex-direction: column;
-    gap: var(--spacing-4);
+    gap: var(--spacing-8);
+    max-width: min(80%, 60ch);
   }
-  .ask-card :global(.role) {
-    font-size: var(--text-body-xs, 12px);
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    color: var(--color-ash);
+  .ask-card :global(.turn-user) {
+    align-self: flex-end;
+  }
+  .ask-card :global(.turn-assistant) {
+    align-self: flex-start;
+  }
+  .ask-card :global(.avatar) {
+    flex: 0 0 auto;
+    padding-top: 2px;
   }
   .ask-card :global(.bubble) {
     margin: 0;
-    color: var(--color-lilac-white);
+    padding: var(--spacing-12) var(--spacing-16);
     font-size: var(--text-body-sm);
     line-height: var(--leading-body-sm);
+    color: var(--color-lilac-white);
     white-space: pre-wrap;
+    border-radius: var(--radius-2xl);
+  }
+  .ask-card :global(.turn-assistant .bubble) {
+    background-color: color-mix(in oklab, var(--color-lilac-white) 4%, transparent);
+    border: 1px solid color-mix(in oklab, var(--color-lilac-white) 10%, transparent);
+    border-bottom-left-radius: var(--radius-md);
   }
   .ask-card :global(.turn-user .bubble) {
-    color: var(--color-fog);
+    background-color: color-mix(in oklab, var(--color-iris) 22%, transparent);
+    border: 1px solid color-mix(in oklab, var(--color-iris) 40%, transparent);
+    border-bottom-right-radius: var(--radius-md);
   }
   .ask-card :global(.caret) {
     display: inline-block;
@@ -106,6 +168,8 @@ import AIConsole from '../islands/AIConsole.tsx';
     background-color: var(--color-lavender-accent);
     animation: ai-blink 1s steps(2, start) infinite;
   }
+
+  /* --- Sources + notice ---------------------------------------------- */
   .ask-card :global(.sources) {
     display: flex;
     flex-wrap: wrap;
@@ -113,7 +177,7 @@ import AIConsole from '../islands/AIConsole.tsx';
     gap: var(--spacing-8);
   }
   .ask-card :global(.sources-label) {
-    font-size: var(--text-body-xs, 12px);
+    font-size: var(--text-caption);
     text-transform: uppercase;
     letter-spacing: 0.04em;
     color: var(--color-ash);
@@ -121,51 +185,82 @@ import AIConsole from '../islands/AIConsole.tsx';
   .ask-card :global(.source-chip) {
     padding: 2px var(--spacing-8);
     border-radius: var(--radius-full);
-    background-color: color-mix(in oklab, var(--color-iris) 14%, transparent);
+    background-color: color-mix(in oklab, var(--color-iris) 16%, transparent);
     color: var(--color-lilac-white);
-    font-size: var(--text-body-xs, 12px);
+    font-size: var(--text-caption);
+  }
+  .ask-card :global(.notice) {
+    align-self: flex-start;
+    max-width: min(80%, 60ch);
+    padding: var(--spacing-12) var(--spacing-16);
+    border-radius: var(--radius-2xl);
+    border: 1px solid color-mix(in oklab, var(--color-lavender-accent) 30%, transparent);
+    background-color: color-mix(in oklab, var(--color-deep-indigo) 40%, transparent);
+    color: var(--color-ash);
+    font-size: var(--text-body-sm);
+    line-height: var(--leading-body-sm);
+  }
+
+  /* --- Composer ------------------------------------------------------- */
+  .ask-card :global(.composer-row) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-8);
   }
   .ask-card :global(.composer) {
     display: flex;
-    flex-wrap: wrap;
+    align-items: center;
     gap: var(--spacing-8);
+    width: 100%;
+    max-width: 560px;
+    background-color: color-mix(in oklab, var(--color-lilac-white) 4%, transparent);
+    border: 1px solid color-mix(in oklab, var(--color-lavender-accent) 50%, transparent);
+    border-radius: var(--radius-full);
+    padding: var(--spacing-8) var(--spacing-8) var(--spacing-8) var(--spacing-20);
   }
   .ask-card :global(.input) {
-    flex: 1 1 200px;
-    padding: var(--spacing-12) var(--spacing-16);
-    background-color: color-mix(in oklab, var(--color-midnight-surface) 60%, transparent);
-    border: 1px solid color-mix(in oklab, var(--color-lavender-accent) 24%, transparent);
-    border-radius: var(--radius-md);
+    flex: 1;
+    min-width: 0;
+    background: transparent;
+    border: 0;
     color: var(--color-lilac-white);
     font-size: var(--text-body-sm);
   }
   .ask-card :global(.input:focus-visible) {
-    outline: 2px solid var(--color-lavender-accent);
-    outline-offset: 1px;
+    outline: none;
   }
-  .ask-card :global(.send),
-  .ask-card :global(.clear) {
-    padding: var(--spacing-12) var(--spacing-20);
-    border: 0;
-    border-radius: var(--radius-md);
-    font-size: var(--text-body-sm);
-    cursor: pointer;
+  .ask-card :global(.composer:focus-within) {
+    border-color: var(--color-lavender-accent);
   }
   .ask-card :global(.send) {
+    flex: 0 0 auto;
+    width: 34px;
+    height: 34px;
+    display: grid;
+    place-items: center;
+    border: 0;
+    border-radius: var(--radius-full);
     background-color: var(--color-iris);
-    color: var(--color-lilac-white);
+    color: var(--color-pearl);
+    font-size: var(--text-body);
+    cursor: pointer;
   }
   .ask-card :global(.send:disabled) {
     opacity: 0.5;
     cursor: not-allowed;
   }
-  .ask-card :global(.clear) {
-    background-color: transparent;
+  .ask-card :global(.reset) {
+    background: none;
+    border: 0;
+    color: var(--color-fog);
+    font-size: var(--text-caption);
+    cursor: pointer;
+  }
+  .ask-card :global(.reset:hover) {
     color: var(--color-ash);
   }
-  /* Do NOT display:none this — with appearance:'interaction-only' the widget is
-     already invisible for visitors who pass silently, and it must be able to
-     render an interactive challenge (centered) for those who don't. */
+
   .ask-card :global(.turnstile-host) {
     display: flex;
     justify-content: center;
