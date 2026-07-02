@@ -37,7 +37,8 @@ export default function ConversationList({ items, loadDetail }: ConversationList
           <button type="button" className="vault-row-head" onClick={() => void toggle(it.id)}>
             <span className="vault-row-preview">{it.preview || '(no message)'}</span>
             <span className="vault-row-meta">
-              {formatWhen(it.created_at)} · {formatLocation(it.country, it.city)} · {tokenTotal(it)} tok
+              {formatWhen(it.created_at)} · {formatLocation(it.country, it.city)}
+              {it.ip_hash ? ` · IP ${it.ip_hash}` : ''} · {tokenTotal(it)} tok
             </span>
           </button>
           {openId === it.id && (
