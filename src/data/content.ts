@@ -23,6 +23,8 @@ export const experience: ExperienceEntry[] = [
       'Built RAG support agents that encode domain expertise into grounded, accurate answers.',
       'Implemented semantic retrieval on Supabase with Postgres + pgvector.',
       'Shipped a conversational sales engine and automated social content through N8N pipelines.',
+      'Automated operational pipelines across several departments with N8N, weaving AI into day-to-day workflows.',
+      'Built Python and N8N ETL dataflows integrating multiple third-party APIs, backed by relational Postgres/Supabase schemas.',
     ],
   },
   {
@@ -33,6 +35,8 @@ export const experience: ExperienceEntry[] = [
       'Built a multi-agent conversational booking system with LangChain and LangGraph, orchestrating tool-use across specialized agents.',
       'Delivered end-to-end WhatsApp booking through the Meta API, taking the system to real users in production.',
       'Hardened agent reliability with systematic prompt engineering.',
+      'Engineered the backend and data flows in Node.js, covered by unit and integration tests in Vitest.',
+      'Built a notifications service on the Resend API and designed the corporate website.',
     ],
   },
   {
