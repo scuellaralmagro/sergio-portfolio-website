@@ -1,0 +1,64 @@
+---
+title: 'IBM Employee Attrition Prediction'
+summary: "A five-model scikit-learn bake-off predicting who'll quit on IBM's HR dataset — and an honest look at why 89% accuracy is the wrong headline when only 16% of employees actually leave."
+role: 'Solo — ML / data'
+stack:
+  - Python
+  - scikit-learn
+  - pandas
+  - NumPy
+  - Matplotlib / Seaborn
+  - Jupyter
+repo: 'https://github.com/scuellaralmagro/employee_attrition_ibm'
+order: 5
+featured: true
+---
+
+## Problem
+
+Attrition is expensive — replacing someone costs months of salary and institutional memory.
+The task looks like a clean binary classification: predict, from an employee's profile,
+whether they'll leave. The interesting part isn't building the model; it's refusing to be
+fooled by the metric that makes a bad model look good.
+
+## The data
+
+- **IBM HR Analytics** (Kaggle, a fictional IBM-authored set): **1,470 employees, 35
+  attributes** each — pay, tenure, role, satisfaction scores, commute, overtime.
+- **Heavily imbalanced:** only **~16% of employees left.** That single fact drives every
+  modelling decision, because a model that predicts "nobody leaves" is already ~84% accurate
+  while being completely useless.
+- Clean data (no missing values), but three constant columns (`EmployeeCount`, `Over18`,
+  `StandardHours`) and an ID column carry no signal and are dropped.
+
+## What the EDA showed
+
+Before any modelling, the exploratory analysis surfaced the real drivers of attrition:
+
+- **Overtime** is the strongest single signal — people working overtime leave at **~30%**.
+- **Sales Representatives** churn hardest at **~40%**; managers and research directors barely
+  move.
+- **Younger employees**, **longer commutes**, and **frequent travel** all skew toward leaving.
+
+## Pipeline
+
+An ETL script does the unglamorous work — drop the dead columns, binary-encode two-value
+fields (`Gender`, `OverTime`, and the `Attrition` target), one-hot the rest — and writes a
+clean processed CSV. Then an 80/20 split, `StandardScaler`, and **`RandomizedSearchCV`** to
+tune **five** models: Logistic Regression, Decision Tree, Gradient Boosting, SVM, and KNN.
+
+## The metric that matters
+
+Every model landed around **85–89% accuracy** — and that number is a trap. With a rare
+positive class, accuracy rewards a model for ignoring the very people you're trying to find.
+So the real scoreboard is **recall** (of the people who left, how many did we catch?) and
+**F1**. On those, **Logistic Regression won**: F1 **0.59**, recall **0.46**, ROC-AUC **0.72**,
+edging out Gradient Boosting — and, being far cheaper to train and serve, it's the one that
+got deployed (exported with `joblib`, wrapped in a small `predict.py` CLI).
+
+## Outcome & honest limitations
+
+The winning model still only catches **fewer than half** of real leavers — useful as a
+triage signal, not a verdict. That's the honest takeaway, and the clear next step: attack the
+imbalance directly with **class weights, resampling (SMOTE), and decision-threshold tuning**,
+trading a little accuracy for the recall that actually matters here.
