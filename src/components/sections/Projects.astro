@@ -62,9 +62,13 @@ const projects = (await getCollection('projects', ({ data }) => !data.draft)).so
 </Section>
 
 <style>
+  /* Flex-wrap (not grid) so the last row's cards center under the row above:
+     five cards render 3 + 2, with the trailing two centred. Cards keep an
+     identical width and reflow to 2-up, then 1-up, as the viewport narrows. */
   .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
     gap: var(--spacing-16);
     width: 100%;
   }
@@ -74,7 +78,14 @@ const projects = (await getCollection('projects', ({ data }) => !data.draft)).so
     flex-direction: column;
     justify-content: space-between;
     gap: var(--spacing-20);
-    height: 100%;
+    /* Base three-up: one third of the row minus the two gaps (with a 1px
+       slack so sub-pixel rounding never forces a premature wrap). min-width
+       drives the collapse to 2-up and 1-up on smaller screens. */
+    flex: 0 1 calc((100% - 2 * var(--spacing-16)) / 3 - 1px);
+    min-width: 280px;
+    max-width: 420px;
+    /* No height:100% — in a flex row the default align-items:stretch already
+       equalises card heights per row; a percentage height would defeat it. */
   }
   .project-body {
     display: flex;

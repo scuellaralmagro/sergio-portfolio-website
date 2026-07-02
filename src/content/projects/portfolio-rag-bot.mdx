@@ -1,0 +1,62 @@
+---
+title: 'Ask My Portfolio — RAG Chat API'
+summary: 'The grounded RAG chat that answers questions about me on this very site — a single Cloudflare Worker with SSE token streaming, Supabase pgvector retrieval, and Turnstile + KV abuse guards.'
+role: 'Solo — AI / backend engineer'
+period: '2026'
+stack:
+  - TypeScript
+  - Cloudflare Workers
+  - OpenAI
+  - Supabase + pgvector
+  - Turnstile
+  - Workers KV
+  - SSE
+repo: 'https://github.com/scuellaralmagro/portfolio-rag-bot'
+live: 'https://sergiocuellar.dev/#ask-portfolio'
+order: 2
+featured: true
+---
+
+## Problem
+
+The "Ask my portfolio" chat box on this page **is** this project. A generic chatbot will
+happily answer questions about me — and make half of them up. I wanted the opposite: a
+chat that answers *only* from a curated knowledge base about my background and work, says
+"I don't know" when the answer isn't there, and is safe to leave running on a public URL
+without waking up to a surprise API bill.
+
+## How it works
+
+A `POST /api/chat` request runs through a short, deliberate pipeline:
+
+1. **Verify** the visitor with Cloudflare Turnstile, so bots can't hammer the endpoint.
+2. **Throttle** per IP and check a **daily token budget** — both backed by Workers KV. When
+   the day's budget is spent, the API declines gracefully instead of running up a bill.
+3. **Embed** the question and **retrieve** the most relevant chunks from a Supabase
+   `pgvector` store.
+4. **Assemble** a tightly scoped prompt — a system message that only answers questions about
+   me and refuses everything else — plus the retrieved context and a little chat history.
+5. **Stream** the answer back token by token over SSE, then the list of sources it used.
+
+## Role & decisions
+
+- **One Worker, no framework.** A single route doesn't need one. The whole service runs at
+  the edge — routing, auth, retrieval, and streaming in one deployable.
+- **Grounded or silent.** Answers are constrained to hand-written markdown in `knowledge/`.
+  If something isn't there, the assistant is told to say so and hand out my email rather than
+  invent an answer.
+- **Abuse guards as first-class code, not an afterthought.** Turnstile, a per-IP rate limit,
+  and a daily spend cap are the boring-but-necessary parts that separate a demo from
+  something you can safely make public.
+- **Prompt-injection resistance.** A deterministic eval suite checks that the assembled
+  prompt keeps the refusal guard and holds injected instructions *below* the system message —
+  no live API calls, so it runs in CI.
+- **Observability.** Conversations are logged to Supabase (country, city, and a salted,
+  truncated IP hash — never raw IPs) and viewable through a key-gated admin vault.
+
+## Outcome
+
+It's live, and you're looking at it — this page's chat is served by the Worker. Embeddings
+use `text-embedding-3-small` at 1536 dimensions; generation is streamed. It's a small, honest
+example of production RAG: grounded answers, token streaming, and the guardrails that make a
+public AI endpoint boring to operate.
