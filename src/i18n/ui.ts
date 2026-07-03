@@ -91,6 +91,8 @@ export const ui = {
     // Footer
     'footer.colophonSuffix': 'Built with Astro on Cloudflare.',
     'footer.backToTop': 'back to top',
+    'footer.privacy': 'Privacy',
+    'footer.legal': 'Legal notice',
 
     // Case study pages
     'caseStudy.back': '← All projects',
@@ -201,6 +203,8 @@ export const ui = {
     // Footer
     'footer.colophonSuffix': 'Hecho con Astro en Cloudflare.',
     'footer.backToTop': 'volver arriba',
+    'footer.privacy': 'Privacidad',
+    'footer.legal': 'Aviso legal',
 
     // Case study pages
     'caseStudy.back': '← Todos los proyectos',
