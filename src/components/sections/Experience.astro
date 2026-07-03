@@ -12,19 +12,24 @@
  */
 import Section from './Section.astro';
 import { experience } from '../../data/content';
+import { useTranslations, type Locale } from '../../i18n/utils';
+
+const locale = (Astro.currentLocale ?? 'en') as Locale;
+const t = useTranslations(locale);
+const jobs = experience[locale];
 ---
 
 <Section
   id="experience"
-  eyebrow="Experience"
+  eyebrow={t('experience.eyebrow')}
   eyebrowIcon="code"
-  title="Where I've shipped"
-  subtitle="A short spine of AI-first roles, most recent first."
+  title={t('experience.title')}
+  subtitle={t('experience.subtitle')}
   align="left"
 >
   <ol class="timeline">
     {
-      experience.map((job, i) => (
+      jobs.map((job, i) => (
         <li class="entry" style={`--i:${i}`}>
           <span class="node" aria-hidden="true" />
           <div class="content">

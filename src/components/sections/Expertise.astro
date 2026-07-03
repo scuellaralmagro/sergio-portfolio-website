@@ -7,18 +7,23 @@
 import Section from './Section.astro';
 import CapabilityCard from '../primitives/CapabilityCard.astro';
 import { expertise } from '../../data/content';
+import { useTranslations, type Locale } from '../../i18n/utils';
+
+const locale = (Astro.currentLocale ?? 'en') as Locale;
+const t = useTranslations(locale);
+const clusters = expertise[locale];
 ---
 
 <Section
   id="expertise"
-  eyebrow="Expertise"
+  eyebrow={t('expertise.eyebrow')}
   eyebrowIcon="network"
-  title="Capabilities"
-  subtitle="Six areas where I build — flagship tools highlighted."
+  title={t('expertise.title')}
+  subtitle={t('expertise.subtitle')}
 >
   <ul class="cap-grid">
     {
-      expertise.map((cluster) => (
+      clusters.map((cluster) => (
         <CapabilityCard
           name={cluster.name}
           icon={cluster.icon}
