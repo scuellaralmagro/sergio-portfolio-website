@@ -120,11 +120,10 @@ const t = useTranslations(locale);
   @media (min-width: 880px) {
     .about-grid {
       grid-template-columns: 1fr 360px;
-      align-items: start;
+      align-items: center;
     }
     /* Keep the portrait's 4/5 frame so the image fills it exactly (no empty
-       strip), sitting at the top of the column rather than stretching to the
-       full text height. */
+       strip), vertically centered against the title/text column. */
     .portrait {
       max-width: none;
     }
