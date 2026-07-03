@@ -120,14 +120,13 @@ const t = useTranslations(locale);
   @media (min-width: 880px) {
     .about-grid {
       grid-template-columns: 1fr 360px;
-      align-items: stretch;
+      align-items: start;
     }
-    /* Portrait spans the full height of the left column — title to text-end —
-       instead of hanging below the shorter body text. */
+    /* Keep the portrait's 4/5 frame so the image fills it exactly (no empty
+       strip), sitting at the top of the column rather than stretching to the
+       full text height. */
     .portrait {
-      aspect-ratio: auto;
       max-width: none;
-      height: 100%;
     }
   }
 </style>
