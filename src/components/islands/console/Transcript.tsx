@@ -2,6 +2,7 @@ import { motion, useReducedMotion } from 'framer-motion';
 import type { ChatMessage, SourceItem } from '@lib/askPortfolio/types';
 import type { Status } from '@lib/askPortfolio/conversation';
 import { splitIntoWords } from '@lib/askPortfolio/words';
+import type { ConsoleStrings } from './i18n';
 import Orb from '../Orb';
 
 interface TranscriptProps {
@@ -9,14 +10,8 @@ interface TranscriptProps {
   status: Status;
   sources: SourceItem[];
   errorMessage?: string;
+  strings: ConsoleStrings;
 }
-
-const NOTICE: Partial<Record<Status, string>> = {
-  budget_exceeded:
-    'This live demo has hit its daily limit. You can reach Sergio at info@sergiocuellar.dev.',
-  rate_limited: "You're going a bit fast — try again in a moment.",
-  error: 'Something went wrong. Please try again, or email info@sergiocuellar.dev.',
-};
 
 function FadeText({ text, animate }: { text: string; animate: boolean }) {
   const words = splitIntoWords(text);
@@ -40,11 +35,22 @@ function FadeText({ text, animate }: { text: string; animate: boolean }) {
   );
 }
 
-export default function Transcript({ messages, status, sources, errorMessage }: TranscriptProps) {
+export default function Transcript({
+  messages,
+  status,
+  sources,
+  errorMessage,
+  strings,
+}: TranscriptProps) {
   const reduce = useReducedMotion();
   const streaming = status === 'streaming';
   const lastIndex = messages.length - 1;
   const firstAssistant = messages.findIndex((m) => m.role === 'assistant');
+  const NOTICE: Partial<Record<Status, string>> = {
+    budget_exceeded: strings.noticeBudget,
+    rate_limited: strings.noticeRate,
+    error: strings.noticeError,
+  };
   const notice = NOTICE[status];
 
   return (
@@ -70,8 +76,8 @@ export default function Transcript({ messages, status, sources, errorMessage }: 
       ))}
 
       {sources.length > 0 && (
-        <li className="sources" aria-label="Sources">
-          <span className="sources-label">Sources</span>
+        <li className="sources" aria-label={strings.sources}>
+          <span className="sources-label">{strings.sources}</span>
           {sources.map((s, i) => (
             <span key={i} className="source-chip">
               {s.title}

@@ -8,25 +8,29 @@ import Section from './Section.astro';
 import Button from '../primitives/Button.astro';
 import TextLink from '../primitives/TextLink.astro';
 import { site, socials } from '../../data/site';
+import { useTranslations, type Locale } from '../../i18n/utils';
+
+const locale = (Astro.currentLocale ?? 'en') as Locale;
+const t = useTranslations(locale);
 ---
 
 <Section
   id="contact"
-  eyebrow="Contact"
+  eyebrow={t('contact.eyebrow')}
   eyebrowIcon="mail"
-  title="Let's build something"
-  subtitle="Open to AI/LLM engineering roles. The fastest way to reach me is email."
+  title={t('contact.title')}
+  subtitle={t('contact.subtitle')}
 >
   <div class="contact-actions">
     <div class="cta-buttons">
-      <Button href={socials.email}>Email me</Button>
-      <Button variant="ghost" href={site.resumeUrl} download>Download résumé (PDF)</Button>
+      <Button href={socials.email}>{t('contact.email')}</Button>
+      <Button variant="ghost" href={site.resumeUrl} download>{t('contact.resume')}</Button>
     </div>
     <div class="links">
-      <TextLink href={socials.github} external>GitHub</TextLink>
-      <TextLink href={socials.linkedin} external>LinkedIn</TextLink>
+      <TextLink href={socials.github} external>{t('contact.github')}</TextLink>
+      <TextLink href={socials.linkedin} external>{t('contact.linkedin')}</TextLink>
     </div>
-    <p class="loc">Based in {site.location}</p>
+    <p class="loc">{t('contact.locationPrefix')}{site.location}</p>
   </div>
 </Section>
 

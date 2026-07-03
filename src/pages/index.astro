@@ -22,9 +22,9 @@ import { site } from '../data/site';
 // JSON-LD ItemList of the flagship projects (ULTRAPLAN §10) — mirrors the
 // home Projects grid (non-draft, by order) so recruiters/AI crawlers get a
 // machine-readable index of the case studies alongside the Person schema.
-const projects = (await getCollection('projects', ({ data }) => !data.draft)).sort(
-  (a, b) => a.data.order - b.data.order,
-);
+const projects = (await getCollection('projects', ({ data }) => !data.draft))
+  .filter((entry) => entry.id.startsWith('en/'))
+  .sort((a, b) => a.data.order - b.data.order);
 const projectListSchema = {
   '@context': 'https://schema.org',
   '@type': 'ItemList',
@@ -32,14 +32,14 @@ const projectListSchema = {
   itemListElement: projects.map((entry, i) => ({
     '@type': 'ListItem',
     position: i + 1,
-    url: new URL(`/projects/${entry.id}`, site.url).href,
+    url: new URL(`/projects/${entry.id.replace(/^en\//, '')}`, site.url).href,
     name: entry.data.title,
     description: entry.data.summary,
   })),
 };
 ---
 
-<BaseLayout>
+<BaseLayout localized>
   <script
     is:inline
     type="application/ld+json"

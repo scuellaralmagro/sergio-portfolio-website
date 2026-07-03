@@ -6,13 +6,18 @@
 import ConstellationField from '../primitives/ConstellationField.astro';
 import Icon from '../primitives/Icon.astro';
 import { site, socials } from '../../data/site';
+import { useTranslations, localizedPath, type Locale } from '../../i18n/utils';
+
+const locale = (Astro.currentLocale ?? 'en') as Locale;
+const t = useTranslations(locale);
+const home = localizedPath('/', locale).replace(/\/$/, '');
 
 const navLinks = [
-  { label: 'About', href: '/#about' },
-  { label: 'Expertise', href: '/#expertise' },
-  { label: 'Projects', href: '/#projects' },
-  { label: 'Experience', href: '/#experience' },
-  { label: 'Contact', href: '/#contact' },
+  { label: t('nav.about'), href: `${home}/#about` },
+  { label: t('nav.expertise'), href: `${home}/#expertise` },
+  { label: t('nav.projects'), href: `${home}/#projects` },
+  { label: t('nav.experience'), href: `${home}/#experience` },
+  { label: t('contact.eyebrow'), href: `${home}/#contact` },
 ];
 
 const socialLinks = [
@@ -28,7 +33,7 @@ const year = new Date().getFullYear();
   <ConstellationField class="footer-stars" density={0.7} />
   <div class="footer-inner">
     <div class="top">
-      <a class="brand" href="/#hero" aria-label={`${site.shortName} — back to top`}>
+      <a class="brand" href={`${home}/#hero`} aria-label={`${site.shortName} — ${t('footer.backToTop')}`}>
         <span class="monogram" aria-hidden="true">{site.monogram}</span>
         <span class="brand-name">{site.shortName}</span>
       </a>
@@ -63,7 +68,7 @@ const year = new Date().getFullYear();
     <hr class="aurora-divider" />
 
     <p class="colophon">
-      © {year} {site.name} · {site.role} · Built with Astro on Cloudflare.
+      © {year} {site.name} · {site.role} · {t('footer.colophonSuffix')}
     </p>
   </div>
 </footer>

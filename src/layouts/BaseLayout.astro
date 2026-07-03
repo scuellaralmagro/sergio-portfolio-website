@@ -7,6 +7,7 @@
 import '@fontsource-variable/inter';
 import '../styles/global.css';
 import { site, personSchema } from '../data/site';
+import { useTranslations, localizedPath, type Locale } from '../i18n/utils';
 
 interface Props {
   title?: string;
@@ -15,25 +16,56 @@ interface Props {
   ogImage?: string;
   /** Exclude from search engines (e.g. internal styleguide). */
   noindex?: boolean;
+  /**
+   * Opt a page into i18n behaviour: hreflang alternates + the first-visit
+   * language-detection redirect. Public pages that exist in both locales set
+   * this; internal pages (styleguide, vault) leave it off.
+   */
+  localized?: boolean;
 }
 
 const {
   title,
-  description = site.description,
+  description,
   ogImage = site.ogImage,
   noindex = false,
+  localized = false,
 } = Astro.props;
 
-const pageTitle = title ? `${title} — ${site.shortName}` : `${site.name} — ${site.role}`;
+const locale = (Astro.currentLocale ?? 'en') as Locale;
+const t = useTranslations(locale);
+const ogLocale = locale === 'es' ? 'es_ES' : 'en_US';
+
+const resolvedDescription =
+  description ?? (localized ? t('seo.homeDescription') : site.description);
+const pageTitle = title
+  ? `${title} — ${site.shortName}`
+  : localized
+    ? t('seo.homeTitle')
+    : `${site.name} — ${site.role}`;
+
 const canonical = new URL(Astro.url.pathname, site.url).href;
 const ogImageUrl = new URL(ogImage, site.url).href;
+const altEn = new URL(localizedPath(Astro.url.pathname, 'en'), site.url).href;
+const altEs = new URL(localizedPath(Astro.url.pathname, 'es'), site.url).href;
 ---
 
 <!doctype html>
-<html lang={site.locale}>
+<html lang={locale}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    {
+      /* First-visit language detection. Runs before paint on English
+        (unprefixed) pages only: if the visitor has no explicit `lang` cookie
+        and their browser prefers Spanish, redirect to the /es equivalent. An
+        explicit choice (cookie, set by the toggle) always wins. */
+      localized && (
+        <script is:inline>
+          {`(function(){if(/^\\/es(\\/|$)/.test(location.pathname))return;var m=document.cookie.match(/(?:^|;\\s*)lang=(en|es)/);var es=m?m[1]==='es':/^es\\b/i.test(navigator.language||'');if(es)location.replace('/es'+location.pathname+location.search+location.hash);})();`}
+        </script>
+      )
+    }
     {
       /* Set `.js` synchronously before first paint so scroll-reveal's hidden
         initial state applies only when JS is available (no-JS = visible). */
@@ -55,24 +87,33 @@ const ogImageUrl = new URL(ogImage, site.url).href;
     />
 
     <title>{pageTitle}</title>
-    <meta name="description" content={description} />
+    <meta name="description" content={resolvedDescription} />
     <meta name="author" content={site.name} />
     {noindex && <meta name="robots" content="noindex, nofollow" />}
     <link rel="canonical" href={canonical} />
+    {
+      localized && (
+        <>
+          <link rel="alternate" hreflang="en" href={altEn} />
+          <link rel="alternate" hreflang="es" href={altEs} />
+          <link rel="alternate" hreflang="x-default" href={altEn} />
+        </>
+      )
+    }
 
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={site.name} />
     <meta property="og:title" content={pageTitle} />
-    <meta property="og:description" content={description} />
+    <meta property="og:description" content={resolvedDescription} />
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={ogImageUrl} />
-    <meta property="og:locale" content="en_US" />
+    <meta property="og:locale" content={ogLocale} />
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={pageTitle} />
-    <meta name="twitter:description" content={description} />
+    <meta name="twitter:description" content={resolvedDescription} />
     <meta name="twitter:image" content={ogImageUrl} />
 
     <!-- Structured data -->
