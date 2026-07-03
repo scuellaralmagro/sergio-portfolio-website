@@ -1,0 +1,69 @@
+---
+title: 'Pregunta a mi Portfolio — API de Chat RAG'
+summary: 'El chat RAG fundamentado que responde preguntas sobre mí en esta misma web — un único Cloudflare Worker con streaming de tokens por SSE, recuperación con Supabase pgvector y protección anti-abuso con Turnstile + KV.'
+role: 'En solitario — ingeniero de IA / backend'
+period: '2026'
+stack:
+  - TypeScript
+  - Cloudflare Workers
+  - OpenAI
+  - Supabase + pgvector
+  - Turnstile
+  - Workers KV
+  - SSE
+repo: 'https://github.com/scuellaralmagro/portfolio-rag-bot'
+live: 'https://sergiocuellar.dev/#ask-portfolio'
+order: 2
+featured: true
+---
+
+## Problema
+
+El chat de «Pregunta a mi portfolio» de esta página **es** este proyecto. Un chatbot
+genérico respondería encantado preguntas sobre mí — inventándose la mitad. Yo quería lo
+contrario: un chat que responda *solo* desde una base de conocimiento curada sobre mi
+trayectoria y mi trabajo, que diga «no lo sé» cuando la respuesta no está ahí, y que sea
+seguro dejar funcionando en una URL pública sin despertarme con una factura de API
+sorpresa.
+
+## Cómo funciona
+
+Una petición `POST /api/chat` recorre un pipeline corto y deliberado:
+
+1. **Verifica** al visitante con Cloudflare Turnstile, para que los bots no machaquen el
+   endpoint.
+2. **Limita** por IP y comprueba un **presupuesto diario de tokens** — ambos respaldados
+   por Workers KV. Cuando se agota el presupuesto del día, la API rechaza con elegancia en
+   lugar de disparar la factura.
+3. **Incrusta** la pregunta y **recupera** los fragmentos más relevantes de un almacén
+   `pgvector` en Supabase.
+4. **Ensambla** un prompt estrechamente acotado — un mensaje de sistema que solo responde
+   preguntas sobre mí y rechaza todo lo demás — más el contexto recuperado y un poco de
+   historial de conversación.
+5. **Transmite** la respuesta token a token por SSE, y después la lista de fuentes que usó.
+
+## Papel y decisiones
+
+- **Un Worker, sin framework.** Una sola ruta no lo necesita. Todo el servicio corre en el
+  edge — enrutado, autenticación, recuperación y streaming en un único desplegable.
+- **Fundamentado o en silencio.** Las respuestas se limitan a markdown escrito a mano en
+  `knowledge/`. Si algo no está ahí, se le indica al asistente que lo diga y facilite mi
+  correo en lugar de inventar una respuesta.
+- **Protecciones anti-abuso como código de primera clase, no un añadido.** Turnstile, un
+  límite de tasa por IP y un tope de gasto diario son las partes aburridas pero necesarias
+  que separan una demo de algo que puedes hacer público con seguridad.
+- **Resistencia a la inyección de prompts.** Una suite de evaluación determinista comprueba
+  que el prompt ensamblado mantiene la guarda de rechazo y sitúa las instrucciones
+  inyectadas *por debajo* del mensaje de sistema — sin llamadas reales a la API, así que
+  corre en CI.
+- **Observabilidad.** Las conversaciones se registran en Supabase (país, ciudad y un hash
+  de IP salado y truncado — nunca IPs en crudo) y son consultables mediante un panel de
+  administración protegido por clave.
+
+## Resultado
+
+Está en vivo, y lo estás mirando — el chat de esta página lo sirve el Worker. Las
+incrustaciones usan `text-embedding-3-small` con 1536 dimensiones; la generación se
+transmite en streaming. Es un ejemplo pequeño y honesto de RAG en producción: respuestas
+fundamentadas, streaming de tokens y las barreras que hacen que un endpoint de IA público
+sea aburrido de operar.

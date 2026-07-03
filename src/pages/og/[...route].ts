@@ -13,10 +13,16 @@ import { site } from '../../data/site';
 
 const projects = await getCollection('projects', ({ data }) => !data.draft);
 
-// Map of OG image keys → card content. `default` covers the home page and any
-// page without a per-route image; each project gets its own card.
+// Map of OG image keys → card content. `default` covers the English home page
+// and any page without a per-route image; `es/default` is the Spanish home
+// card. Each project entry (en/* and es/*) gets its own card keyed by its id,
+// so /og/en/<slug>.png and /og/es/<slug>.png carry the right language.
 const pages: Record<string, { title: string; description: string }> = {
   default: { title: site.name, description: `${site.role} — ${site.tagline}` },
+  'es/default': {
+    title: site.name,
+    description: 'Ingeniero de IA / LLM — Orquesto agentes de IA en sistemas que llegan a producción.',
+  },
   ...Object.fromEntries(
     projects.map((entry) => [
       entry.id,

@@ -1,0 +1,31 @@
+---
+/**
+ * /es/projects/[slug] — Spanish project case-study page. Generates one page per
+ * `es/*` entry in the `projects` collection; shares the body with the English
+ * route via CaseStudy.astro.
+ */
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import CaseStudy from '../../../components/CaseStudy.astro';
+
+export async function getStaticPaths() {
+  const entries = (await getCollection('projects', ({ data }) => !data.draft))
+    .filter((entry) => entry.id.startsWith('es/'))
+    .sort((a, b) => a.data.order - b.data.order);
+  return entries.map((entry, i) => ({
+    params: { slug: entry.id.replace(/^es\//, '') },
+    props: {
+      entry,
+      prev: entries[i - 1] ?? null,
+      next: entries[i + 1] ?? null,
+    },
+  }));
+}
+
+const { entry, prev, next } = Astro.props;
+const { title, summary } = entry.data;
+---
+
+<BaseLayout title={title} description={summary} ogImage={`/og/${entry.id}.png`} localized>
+  <CaseStudy entry={entry} prev={prev} next={next} locale="es" />
+</BaseLayout>

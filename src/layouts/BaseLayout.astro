@@ -45,9 +45,18 @@ const pageTitle = title
     : `${site.name} — ${site.role}`;
 
 const canonical = new URL(Astro.url.pathname, site.url).href;
-const ogImageUrl = new URL(ogImage, site.url).href;
+// On Spanish pages that fall back to the site-default card, use its localized
+// variant; explicit per-page OG paths (project cards) are left untouched.
+const resolvedOgImage =
+  ogImage === site.ogImage && locale === 'es' ? '/og/es/default.png' : ogImage;
+const ogImageUrl = new URL(resolvedOgImage, site.url).href;
 const altEn = new URL(localizedPath(Astro.url.pathname, 'en'), site.url).href;
 const altEs = new URL(localizedPath(Astro.url.pathname, 'es'), site.url).href;
+
+// First-visit language detection (English pages only). Runs before paint: if the
+// visitor has no explicit `lang` cookie and their browser prefers Spanish,
+// redirect to the /es equivalent. An explicit choice (set by the toggle) wins.
+const detectScript = `(function(){if(/^\\/es(\\/|$)/.test(location.pathname))return;var m=document.cookie.match(/(?:^|;\\s*)lang=(en|es)/);var es=m?m[1]==='es':/^es\\b/i.test(navigator.language||'');if(es){location.replace('/es'+location.pathname+location.search+location.hash);}})();`;
 ---
 
 <!doctype html>
@@ -60,11 +69,7 @@ const altEs = new URL(localizedPath(Astro.url.pathname, 'es'), site.url).href;
         (unprefixed) pages only: if the visitor has no explicit `lang` cookie
         and their browser prefers Spanish, redirect to the /es equivalent. An
         explicit choice (cookie, set by the toggle) always wins. */
-      localized && (
-        <script is:inline>
-          {`(function(){if(/^\\/es(\\/|$)/.test(location.pathname))return;var m=document.cookie.match(/(?:^|;\\s*)lang=(en|es)/);var es=m?m[1]==='es':/^es\\b/i.test(navigator.language||'');if(es)location.replace('/es'+location.pathname+location.search+location.hash);})();`}
-        </script>
-      )
+      localized && <script is:inline set:html={detectScript} />
     }
     {
       /* Set `.js` synchronously before first paint so scroll-reveal's hidden

@@ -1,0 +1,98 @@
+---
+title: 'Kynetix — Coach de Gimnasio y Nutrición con IA'
+summary: 'Un entrenador de IA full-stack de entrenamiento y nutrición: un backend FastAPI + LangGraph que ejecuta un agente multinodo con streaming, fundamentado con RAG sobre pgvector, y un cliente React PWA.'
+role: 'Ingeniero full-stack y de IA en solitario'
+period: '2026'
+stack:
+  - LangGraph
+  - LangChain
+  - FastAPI
+  - OpenAI
+  - PostgreSQL + pgvector
+  - Redis
+  - React PWA
+note: 'Repositorio privado'
+order: 1
+featured: true
+---
+
+import ArchDiagram from '../../../components/islands/ArchDiagram.tsx';
+import Card from '../../../components/primitives/Card.astro';
+import { orchestrationNodes, orchestrationEdges } from '../../../data/diagrams';
+
+## Problema
+
+El buen entrenamiento —programar sesiones, seguir el progreso, ajustar la nutrición— es
+caro y no escala. Los chatbots genéricos dan consejos de fitness sin problema, pero de
+forma infundada y olvidando el contexto de tu última sesión. Kynetix es un entrenador de
+IA personal que planifica entrenamiento y nutrición, se mantiene al tanto de una sesión en
+curso y fundamenta sus respuestas en una base de conocimiento real — lo bastante fiable
+como para entrenar de verdad con él.
+
+## Arquitectura
+
+<figure class="diagram">
+  <Card strong padding="lg">
+    <ArchDiagram
+      client:visible
+      nodes={orchestrationNodes}
+      edges={orchestrationEdges}
+      viewWidth={830}
+      viewHeight={440}
+    />
+  </Card>
+  <figcaption>
+    El supervisor de LangGraph clasifica cada mensaje y lo enruta a uno de seis especialistas —
+    programación de un solo entrenamiento o de la semana completa, actualización de perfil, el
+    subgrafo de nutrición, análisis post-entrenamiento o conversación general. La programación
+    fundamenta los planes en un almacén RAG con pgvector y en servicios deterministas (1RM, fatiga,
+    TDEE); el análisis lee el historial relacional de entrenamientos; la nutrición se confirma con
+    una persona en el bucle.
+  </figcaption>
+</figure>
+
+- **API y datos.** FastAPI con SQLAlchemy asíncrono sobre PostgreSQL 17 (extensión
+  pgvector), Redis para sesiones y caché, todo orquestado con Docker Compose.
+- **El agente es un grafo de estado de LangGraph.** Un nodo **supervisor** clasifica la
+  intención y extrae entidades, y luego enruta a nodos especializados: conversación
+  general, análisis de entrenamiento (consciente de una sesión en curso si la hay),
+  actualización de perfil, una rama de entrenamiento (planes de una sola sesión y
+  generación de programas completos de varios días) y un subgrafo de nutrición de doble
+  vía (registro semántico, confirmación con persona en el bucle y registro manual).
+- **RAG.** Las consultas se incrustan (OpenAI `text-embedding-3-small`) y se comparan
+  contra una base de conocimiento mediante un **índice HNSW por coseno en pgvector**; el
+  contexto recuperado fundamenta las respuestas de entrenamiento del modelo.
+- **Memoria.** El estado de la conversación persiste mediante un checkpointer
+  `AsyncPostgresSaver`, de modo que el entrenamiento multiturno sobrevive entre peticiones.
+- **Streaming.** Las respuestas se transmiten token a token al cliente por SSE.
+- **Servicios de dominio deterministas.** Las matemáticas ajenas al LLM viven en código
+  plano: estimación de 1RM (Epley/Brzycki), seguimiento de volumen de entrenamiento y
+  fatiga / sobrecarga progresiva, y TDEE (Mifflin–St Jeor) con reparto de macros según el
+  objetivo.
+- **Observabilidad.** Métricas de LLM por nodo —prompts, tokens, coste, latencia— se
+  transmiten a un stack de Langfuse autoalojado.
+
+## Mi papel y decisiones
+
+Diseñado y construido de extremo a extremo, en solitario. Las decisiones que importaron:
+
+- **LangGraph en lugar de un único megaprompt.** El enrutado explícito del supervisor más
+  los nodos especializados mantiene cada paso testeable y el comportamiento del agente
+  legible — y cada nodo es trazable en Langfuse.
+- **Mantener la lógica determinista fuera del LLM.** 1RM, volumen y TDEE son código exacto;
+  el modelo orquesta y explica, no hace la aritmética.
+- **Una sola base de datos para lo relacional _y_ lo vectorial.** pgvector en lugar de un
+  almacén vectorial aparte mantiene el stack simple y transaccional.
+- **Persona en el bucle en las escrituras de nutrición** para no registrar en silencio algo
+  incorrecto.
+- **Higiene de producción:** hasheo de contraseñas con argon2, cookies de sesión en Redis,
+  migraciones de Alembic aplicadas al arranque y un catálogo de ~870 ejercicios cargado en
+  el primer inicio.
+
+## Resultado
+
+Un producto full-stack funcional: una React PWA instalable (chat, seguimiento de
+entrenamiento en vivo, registro de nutrición, navegador del catálogo de ejercicios) sobre
+el backend FastAPI + LangGraph, totalmente containerizada para arrancar en local con un
+solo comando. Es la demostración de extremo a extremo más clara del stack agéntico + RAG
+en el que trabajo.

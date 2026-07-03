@@ -1,0 +1,85 @@
+---
+title: 'Análisis de Sentimiento de Tuits de Aerolíneas'
+summary: 'Un duelo de tres modelos (VADER vs. Naive Bayes vs. SVM lineal) sobre 14.640 tuits de aerolíneas — el SVM gana con ~79% sobre datos no vistos.'
+role: 'En solitario — NLP / datos'
+stack:
+  - Python
+  - NLTK
+  - scikit-learn
+  - pandas
+  - Jupyter
+repo: 'https://github.com/scuellaralmagro/airline-sentiment-analysis'
+order: 4
+featured: true
+---
+
+## Problema
+
+Las aerolíneas reciben volúmenes enormes de opiniones públicas en Twitter — y cuando la
+gente se molesta en escribir a una aerolínea, tiende a lo negativo. Convertir ese flujo
+ruidoso en una señal útil —para triaje de soporte y seguimiento de reputación— exige
+clasificar el sentimiento de cada tuit de forma fiable, pese al sarcasmo, la jerga del
+dominio y un conjunto de etiquetas muy desbalanceado.
+
+## Los datos
+
+- **Twitter US Airline Sentiment** (Kaggle / CrowdFlower): **14.640 tuits** sobre seis
+  aerolíneas estadounidenses, extraídos en febrero de 2015 y etiquetados por personas como
+  positivo, neutral o negativo.
+- **Muy desbalanceado** — aproximadamente **63% negativo, 21% neutral, 16% positivo** — de
+  modo que la precisión bruta favorece a un modelo perezoso, y las métricas por clase
+  importan más que una sola cifra.
+- Cuando un tuit se etiquetó como negativo, las personas también marcaron un *motivo*. Un
+  EDA rápido (en su propio notebook) muestra que el dolor es abrumadoramente servicio y
+  retrasos: **Problema de Atención al Cliente (2.910)** y **Vuelo Retrasado (1.665)**
+  dominan, por delante de cancelaciones y equipaje perdido.
+
+## Enfoque
+
+- **EDA primero.** Un notebook aparte mapea el balance de clases, el sentimiento por
+  aerolínea y el desglose de motivos negativos anterior — para que las decisiones de
+  modelado se apoyen en los datos.
+- **Preprocesado (NLTK).** Minúsculas → tokenización → eliminar puntuación y stopwords en
+  inglés → **quitar las menciones de aerolíneas** (p. ej. `@AmericanAir`) para que el
+  modelo se fije en las palabras de sentimiento y no en qué compañía se menciona. Para el
+  SVM, además se **lematizan** los tokens para reducir el espacio de características.
+- **Características.** Bolsa de palabras binaria (presencia de palabra), el formato que
+  esperan los clasificadores de NLTK.
+- **Tres modelos, comparados** con un split 80/20: una referencia léxica **VADER** (sin
+  entrenamiento), un clasificador **Naive Bayes de NLTK** y un **SVM lineal** (`SVC` de
+  scikit-learn envuelto como clasificador de NLTK).
+
+## Resultados
+
+| Modelo | Características | Precisión (datos no vistos) |
+| --- | --- | --- |
+| VADER (léxico, sin entrenar) | — | 44,5% |
+| Naive Bayes | Bolsa de palabras | 78,3% |
+| **SVM lineal** | Bolsa de palabras lematizada | **78,6%** |
+
+Como las clases están desbalanceadas, la decisión se apoyó en la precisión/exhaustividad
+por clase y el F1, no solo en la precisión global. El patrón se mantuvo entre modelos: la
+clase mayoritaria **negativa** es fácil de captar, mientras que la **neutral** —el punto
+medio difuso— es sistemáticamente la más difícil de separar. El fallo de VADER es el
+instructivo: un léxico de serie nominalmente «capta» tuits positivos (alta exhaustividad)
+pero con tan baja precisión que resulta inservible sobre texto del dominio — una
+referencia, no una solución. El SVM lineal superó por poco a Naive Bayes y se eligió para
+el despliegue.
+
+## Mi papel y decisiones
+
+Construido en solitario como ejercicio aplicado de NLP. Las decisiones que merece la pena
+destacar: quitar las menciones de aerolíneas para que el clasificador aprenda
+*sentimiento* y no *identidad de la compañía*; comparar una referencia léxica frente a dos
+modelos entrenados en lugar de quedarme con uno solo; seleccionar el modelo por el F1 por
+clase bajo desbalance en vez de por una cifra de precisión halagadora; y lematizar solo
+donde compensaba (el SVM). El modelo ganador se exporta con `joblib` tras una pequeña CLI
+(`sentiment_analyzer.py`) que aplica el preprocesado exacto del entrenamiento a un tuit
+nuevo y devuelve una etiqueta.
+
+## Resultado
+
+Un pipeline reproducible de extremo a extremo —EDA, preprocesado, un duelo de tres modelos
+y un clasificador desplegable— que sitúa un **SVM lineal en ~79% de precisión sobre tuits
+de aerolíneas no vistos**, cómodamente por encima de la referencia VADER, con el
+comportamiento por clase entendido en lugar de oculto tras una sola cifra.

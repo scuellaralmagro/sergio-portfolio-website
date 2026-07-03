@@ -1,61 +1,12 @@
 ---
 /**
- * Home — single-page immersive scroll (ULTRAPLAN §4).
- * Phase 2 establishes the layout & scroll skeleton: floating nav with
- * scroll-spy, all anchored sections (Hero → Contact), and the footer.
- * Section bodies are placeholders; real content lands in Phases 3–6.
+ * Home (English) — delegates to the shared HomePage body. The Spanish home
+ * lives at src/pages/es/index.astro and renders the same component.
  */
-import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import NavPill from '../components/primitives/NavPill.astro';
-import Hero from '../components/sections/Hero.astro';
-import About from '../components/sections/About.astro';
-import Expertise from '../components/sections/Expertise.astro';
-import AIShowcase from '../components/sections/AIShowcase.astro';
-import AskPortfolio from '../components/sections/AskPortfolio.astro';
-import Projects from '../components/sections/Projects.astro';
-import Experience from '../components/sections/Experience.astro';
-import Contact from '../components/sections/Contact.astro';
-import Footer from '../components/sections/Footer.astro';
-import { site } from '../data/site';
-
-// JSON-LD ItemList of the flagship projects (ULTRAPLAN §10) — mirrors the
-// home Projects grid (non-draft, by order) so recruiters/AI crawlers get a
-// machine-readable index of the case studies alongside the Person schema.
-const projects = (await getCollection('projects', ({ data }) => !data.draft))
-  .filter((entry) => entry.id.startsWith('en/'))
-  .sort((a, b) => a.data.order - b.data.order);
-const projectListSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'ItemList',
-  name: 'Flagship projects',
-  itemListElement: projects.map((entry, i) => ({
-    '@type': 'ListItem',
-    position: i + 1,
-    url: new URL(`/projects/${entry.id.replace(/^en\//, '')}`, site.url).href,
-    name: entry.data.title,
-    description: entry.data.summary,
-  })),
-};
+import HomePage from '../components/HomePage.astro';
 ---
 
 <BaseLayout localized>
-  <script
-    is:inline
-    type="application/ld+json"
-    set:html={JSON.stringify(projectListSchema)}
-    slot="head"
-  />
-  <NavPill />
-  <main id="main">
-    <Hero />
-    <About />
-    <Expertise />
-    <AIShowcase />
-    <AskPortfolio />
-    <Projects />
-    <Experience />
-    <Contact />
-  </main>
-  <Footer />
+  <HomePage />
 </BaseLayout>

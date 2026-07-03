@@ -9,6 +9,7 @@
  * reduced-motion (global block).
  */
 import Button from './Button.astro';
+import LangToggle from './LangToggle.astro';
 import { site } from '../../data/site';
 import { useTranslations, localizedPath, type Locale } from '../../i18n/utils';
 
@@ -61,6 +62,7 @@ const links = [
     </ul>
 
     <div class="actions">
+      <LangToggle />
       <Button class="nav-cta" href={`${home}/#contact`} size="sm">{t('nav.cta')}</Button>
       <button
         type="button"
@@ -203,6 +205,7 @@ const links = [
   .actions {
     display: flex;
     align-items: center;
+    gap: var(--spacing-12);
   }
   /* Round the CTA to a full pill so it echoes the nav shell rather than
      reading as a square button dropped inside it. Scoped to the nav — the

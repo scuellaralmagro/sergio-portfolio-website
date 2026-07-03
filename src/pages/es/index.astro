@@ -1,0 +1,12 @@
+---
+/**
+ * Home (Spanish) — same shared HomePage body; Astro.currentLocale resolves to
+ * 'es' from the /es/ URL, so every section renders its Spanish copy.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import HomePage from '../../components/HomePage.astro';
+---
+
+<BaseLayout localized>
+  <HomePage />
+</BaseLayout>
