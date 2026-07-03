@@ -80,8 +80,7 @@ export const ui = {
     // Contact
     'contact.eyebrow': 'Contact',
     'contact.title': "Let's build something",
-    'contact.subtitle':
-      'Open to AI/LLM engineering roles. The fastest way to reach me is email.',
+    'contact.subtitle': 'Open to AI/LLM engineering roles. The fastest way to reach me is email.',
     'contact.email': 'Email me',
     'contact.resume': 'Download résumé (PDF)',
     'contact.github': 'GitHub',
@@ -148,7 +147,8 @@ export const ui = {
     // Expertise
     'expertise.eyebrow': 'Especialidad',
     'expertise.title': 'Capacidades',
-    'expertise.subtitle': 'Seis áreas en las que construyo — con las herramientas principales destacadas.',
+    'expertise.subtitle':
+      'Seis áreas en las que construyo — con las herramientas principales destacadas.',
 
     // AI Showcase
     'showcase.eyebrow': 'Muestra de IA',
@@ -176,14 +176,15 @@ export const ui = {
     'projects.title': 'Trabajo destacado',
     'projects.subtitle':
       'Proyectos seleccionados que diseñé y construí — desde sistemas agénticos hasta visión por computador con deep learning y NLP.',
-    'projects.caseStudy': 'Caso de estudio',
+    'projects.caseStudy': 'Ver más',
     'projects.code': 'Código',
     'projects.live': 'En vivo',
 
     // Experience
     'experience.eyebrow': 'Experiencia',
     'experience.title': 'Dónde he trabajado',
-    'experience.subtitle': 'Una breve trayectoria de roles centrados en IA, del más reciente al más antiguo.',
+    'experience.subtitle':
+      'Una breve trayectoria de roles centrados en IA, del más reciente al más antiguo.',
 
     // Contact
     'contact.eyebrow': 'Contacto',

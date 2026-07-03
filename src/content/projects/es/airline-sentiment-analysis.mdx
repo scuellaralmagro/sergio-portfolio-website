@@ -1,6 +1,6 @@
 ---
-title: 'Análisis de Sentimiento de Tuits de Aerolíneas'
-summary: 'Un duelo de tres modelos (VADER vs. Naive Bayes vs. SVM lineal) sobre 14.640 tuits de aerolíneas — el SVM gana con ~79% sobre datos no vistos.'
+title: 'Análisis de Sentimiento de Tweets de Aerolíneas'
+summary: 'Un duelo de tres modelos (VADER vs. Naive Bayes vs. SVM lineal) sobre 14.640 tweets de aerolíneas — el SVM gana con ~79% sobre datos no vistos.'
 role: 'En solitario — NLP / datos'
 stack:
   - Python
@@ -29,7 +29,7 @@ dominio y un conjunto de etiquetas muy desbalanceado.
 - **Muy desbalanceado** — aproximadamente **63% negativo, 21% neutral, 16% positivo** — de
   modo que la precisión bruta favorece a un modelo perezoso, y las métricas por clase
   importan más que una sola cifra.
-- Cuando un tuit se etiquetó como negativo, las personas también marcaron un *motivo*. Un
+- Cuando un tuit se etiquetó como negativo, las personas también marcaron un _motivo_. Un
   EDA rápido (en su propio notebook) muestra que el dolor es abrumadoramente servicio y
   retrasos: **Problema de Atención al Cliente (2.910)** y **Vuelo Retrasado (1.665)**
   dominan, por delante de cancelaciones y equipaje perdido.
@@ -51,11 +51,11 @@ dominio y un conjunto de etiquetas muy desbalanceado.
 
 ## Resultados
 
-| Modelo | Características | Precisión (datos no vistos) |
-| --- | --- | --- |
-| VADER (léxico, sin entrenar) | — | 44,5% |
-| Naive Bayes | Bolsa de palabras | 78,3% |
-| **SVM lineal** | Bolsa de palabras lematizada | **78,6%** |
+| Modelo                       | Características              | Precisión (datos no vistos) |
+| ---------------------------- | ---------------------------- | --------------------------- |
+| VADER (léxico, sin entrenar) | —                            | 44,5%                       |
+| Naive Bayes                  | Bolsa de palabras            | 78,3%                       |
+| **SVM lineal**               | Bolsa de palabras lematizada | **78,6%**                   |
 
 Como las clases están desbalanceadas, la decisión se apoyó en la precisión/exhaustividad
 por clase y el F1, no solo en la precisión global. El patrón se mantuvo entre modelos: la
@@ -70,7 +70,7 @@ el despliegue.
 
 Construido en solitario como ejercicio aplicado de NLP. Las decisiones que merece la pena
 destacar: quitar las menciones de aerolíneas para que el clasificador aprenda
-*sentimiento* y no *identidad de la compañía*; comparar una referencia léxica frente a dos
+_sentimiento_ y no _identidad de la compañía_; comparar una referencia léxica frente a dos
 modelos entrenados en lugar de quedarme con uno solo; seleccionar el modelo por el F1 por
 clase bajo desbalance en vez de por una cifra de precisión halagadora; y lematizar solo
 donde compensaba (el SVM). El modelo ganador se exporta con `joblib` tras una pequeña CLI

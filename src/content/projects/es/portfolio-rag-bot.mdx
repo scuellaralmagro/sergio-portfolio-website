@@ -1,5 +1,5 @@
 ---
-title: 'Pregunta a mi Portfolio — API de Chat RAG'
+title: 'Ask My Portfolio — API de Chat RAG'
 summary: 'El chat RAG fundamentado que responde preguntas sobre mí en esta misma web — un único Cloudflare Worker con streaming de tokens por SSE, recuperación con Supabase pgvector y protección anti-abuso con Turnstile + KV.'
 role: 'En solitario — ingeniero de IA / backend'
 period: '2026'
@@ -19,9 +19,9 @@ featured: true
 
 ## Problema
 
-El chat de «Pregunta a mi portfolio» de esta página **es** este proyecto. Un chatbot
+El chat de «Ask My Portfolio» de esta página **es** este proyecto. Un chatbot
 genérico respondería encantado preguntas sobre mí — inventándose la mitad. Yo quería lo
-contrario: un chat que responda *solo* desde una base de conocimiento curada sobre mi
+contrario: un chat que responda _solo_ desde una base de conocimiento curada sobre mi
 trayectoria y mi trabajo, que diga «no lo sé» cuando la respuesta no está ahí, y que sea
 seguro dejar funcionando en una URL pública sin despertarme con una factura de API
 sorpresa.
@@ -54,7 +54,7 @@ Una petición `POST /api/chat` recorre un pipeline corto y deliberado:
   que separan una demo de algo que puedes hacer público con seguridad.
 - **Resistencia a la inyección de prompts.** Una suite de evaluación determinista comprueba
   que el prompt ensamblado mantiene la guarda de rechazo y sitúa las instrucciones
-  inyectadas *por debajo* del mensaje de sistema — sin llamadas reales a la API, así que
+  inyectadas _por debajo_ del mensaje de sistema — sin llamadas reales a la API, así que
   corre en CI.
 - **Observabilidad.** Las conversaciones se registran en Supabase (país, ciudad y un hash
   de IP salado y truncado — nunca IPs en crudo) y son consultables mediante un panel de
