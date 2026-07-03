@@ -1,0 +1,130 @@
+---
+/**
+ * LegalPage — shared body for the privacy + legal-notice pages, in both
+ * locales. Reads its copy from src/data/legal.ts keyed by `doc` and the current
+ * locale. Nav + footer keep the page navigable; the content is centered prose.
+ */
+import NavPill from './primitives/NavPill.astro';
+import Footer from './sections/Footer.astro';
+import { legal, type LegalDocId } from '../data/legal';
+import { type Locale } from '../i18n/utils';
+
+interface Props {
+  doc: LegalDocId;
+}
+
+const { doc } = Astro.props;
+const locale = (Astro.currentLocale ?? 'en') as Locale;
+const content = legal[doc][locale];
+---
+
+<NavPill />
+<main id="main" class="legal">
+  <header class="legal-head">
+    <h1>{content.title}</h1>
+    <p class="updated">{content.updated}</p>
+    {content.intro && <p class="intro">{content.intro}</p>}
+  </header>
+
+  {
+    content.sections.map((section) => (
+      <section class="legal-section">
+        <h2>{section.heading}</h2>
+        <div class="prose-body" set:html={section.html} />
+      </section>
+    ))
+  }
+</main>
+<Footer />
+
+<style>
+  .legal {
+    max-width: 760px;
+    margin-inline: auto;
+    padding: 140px var(--spacing-24) var(--spacing-72);
+  }
+
+  .legal-head {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-8);
+    margin-bottom: var(--spacing-48);
+  }
+  .legal-head h1 {
+    font-size: var(--text-heading);
+    line-height: var(--leading-heading);
+    letter-spacing: var(--tracking-heading);
+  }
+  .updated {
+    margin: 0;
+    color: var(--color-fog);
+    font-size: var(--text-body-sm);
+  }
+  .intro {
+    margin: var(--spacing-12) 0 0;
+    max-width: 60ch;
+    color: var(--color-ash);
+    font-size: var(--text-body-lg);
+    line-height: var(--leading-body-lg);
+  }
+
+  .legal-section {
+    margin-bottom: var(--spacing-40);
+  }
+  .legal-section h2 {
+    font-size: var(--text-subheading);
+    line-height: var(--leading-subheading);
+    color: var(--color-lilac-white);
+    margin-bottom: var(--spacing-16);
+  }
+
+  .prose-body :global(p) {
+    margin-block: 0 var(--spacing-16);
+    color: var(--color-ash);
+    line-height: var(--leading-body);
+    max-width: 68ch;
+  }
+  .prose-body :global(p:last-child) {
+    margin-bottom: 0;
+  }
+  .prose-body :global(ul) {
+    margin-block: 0 var(--spacing-16);
+    padding-left: var(--spacing-20);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-12);
+    color: var(--color-ash);
+    max-width: 68ch;
+  }
+  .prose-body :global(li) {
+    line-height: var(--leading-body);
+  }
+  .prose-body :global(li::marker) {
+    color: var(--color-lavender-accent);
+  }
+  .prose-body :global(strong) {
+    color: var(--color-lilac-white);
+    font-weight: 500;
+  }
+  .prose-body :global(a) {
+    color: var(--color-lavender-accent);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .prose-body :global(code) {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.9em;
+    color: var(--color-mercury);
+    background-color: var(--color-deep-indigo);
+    padding: 0.1em 0.4em;
+    border-radius: var(--radius-md);
+  }
+
+  @media (min-width: 768px) {
+    .legal-head h1 {
+      font-size: var(--text-heading-lg);
+      line-height: var(--leading-heading-lg);
+      letter-spacing: var(--tracking-heading-lg);
+    }
+  }
+</style>

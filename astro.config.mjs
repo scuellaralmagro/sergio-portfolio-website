@@ -22,8 +22,13 @@ export default defineConfig({
     react(),
     mdx(),
     sitemap({
-      // Keep internal-only pages (styleguide, admin vault) out of the sitemap.
-      filter: (page) => !page.includes('/styleguide') && !page.includes('/vault'),
+      // Keep internal-only and noindex pages (styleguide, admin vault, legal)
+      // out of the sitemap.
+      filter: (page) =>
+        !page.includes('/styleguide') &&
+        !page.includes('/vault') &&
+        !page.includes('/privacy') &&
+        !page.includes('/legal'),
     }),
   ],
   vite: {

@@ -1,0 +1,13 @@
+---
+/**
+ * /privacy (English) — privacy notice. noindex; the Spanish version lives at
+ * /es/privacy. Both render the shared LegalPage body.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import LegalPage from '../components/LegalPage.astro';
+import { legal } from '../data/legal';
+---
+
+<BaseLayout title={legal.privacy.en.title} noindex>
+  <LegalPage doc="privacy" />
+</BaseLayout>

@@ -1,0 +1,13 @@
+---
+/**
+ * /legal (English) — legal notice. noindex; the Spanish version lives at
+ * /es/legal. Both render the shared LegalPage body.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import LegalPage from '../components/LegalPage.astro';
+import { legal } from '../data/legal';
+---
+
+<BaseLayout title={legal.legalNotice.en.title} noindex>
+  <LegalPage doc="legalNotice" />
+</BaseLayout>

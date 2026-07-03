@@ -1,0 +1,13 @@
+---
+/**
+ * /es/privacy (Spanish) — privacy notice. noindex. Astro.currentLocale resolves
+ * to 'es', so LegalPage renders the Spanish copy.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import LegalPage from '../../components/LegalPage.astro';
+import { legal } from '../../data/legal';
+---
+
+<BaseLayout title={legal.privacy.es.title} noindex>
+  <LegalPage doc="privacy" />
+</BaseLayout>

@@ -67,9 +67,19 @@ const year = new Date().getFullYear();
 
     <hr class="aurora-divider" />
 
-    <p class="colophon">
-      © {year} {site.name} · {site.role} · {t('footer.colophonSuffix')}
-    </p>
+    <div class="bottom">
+      <p class="colophon">
+        © {year} {site.name} · {site.role} · {t('footer.colophonSuffix')}
+      </p>
+      <ul class="legal-links">
+        <li>
+          <a href={localizedPath('/privacy', locale)}>{t('footer.privacy')}</a>
+        </li>
+        <li>
+          <a href={localizedPath('/legal', locale)}>{t('footer.legal')}</a>
+        </li>
+      </ul>
+    </div>
   </div>
 </footer>
 
@@ -150,10 +160,35 @@ const year = new Date().getFullYear();
     color: var(--color-lavender-accent);
   }
 
+  .bottom {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-16);
+  }
   .colophon {
     margin: 0;
     color: var(--color-fog);
     font-size: var(--text-caption);
+  }
+  .legal-links {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--spacing-16);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .legal-links a {
+    color: var(--color-fog);
+    text-decoration: none;
+    font-size: var(--text-caption);
+    transition: color 0.18s ease;
+  }
+  .legal-links a:hover {
+    color: var(--color-lilac-white);
   }
 
   @media (max-width: 640px) {
