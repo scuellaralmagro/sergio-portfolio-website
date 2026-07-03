@@ -87,6 +87,7 @@ export const ui = {
     'contact.github': 'GitHub',
     'contact.linkedin': 'LinkedIn',
     'contact.locationPrefix': 'Based in ',
+    'contact.location': 'Marbella, Spain',
 
     // Footer
     'footer.colophonSuffix': 'Built with Astro on Cloudflare.',
@@ -194,6 +195,7 @@ export const ui = {
     'contact.github': 'GitHub',
     'contact.linkedin': 'LinkedIn',
     'contact.locationPrefix': 'Ubicado en ',
+    'contact.location': 'Marbella, España',
 
     // Footer
     'footer.colophonSuffix': 'Hecho con Astro en Cloudflare.',
