@@ -45,17 +45,17 @@ const projects = (await getCollection('projects', ({ data }) => !data.draft))
               </ul>
             </div>
             <div class="project-foot">
-              <TextLink href={href}>Case study</TextLink>
+              <TextLink href={href}>{t('projects.caseStudy')}</TextLink>
               {repo ? (
                 <TextLink href={repo} external>
-                  Code
+                  {t('projects.code')}
                 </TextLink>
               ) : (
                 note && <span class="note">{note}</span>
               )}
               {live && (
                 <TextLink href={live} external>
-                  Live
+                  {t('projects.live')}
                 </TextLink>
               )}
             </div>

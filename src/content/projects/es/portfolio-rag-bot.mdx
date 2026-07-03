@@ -35,7 +35,7 @@ Una petición `POST /api/chat` recorre un pipeline corto y deliberado:
 2. **Limita** por IP y comprueba un **presupuesto diario de tokens** — ambos respaldados
    por Workers KV. Cuando se agota el presupuesto del día, la API rechaza con elegancia en
    lugar de disparar la factura.
-3. **Incrusta** la pregunta y **recupera** los fragmentos más relevantes de un almacén
+3. **Vectoriza** la pregunta y **recupera** los fragmentos más relevantes de un almacén
    `pgvector` en Supabase.
 4. **Ensambla** un prompt estrechamente acotado — un mensaje de sistema que solo responde
    preguntas sobre mí y rechaza todo lo demás — más el contexto recuperado y un poco de
@@ -45,7 +45,7 @@ Una petición `POST /api/chat` recorre un pipeline corto y deliberado:
 ## Papel y decisiones
 
 - **Un Worker, sin framework.** Una sola ruta no lo necesita. Todo el servicio corre en el
-  edge — enrutado, autenticación, recuperación y streaming en un único desplegable.
+  edge — enrutamiento, autenticación, recuperación y streaming en un único desplegable.
 - **Fundamentado o en silencio.** Las respuestas se limitan a markdown escrito a mano en
   `knowledge/`. Si algo no está ahí, se le indica al asistente que lo diga y facilite mi
   correo en lugar de inventar una respuesta.
@@ -62,8 +62,8 @@ Una petición `POST /api/chat` recorre un pipeline corto y deliberado:
 
 ## Resultado
 
-Está en vivo, y lo estás mirando — el chat de esta página lo sirve el Worker. Las
-incrustaciones usan `text-embedding-3-small` con 1536 dimensiones; la generación se
+Está en vivo, y lo estás mirando — el chat de esta página lo sirve el Worker. Los
+embeddings usan `text-embedding-3-small` con 1536 dimensiones; la generación se
 transmite en streaming. Es un ejemplo pequeño y honesto de RAG en producción: respuestas
 fundamentadas, streaming de tokens y las barreras que hacen que un endpoint de IA público
 sea aburrido de operar.

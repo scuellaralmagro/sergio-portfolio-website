@@ -159,10 +159,10 @@ export const ui = {
     'showcase.sourcePost': ' — mi entrenador de IA full-stack de entrenamiento y nutrición.',
     'showcase.diagram1Title': 'Orquestación multiagente',
     'showcase.diagram1Caption':
-      'Un supervisor de LangGraph clasifica cada mensaje y lo enruta a uno de seis especialistas — programación de un solo entrenamiento o de la semana completa, actualización de perfil, el subgrafo de nutrición, análisis post-entrenamiento o conversación general. La programación fundamenta los planes en un almacén RAG con pgvector y en servicios deterministas (1RM, fatiga, TDEE); el análisis lee el historial relacional de entrenamientos; la nutrición se confirma con una persona en el bucle. El estado de la conversación persiste mediante un checkpointer de Postgres y las respuestas se transmiten token a token por SSE.',
+      'Un supervisor de LangGraph clasifica cada mensaje y lo enruta a uno de seis especialistas — programación de un solo entrenamiento o de la semana completa, actualización de perfil, el subgrafo de nutrición, análisis post-entrenamiento o conversación general. La programación fundamenta los planes en un almacén RAG con pgvector y en servicios deterministas (1RM, fatiga, TDEE); el análisis lee el historial relacional de entrenamientos; la nutrición se confirma con validación humana. El estado de la conversación persiste mediante un checkpointer de Postgres y las respuestas se transmiten token a token por SSE.',
     'showcase.diagram2Title': 'Pipeline de recuperación RAG',
     'showcase.diagram2Caption':
-      'El conocimiento de referencia (kinesiología, nutrición) se incrusta y almacena una vez; en tiempo de consulta la pregunta se incrusta, se compara con un índice HNSW de pgvector y los fragmentos más relevantes fundamentan la respuesta del modelo — sin conjeturas infundadas.',
+      'El conocimiento de referencia (kinesiología, nutrición) se vectoriza y almacena una vez; en tiempo de consulta la pregunta se vectoriza, se compara con un índice HNSW de pgvector y los fragmentos más relevantes fundamentan la respuesta del modelo — sin conjeturas infundadas.',
 
     // Ask portfolio
     'ask.eyebrow': 'Pregunta a mi portfolio',

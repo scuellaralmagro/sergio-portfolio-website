@@ -70,7 +70,7 @@ export const experience: Record<Locale, ExperienceEntry[]> = {
       company: 'BoosterPrompt',
       period: 'Jun 2025 – Mar 2026',
       highlights: [
-        'Construí un sistema de reservas conversacional multiagente con LangChain y LangGraph, orquestando el uso de herramientas entre agentes especializados.',
+        'Construí un sistema de reservas conversacional multiagente con LangChain y LangGraph, orquestando el uso de tools entre agentes especializados.',
         'Entregué reservas por WhatsApp de extremo a extremo a través de la API de Meta, llevando el sistema a usuarios reales en producción.',
         'Reforcé la fiabilidad de los agentes con ingeniería de prompts sistemática.',
         'Desarrollé el backend y los flujos de datos en Node.js, cubiertos con tests unitarios y de integración en Vitest.',
@@ -179,8 +179,8 @@ export const expertise: Record<Locale, ExpertiseCluster[]> = {
       skills: [
         'LangGraph',
         'LangChain',
-        'Enrutado multiagente',
-        'Uso de herramientas',
+        'Enrutamiento multiagente',
+        'Tool use',
         'Agentes con estado (memoria)',
         'Human-in-the-loop',
       ],

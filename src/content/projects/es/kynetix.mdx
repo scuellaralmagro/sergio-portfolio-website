@@ -47,7 +47,7 @@ como para entrenar de verdad con él.
     subgrafo de nutrición, análisis post-entrenamiento o conversación general. La programación
     fundamenta los planes en un almacén RAG con pgvector y en servicios deterministas (1RM, fatiga,
     TDEE); el análisis lee el historial relacional de entrenamientos; la nutrición se confirma con
-    una persona en el bucle.
+    validación humana.
   </figcaption>
 </figure>
 
@@ -58,8 +58,8 @@ como para entrenar de verdad con él.
   general, análisis de entrenamiento (consciente de una sesión en curso si la hay),
   actualización de perfil, una rama de entrenamiento (planes de una sola sesión y
   generación de programas completos de varios días) y un subgrafo de nutrición de doble
-  vía (registro semántico, confirmación con persona en el bucle y registro manual).
-- **RAG.** Las consultas se incrustan (OpenAI `text-embedding-3-small`) y se comparan
+  vía (registro semántico, confirmación con validación humana y registro manual).
+- **RAG.** Las consultas se vectorizan (OpenAI `text-embedding-3-small`) y se comparan
   contra una base de conocimiento mediante un **índice HNSW por coseno en pgvector**; el
   contexto recuperado fundamenta las respuestas de entrenamiento del modelo.
 - **Memoria.** El estado de la conversación persiste mediante un checkpointer
@@ -76,14 +76,14 @@ como para entrenar de verdad con él.
 
 Diseñado y construido de extremo a extremo, en solitario. Las decisiones que importaron:
 
-- **LangGraph en lugar de un único megaprompt.** El enrutado explícito del supervisor más
+- **LangGraph en lugar de un único megaprompt.** El enrutamiento explícito del supervisor más
   los nodos especializados mantiene cada paso testeable y el comportamiento del agente
   legible — y cada nodo es trazable en Langfuse.
 - **Mantener la lógica determinista fuera del LLM.** 1RM, volumen y TDEE son código exacto;
   el modelo orquesta y explica, no hace la aritmética.
 - **Una sola base de datos para lo relacional _y_ lo vectorial.** pgvector en lugar de un
   almacén vectorial aparte mantiene el stack simple y transaccional.
-- **Persona en el bucle en las escrituras de nutrición** para no registrar en silencio algo
+- **Validación humana en las escrituras de nutrición** para no registrar en silencio algo
   incorrecto.
 - **Higiene de producción:** hasheo de contraseñas con argon2, cookies de sesión en Redis,
   migraciones de Alembic aplicadas al arranque y un catálogo de ~870 ejercicios cargado en
