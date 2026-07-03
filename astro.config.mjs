@@ -13,6 +13,11 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig({
   site: 'https://sergiocuellar.dev',
   output: 'static',
+  i18n: {
+    defaultLocale: 'en',
+    locales: ['en', 'es'],
+    routing: { prefixDefaultLocale: false },
+  },
   integrations: [
     react(),
     mdx(),

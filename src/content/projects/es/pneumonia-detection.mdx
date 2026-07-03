@@ -1,0 +1,51 @@
+---
+title: 'Detección de Neumonía en Radiografías de Tórax'
+summary: 'Un pipeline de deep learning que clasifica radiografías de tórax como normales o con neumonía, con mapas de calor Grad-CAM para la explicabilidad.'
+role: 'En solitario — ML / visión por computador'
+stack:
+  - Python
+  - Keras (backend PyTorch)
+  - OpenCV
+  - MobileNetV2
+  - Grad-CAM
+repo: 'https://github.com/scuellaralmagro/chest-xray-pneumonia-classifier'
+order: 3
+featured: true
+---
+
+## Problema
+
+Leer radiografías de tórax en busca de neumonía es una tarea repetitiva y de gran volumen.
+Un clasificador puede ayudar en el triaje — pero para cualquier cosa que toque imágenes
+clínicas, una predicción no basta: necesitas ver *por qué* el modelo decidió lo que
+decidió.
+
+## Enfoque
+
+- **Datos.** El conjunto Chest X-Ray Pneumonia de Kaggle (~5.863 imágenes). El split de
+  validación que trae es diminuto (16 imágenes), así que se recorta un conjunto de
+  validación adecuado a partir del entrenamiento, y unos **pesos de clase** contrarrestan el
+  fuerte desbalance normal/neumonía.
+- **Preprocesado con OpenCV** — mejora de contraste CLAHE, redimensionado, normalización.
+  El aumento de datos es deliberadamente conservador: **sin volteos**, porque las
+  radiografías de tórax tienen una orientación anatómica fija (una imagen espejada es
+  anatómicamente imposible).
+- **Dos modelos, comparados:** una CNN desde cero como referencia, y **transfer learning
+  con MobileNetV2** con fine-tuning.
+- **Keras sobre un backend de PyTorch** para obtener aceleración por GPU en Windows (RTX
+  4070 Super), ya que TensorFlow puro ya no soporta la GPU ahí.
+- **Explicabilidad:** los mapas de calor Grad-CAM resaltan las regiones que impulsan cada
+  predicción.
+
+## Mi papel y decisiones
+
+Construido en solitario. Las decisiones que merece la pena destacar: un aumento de datos
+conservador que respeta la anatomía; ponderación de clases en lugar de remuestreo para el
+desbalance; transfer learning para superar la referencia desde cero; y Grad-CAM para que el
+modelo sea inspeccionable en vez de una caja negra.
+
+## Resultado
+
+Un pipeline reproducible de entrenamiento y evaluación —puntos de entrada `train`,
+`evaluate` y `gradcam` más un notebook paso a paso— que compara ambos modelos y produce
+matrices de confusión, curvas ROC y mapas de calor Grad-CAM interpretables.

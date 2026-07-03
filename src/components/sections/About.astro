@@ -15,34 +15,26 @@ import { Picture } from 'astro:assets';
 import Section from './Section.astro';
 import SectionHeader from '../primitives/SectionHeader.astro';
 import { site } from '../../data/site';
+import { useTranslations, type Locale } from '../../i18n/utils';
 import portraitImg from '../../assets/portrait.jpg';
 
 const portrait: ImageMetadata | null = portraitImg;
+const locale = (Astro.currentLocale ?? 'en') as Locale;
+const t = useTranslations(locale);
 ---
 
 <Section id="about" align="left">
   <div class="about-grid">
     <div class="about-main">
       <SectionHeader
-        eyebrow="About"
-        title="Who I am"
-        subtitle="An AI/LLM engineer who turns manual processes into scalable agentic architectures."
+        eyebrow={t('about.eyebrow')}
+        title={t('about.title')}
+        subtitle={t('about.subtitle')}
         align="left"
       />
       <div class="prose">
-        <p>
-          I build the systems that make AI <em>act</em> — multi-agent orchestrations and
-          retrieval pipelines that move from prototype to production. My focus is agentic
-          design with LangChain and LangGraph, RAG over Postgres and pgvector, and the
-          prompt engineering that makes all of it reliable enough to put in front of real
-          users over channels like WhatsApp.
-        </p>
-        <p>
-          Underneath the AI work is a full-stack and data foundation — Python, TypeScript,
-          Node, and React, plus the database and automation tooling to wire services
-          together end-to-end. It means I can take an idea from architecture through
-          deployment myself, rather than stopping at the demo.
-        </p>
+        <p set:html={t('about.p1')} />
+        <p set:html={t('about.p2')} />
       </div>
     </div>
 

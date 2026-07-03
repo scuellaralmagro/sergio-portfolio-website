@@ -9,6 +9,10 @@ import ConstellationField from '../primitives/ConstellationField.astro';
 import Button from '../primitives/Button.astro';
 import Badge from '../primitives/Badge.astro';
 import { site } from '../../data/site';
+import { useTranslations, type Locale } from '../../i18n/utils';
+
+const locale = (Astro.currentLocale ?? 'en') as Locale;
+const t = useTranslations(locale);
 ---
 
 <section id="hero" class="hero">
@@ -18,16 +22,15 @@ import { site } from '../../data/site';
       <Badge icon="sparkle">{site.role}</Badge>
     </span>
     <h1 class="headline" data-reveal style="--reveal-delay: 80ms">
-      I orchestrate AI agents into<br />
-      <span class="text-cosmic">systems that ship.</span>
+      {t('hero.headline.a')}<br />
+      <span class="text-cosmic">{t('hero.headline.b')}</span>
     </h1>
     <p class="sub" data-reveal style="--reveal-delay: 160ms">
-      Agentic systems, LangGraph orchestration, and RAG architectures — designed, built, and
-      deployed in production.
+      {t('hero.sub')}
     </p>
     <div class="cta-row" data-reveal style="--reveal-delay: 240ms">
-      <Button href="#projects" data-magnetic>View my work</Button>
-      <Button variant="ghost" href="#contact">Get in touch</Button>
+      <Button href="#projects" data-magnetic>{t('hero.ctaWork')}</Button>
+      <Button variant="ghost" href="#contact">{t('hero.ctaContact')}</Button>
     </div>
   </div>
 </section>

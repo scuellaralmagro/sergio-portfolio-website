@@ -1,0 +1,58 @@
+---
+/**
+ * LangToggle — minimal EN | ES switch. Each side links to the equivalent path
+ * in the other locale; the active locale is marked and non-interactive. Clicking
+ * sets a 1-year `lang` cookie so the first-visit detection script (BaseLayout)
+ * never overrides an explicit choice. Framework-free.
+ */
+import { localizedPath, useTranslations, type Locale } from '../../i18n/utils';
+
+const locale = (Astro.currentLocale ?? 'en') as Locale;
+const t = useTranslations(locale);
+const path = Astro.url.pathname;
+const enHref = localizedPath(path, 'en');
+const esHref = localizedPath(path, 'es');
+---
+
+<div class="lang" role="group" aria-label={t('lang.toggleLabel')}>
+  <a href={enHref} data-lang="en" aria-current={locale === 'en' ? 'true' : undefined}>
+    {t('lang.en')}
+  </a>
+  <span class="sep" aria-hidden="true">|</span>
+  <a href={esHref} data-lang="es" aria-current={locale === 'es' ? 'true' : undefined}>
+    {t('lang.es')}
+  </a>
+</div>
+
+<script>
+  // Persist the explicit choice so detection won't override it next visit.
+  document.querySelectorAll<HTMLAnchorElement>('.lang a[data-lang]').forEach((a) => {
+    a.addEventListener('click', () => {
+      document.cookie = `lang=${a.dataset.lang}; path=/; max-age=31536000; SameSite=Lax`;
+    });
+  });
+</script>
+
+<style>
+  .lang {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-8);
+    font-size: 13px;
+    white-space: nowrap;
+  }
+  .lang a {
+    color: var(--color-ash);
+    text-decoration: none;
+    transition: color 0.18s ease;
+  }
+  .lang a:hover {
+    color: var(--color-lilac-white);
+  }
+  .lang a[aria-current='true'] {
+    color: var(--color-lavender-accent);
+  }
+  .sep {
+    color: var(--color-iris);
+  }
+</style>

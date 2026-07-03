@@ -6,16 +6,20 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Button from '../components/primitives/Button.astro';
 import StarField from '../components/primitives/StarField.astro';
+import { useTranslations, type Locale } from '../i18n/utils';
+
+const locale = (Astro.currentLocale ?? 'en') as Locale;
+const t = useTranslations(locale);
 ---
 
-<BaseLayout title="Page not found" noindex>
+<BaseLayout title={t('notFound.pageTitle')} noindex>
   <main id="main" class="notfound">
     <StarField count={80} class="nf-stars" />
     <div class="nf-inner">
       <p class="code text-cosmic">404</p>
-      <h1>Lost in the void</h1>
-      <p class="msg">This page drifted out of orbit. Let's get you back on course.</p>
-      <Button href="/">Return home</Button>
+      <h1>{t('notFound.title')}</h1>
+      <p class="msg">{t('notFound.msg')}</p>
+      <Button href="/">{t('notFound.home')}</Button>
     </div>
   </main>
 </BaseLayout>

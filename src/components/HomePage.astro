@@ -1,0 +1,56 @@
+---
+/**
+ * HomePage — shared single-page body for both the English (`/`) and Spanish
+ * (`/es/`) home routes. Sections resolve their own copy from
+ * `Astro.currentLocale`, so this takes no props. The flagship-projects JSON-LD
+ * (ItemList) is computed for the active locale and emitted inline.
+ */
+import { getCollection } from 'astro:content';
+import NavPill from './primitives/NavPill.astro';
+import Hero from './sections/Hero.astro';
+import About from './sections/About.astro';
+import Expertise from './sections/Expertise.astro';
+import AIShowcase from './sections/AIShowcase.astro';
+import AskPortfolio from './sections/AskPortfolio.astro';
+import Projects from './sections/Projects.astro';
+import Experience from './sections/Experience.astro';
+import Contact from './sections/Contact.astro';
+import Footer from './sections/Footer.astro';
+import { site } from '../data/site';
+import { localizedPath, type Locale } from '../i18n/utils';
+
+const locale = (Astro.currentLocale ?? 'en') as Locale;
+
+// ItemList of the flagship projects (ULTRAPLAN §10) — mirrors the home grid
+// (current locale, non-draft, by order) for recruiters/AI crawlers.
+const projects = (await getCollection('projects', ({ data }) => !data.draft))
+  .filter((entry) => entry.id.startsWith(`${locale}/`))
+  .sort((a, b) => a.data.order - b.data.order);
+const projectListSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: 'Flagship projects',
+  itemListElement: projects.map((entry, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    url: new URL(localizedPath(`/projects/${entry.id.replace(/^(en|es)\//, '')}`, locale), site.url)
+      .href,
+    name: entry.data.title,
+    description: entry.data.summary,
+  })),
+};
+---
+
+<script is:inline type="application/ld+json" set:html={JSON.stringify(projectListSchema)} />
+<NavPill />
+<main id="main">
+  <Hero />
+  <About />
+  <Expertise />
+  <AIShowcase />
+  <AskPortfolio />
+  <Projects />
+  <Experience />
+  <Contact />
+</main>
+<Footer />

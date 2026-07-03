@@ -1,0 +1,71 @@
+---
+title: 'Predicción de Rotación de Empleados de IBM'
+summary: 'Un duelo de cinco modelos con scikit-learn para predecir quién se irá en el dataset de RR. HH. de IBM — y una mirada honesta a por qué el 89% de precisión es el titular equivocado cuando solo el 16% de los empleados se van.'
+role: 'En solitario — ML / datos'
+stack:
+  - Python
+  - scikit-learn
+  - pandas
+  - NumPy
+  - Matplotlib / Seaborn
+  - Jupyter
+repo: 'https://github.com/scuellaralmagro/employee_attrition_ibm'
+order: 5
+featured: true
+---
+
+## Problema
+
+La rotación es cara — reemplazar a alguien cuesta meses de salario y memoria institucional.
+La tarea parece una clasificación binaria limpia: predecir, a partir del perfil de un
+empleado, si se marchará. Lo interesante no es construir el modelo; es negarse a que te
+engañe la métrica que hace que un mal modelo parezca bueno.
+
+## Los datos
+
+- **IBM HR Analytics** (Kaggle, un conjunto ficticio creado por IBM): **1.470 empleados, 35
+  atributos** cada uno — salario, antigüedad, puesto, puntuaciones de satisfacción,
+  desplazamiento, horas extra.
+- **Muy desbalanceado:** solo **~16% de los empleados se fueron.** Ese único dato condiciona
+  cada decisión de modelado, porque un modelo que predice «no se va nadie» ya acierta ~84%
+  siendo completamente inútil.
+- Datos limpios (sin valores ausentes), pero tres columnas constantes (`EmployeeCount`,
+  `Over18`, `StandardHours`) y una columna de ID no aportan señal y se descartan.
+
+## Lo que mostró el EDA
+
+Antes de cualquier modelado, el análisis exploratorio sacó a la luz los verdaderos motores
+de la rotación:
+
+- Las **horas extra** son la señal individual más fuerte — quienes las hacen se van al
+  **~30%**.
+- Los **Comerciales (Sales Representatives)** son los que más rotan, al **~40%**; los
+  managers y directores de investigación apenas se mueven.
+- Los **empleados más jóvenes**, los **desplazamientos largos** y los **viajes frecuentes**
+  inclinan todos hacia la marcha.
+
+## Pipeline
+
+Un script de ETL hace el trabajo poco lucido — descartar las columnas muertas, codificar en
+binario los campos de dos valores (`Gender`, `OverTime` y la variable objetivo
+`Attrition`), aplicar one-hot al resto — y escribe un CSV procesado limpio. Después, un
+split 80/20, `StandardScaler` y **`RandomizedSearchCV`** para ajustar **cinco** modelos:
+Regresión Logística, Árbol de Decisión, Gradient Boosting, SVM y KNN.
+
+## La métrica que importa
+
+Todos los modelos rondaron el **85–89% de precisión** — y esa cifra es una trampa. Con una
+clase positiva rara, la precisión premia al modelo por ignorar justo a las personas que
+intentas encontrar. Así que el marcador real es la **exhaustividad** (de quienes se fueron,
+¿a cuántos captamos?) y el **F1**. En esas, **ganó la Regresión Logística**: F1 **0,59**,
+exhaustividad **0,46**, ROC-AUC **0,72**, superando por poco al Gradient Boosting — y, al
+ser mucho más barata de entrenar y servir, es la que se desplegó (exportada con `joblib`,
+envuelta en una pequeña CLI `predict.py`).
+
+## Resultado y limitaciones honestas
+
+El modelo ganador aún capta **menos de la mitad** de quienes realmente se van — útil como
+señal de triaje, no como veredicto. Esa es la conclusión honesta, y el siguiente paso
+claro: atacar el desbalance de frente con **pesos de clase, remuestreo (SMOTE) y ajuste del
+umbral de decisión**, cambiando un poco de precisión por la exhaustividad que aquí de
+verdad importa.

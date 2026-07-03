@@ -8,24 +8,29 @@ import Section from './Section.astro';
 import Card from '../primitives/Card.astro';
 import TextLink from '../primitives/TextLink.astro';
 import { getCollection } from 'astro:content';
+import { useTranslations, localizedPath, type Locale } from '../../i18n/utils';
 
-const projects = (await getCollection('projects', ({ data }) => !data.draft)).sort(
-  (a, b) => a.data.order - b.data.order,
-);
+const locale = (Astro.currentLocale ?? 'en') as Locale;
+const t = useTranslations(locale);
+
+const projects = (await getCollection('projects', ({ data }) => !data.draft))
+  .filter((entry) => entry.id.startsWith(`${locale}/`))
+  .sort((a, b) => a.data.order - b.data.order);
 ---
 
 <Section
   id="projects"
-  eyebrow="Projects"
+  eyebrow={t('projects.eyebrow')}
   eyebrowIcon="layers"
-  title="Flagship work"
-  subtitle="Selected projects I designed and built — from agentic systems to deep-learning vision and NLP."
+  title={t('projects.title')}
+  subtitle={t('projects.subtitle')}
 >
   <div class="grid">
     {
       projects.map((entry) => {
         const { title, summary, stack, repo, live, note } = entry.data;
-        const href = `/projects/${entry.id}`;
+        const slug = entry.id.replace(/^(en|es)\//, '');
+        const href = localizedPath(`/projects/${slug}`, locale);
         return (
           <Card class="project" strong as="article" data-tilt>
             <div class="project-body">
@@ -40,17 +45,17 @@ const projects = (await getCollection('projects', ({ data }) => !data.draft)).so
               </ul>
             </div>
             <div class="project-foot">
-              <TextLink href={href}>Case study</TextLink>
+              <TextLink href={href}>{t('projects.caseStudy')}</TextLink>
               {repo ? (
                 <TextLink href={repo} external>
-                  Code
+                  {t('projects.code')}
                 </TextLink>
               ) : (
                 note && <span class="note">{note}</span>
               )}
               {live && (
                 <TextLink href={live} external>
-                  Live
+                  {t('projects.live')}
                 </TextLink>
               )}
             </div>

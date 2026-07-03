@@ -1,4 +1,5 @@
 import type { RefObject } from 'react';
+import type { ConsoleStrings } from './i18n';
 
 interface ComposerProps {
   value: string;
@@ -8,6 +9,7 @@ interface ComposerProps {
   canReset: boolean;
   onReset: () => void;
   inputRef: RefObject<HTMLInputElement | null>;
+  strings: ConsoleStrings;
 }
 
 export default function Composer({
@@ -18,6 +20,7 @@ export default function Composer({
   canReset,
   onReset,
   inputRef,
+  strings,
 }: ComposerProps) {
   return (
     <div className="composer-row">
@@ -29,7 +32,7 @@ export default function Composer({
         }}
       >
         <label className="sr-only" htmlFor="ai-input">
-          Ask a question about Sergio
+          {strings.inputLabel}
         </label>
         <input
           id="ai-input"
@@ -37,7 +40,7 @@ export default function Composer({
           className="input"
           type="text"
           value={value}
-          placeholder="Ask about Sergio…"
+          placeholder={strings.inputPlaceholder}
           autoComplete="off"
           disabled={streaming}
           onChange={(e) => onChange(e.target.value)}
@@ -45,7 +48,7 @@ export default function Composer({
         <button
           type="submit"
           className="send"
-          aria-label="Send"
+          aria-label={strings.sendLabel}
           disabled={streaming || value.trim() === ''}
         >
           <span aria-hidden="true">{streaming ? '…' : '↑'}</span>
@@ -53,7 +56,7 @@ export default function Composer({
       </form>
       {canReset && (
         <button type="button" className="reset" onClick={onReset} disabled={streaming}>
-          New conversation
+          {strings.reset}
         </button>
       )}
     </div>

@@ -7,17 +7,21 @@
 import Section from './Section.astro';
 import Card from '../primitives/Card.astro';
 import AIConsole from '../islands/AIConsole.tsx';
+import { useTranslations, type Locale } from '../../i18n/utils';
+
+const locale = (Astro.currentLocale ?? 'en') as Locale;
+const t = useTranslations(locale);
 ---
 
 <Section
   id="ask-portfolio"
-  eyebrow="Ask my portfolio"
+  eyebrow={t('ask.eyebrow')}
   eyebrowIcon="sparkle"
-  title="Ask my portfolio"
-  subtitle="A live RAG assistant, grounded in my real experience — the architecture above, working."
+  title={t('ask.title')}
+  subtitle={t('ask.subtitle')}
 >
   <Card strong padding="lg" class="ask-card">
-    <AIConsole client:visible />
+    <AIConsole client:visible lang={locale} />
   </Card>
 </Section>
 

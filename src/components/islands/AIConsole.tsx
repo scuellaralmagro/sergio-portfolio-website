@@ -7,16 +7,12 @@ import { useTurnstile } from './useTurnstile';
 import HeroIdle from './console/HeroIdle';
 import Transcript from './console/Transcript';
 import Composer from './console/Composer';
+import { consoleUi, type ConsoleLang } from './console/i18n';
 
 const SITE_KEY = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
 
-const STARTERS = [
-  "What's Sergio's RAG experience?",
-  'Tell me about the Kynetix project',
-  'Is Sergio available for work?',
-];
-
-export default function AIConsole() {
+export default function AIConsole({ lang = 'en' }: { lang?: ConsoleLang }) {
+  const s = consoleUi[lang];
   const [state, dispatch] = useReducer(reducer, initialState);
   const [input, setInput] = useState('');
   const { containerRef, getToken } = useTurnstile(SITE_KEY);
@@ -45,7 +41,7 @@ export default function AIConsole() {
       dispatch({
         type: 'streamError',
         code: 'server_error',
-        message: 'Something went wrong. Please try again, or email info@sergiocuellar.dev.',
+        message: s.errorGeneric,
       });
     } finally {
       inputRef.current?.focus();
@@ -73,11 +69,17 @@ export default function AIConsole() {
                   status={state.status}
                   sources={state.sources}
                   errorMessage={state.errorMessage}
+                  strings={s}
                 />
               </motion.div>
             ) : (
               <motion.div key="hero" className="stage-pane" {...fade}>
-                <HeroIdle starters={STARTERS} onPick={(q) => void ask(q)} />
+                <HeroIdle
+                  starters={s.starters}
+                  label={s.heroLabel}
+                  contactPre={s.heroContactPre}
+                  onPick={(q) => void ask(q)}
+                />
               </motion.div>
             )}
           </AnimatePresence>
@@ -94,6 +96,7 @@ export default function AIConsole() {
             dispatch({ type: 'reset' });
           }}
           inputRef={inputRef}
+          strings={s}
         />
       </LayoutGroup>
 

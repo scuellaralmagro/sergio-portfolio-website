@@ -20,23 +20,28 @@ import {
   ragNodes,
   ragEdges,
 } from '../../data/diagrams';
+import { useTranslations, localizedPath, type Locale } from '../../i18n/utils';
+
+const locale = (Astro.currentLocale ?? 'en') as Locale;
+const t = useTranslations(locale);
 ---
 
 <Section
   id="ai-showcase"
-  eyebrow="AI Showcase"
+  eyebrow={t('showcase.eyebrow')}
   eyebrowIcon="workflow"
-  title="How I build agentic systems"
-  subtitle="The real architectures behind my work — agents are stars, orchestration is the lines between them."
+  title={t('showcase.title')}
+  subtitle={t('showcase.subtitle')}
 >
   <p class="diagrams-source">
-    Both are the real architecture behind <a href="/projects/kynetix">Kynetix</a> — my
-    full-stack AI training &amp; nutrition coach.
+    {t('showcase.sourcePre')}<a href={localizedPath('/projects/kynetix', locale)}
+      >{t('showcase.sourceLink')}</a
+    >{t('showcase.sourcePost')}
   </p>
 
   <div class="diagrams">
     <figure class="diagram">
-      <h3 class="diagram-title">Multi-agent orchestration</h3>
+      <h3 class="diagram-title">{t('showcase.diagram1Title')}</h3>
       <Card strong class="panel">
         <ArchDiagram
           client:idle
@@ -46,18 +51,11 @@ import {
           viewHeight={440}
         />
       </Card>
-      <figcaption>
-        A LangGraph supervisor classifies each message and routes it to one of six specialists
-        — single-workout or full-week programming, profile updates, the nutrition sub-graph,
-        post-workout analysis, or general chat. Programming grounds plans in a pgvector RAG
-        store and deterministic services (1RM, fatigue, TDEE); analysis reads the relational
-        workout history; nutrition commits via a human-in-the-loop confirm. Conversation state
-        persists through a Postgres checkpointer and replies stream token-by-token over SSE.
-      </figcaption>
+      <figcaption>{t('showcase.diagram1Caption')}</figcaption>
     </figure>
 
     <figure class="diagram">
-      <h3 class="diagram-title">RAG retrieval pipeline</h3>
+      <h3 class="diagram-title">{t('showcase.diagram2Title')}</h3>
       <Card strong class="panel">
         <ArchDiagram
           client:idle
@@ -67,11 +65,7 @@ import {
           viewHeight={158}
         />
       </Card>
-      <figcaption>
-        Reference knowledge (kinesiology, nutrition) is embedded and stored once; at query
-        time the question is embedded, matched against a pgvector HNSW index, and the top-k
-        chunks ground the model's answer — no ungrounded guessing.
-      </figcaption>
+      <figcaption>{t('showcase.diagram2Caption')}</figcaption>
     </figure>
   </div>
 </Section>
