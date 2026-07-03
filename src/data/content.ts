@@ -54,7 +54,7 @@ export const experience: Record<Locale, ExperienceEntry[]> = {
   ],
   es: [
     {
-      role: 'Desarrollador de Automatización con IA',
+      role: 'AI Automation Developer',
       company: 'Simply Trade IN',
       period: 'Nov 2025 – Mar 2026',
       highlights: [
@@ -78,7 +78,7 @@ export const experience: Record<Locale, ExperienceEntry[]> = {
       ],
     },
     {
-      role: 'Desarrollador Web y Analista de Datos',
+      role: 'Diseñador Web y Analista de Datos',
       company: 'Freelance',
       period: 'Mar 2023 – Nov 2025',
       highlights: [
@@ -180,7 +180,7 @@ export const expertise: Record<Locale, ExpertiseCluster[]> = {
         'LangGraph',
         'LangChain',
         'Enrutamiento multiagente',
-        'Tool use',
+        'Uso de tools',
         'Agentes con estado (memoria)',
         'Human-in-the-loop',
       ],
@@ -197,11 +197,11 @@ export const expertise: Record<Locale, ExpertiseCluster[]> = {
       icon: 'workflow',
       skills: [
         'Ingeniería de prompts',
-        'Evaluaciones (LLM como juez)',
+        'Evaluaciones (LLM-as-a-judge)',
         'Observabilidad (Langfuse)',
         'Streaming SSE',
       ],
-      flagships: ['Ingeniería de prompts', 'Evaluaciones (LLM como juez)'],
+      flagships: ['Ingeniería de prompts', 'Evaluaciones (LLM-as-a-judge)'],
     },
     {
       name: 'Machine Learning y Ciencia de Datos',
@@ -210,7 +210,7 @@ export const expertise: Record<Locale, ExpertiseCluster[]> = {
         'scikit-learn',
         'PyTorch / Keras',
         'Deep learning (CNNs)',
-        'Visión por computador (OpenCV)',
+        'Visión artificial (OpenCV)',
         'NLP (NLTK)',
         'Grad-CAM (explicabilidad)',
         'Pandas',
