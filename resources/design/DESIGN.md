@@ -3,7 +3,7 @@
 
 **Theme:** dark
 
-Reflect Notes is a starlit thinking environment: near-black canvas tinted with violet (#030014), illuminated text in a soft lavender-white, and a single vivid lavender accent (#9382ff) that functions as a point of focus against the dark. The interface stays monochromatic and quiet — surfaces are separated by inset rim-light glows rather than borders or elevation shadows, giving components the feel of dark glass panels catching ambient light. Display headlines use AeonikPro at weight 500 (deliberately medium, not bold), creating a calm editorial voice rather than marketing bombast. A pastel pink-to-violet-to-blue gradient is reserved exclusively for accent text and decorative strokes — never for large fills. Components are compact and tight: 5px button radii, 16px card radii, 4px base spacing. The whole system reads as a constellation map, not a dashboard.
+Reflect Notes is a starlit thinking environment: near-black canvas tinted with violet (#030014), illuminated text in a soft lavender-white, and a single vivid lavender accent (#9382ff) that functions as a point of focus against the dark. The interface stays monochromatic and quiet — surfaces are separated by inset rim-light glows rather than borders or elevation shadows, giving components the feel of dark glass panels catching ambient light. Display headlines use DM Sans at weight 500 (deliberately medium, not bold), creating a calm editorial voice rather than marketing bombast. A pastel pink-to-violet-to-blue gradient is reserved exclusively for accent text and decorative strokes — never for large fills. Components are compact and tight: 5px button radii, 16px card radii, 4px base spacing. The whole system reads as a constellation map, not a dashboard.
 
 ## Tokens — Colors
 
@@ -26,8 +26,8 @@ Reflect Notes is a starlit thinking environment: near-black canvas tinted with v
 
 ## Tokens — Typography
 
-### AeonikPro — Display and heading typeface used exclusively for headings at 24px+ — weight 500 (medium) instead of the conventional 600–800 creates an editorial, restrained voice. The medium weight at 56–72px is the signature choice: other brands shout, Reflect whispers · `--font-aeonikpro`
-- **Substitute:** Aeonik, Inter, or DM Sans
+### DM Sans — Display and heading typeface used exclusively for headings at 24px+ — weight 500 (medium) instead of the conventional 600–800 creates an editorial, restrained voice. The medium weight at 56–72px is the signature choice: other brands shout, Reflect whispers · `--font-dm-sans`
+- **Substitute:** Inter
 - **Weights:** 500
 - **Sizes:** 24px, 32px, 48px, 56px, 72px
 - **Line height:** 1.11–1.33
@@ -143,7 +143,7 @@ Full-width app screenshot embedded in hero, showing the notes editor with sideba
 ### Feature Card
 **Role:** Individual feature in 4-column grid
 
-Minimal card with 16px padding, no visible background or border. Contains: outlined icon (stroke-only, 1.5px, #f4f0ff) at top-left, then AeonikPro 500 at 18–20px title in Lilac White, then Inter V 15px weight 400 description in #918ea0. No card surface — features float directly on canvas.
+Minimal card with 16px padding, no visible background or border. Contains: outlined icon (stroke-only, 1.5px, #f4f0ff) at top-left, then DM Sans 500 at 18–20px title in Lilac White, then Inter V 15px weight 400 description in #918ea0. No card surface — features float directly on canvas.
 
 ### Feature Icon
 **Role:** Icon component for feature cards
@@ -158,7 +158,7 @@ Minimal card with 16px padding, no visible background or border. Contains: outli
 ### Section Header
 **Role:** Title block for each page section
 
-Centered, AeonikPro 500 at 48–56px, Lilac White #f4f0ff. Subtitle in Inter V 18px weight 400 #918ea0 below. Sometimes preceded by a small pill badge (e.g. "Wall of love", "Reflect AI") in the AI Badge style.
+Centered, DM Sans 500 at 48–56px, Lilac White #f4f0ff. Subtitle in Inter V 18px weight 400 #918ea0 below. Sometimes preceded by a small pill badge (e.g. "Wall of love", "Reflect AI") in the AI Badge style.
 
 ### Text Link with Chevron
 **Role:** Inline navigation or CTA link
@@ -179,7 +179,7 @@ Thin horizontal or vertical line using the Aurora gradient — transparent at en
 
 ### Do
 - Set body text in Inter V weight 400 at 16px/1.50, color #a8a6b7 or #f4f0ff — never use pure #ffffff for body copy, the lavender cast in #f4f0ff is intentional
-- Use AeonikPro weight 500 at 48–72px for all headings — do not bold up to 600/700, the medium weight IS the brand
+- Use DM Sans weight 500 at 48–72px for all headings — do not bold up to 600/700, the medium weight IS the brand
 - Use 5px border-radius for all buttons, inputs, and interactive elements; 16px for all cards and containers; 32px for pill badges; 999px only for the nav container
 - Apply inset white glow (rgba(255,255,255,0.04–0.06) 0px 0px 24px 0px inset) to elevated surfaces instead of drop shadows — this creates the rim-light glass effect
 - Use #9382ff exclusively for links, active states, focus rings, and small accent icons — keep the violet accent sparse, it's punctuation not paint
@@ -228,14 +228,14 @@ Centered max-width ~1200px container with 24–48px horizontal page padding. Nav
 - primary action: no distinct CTA color
 
 **Example Component Prompts**
-1. *Create a centered hero section on #030014 canvas. A 32px-radius pill badge ("AI-powered") with #060317 background, #5046e4 border, Inter V 13px weight 500 in #f4f0ff, and an inset violet glow shadow. Below it, a headline "Think better with [Brand]" in AeonikPro 500 at 72px, #f4f0ff. Subtitle in Inter V 18px weight 400, #a8a6b7. A product screenshot below at 16px border-radius with subtle inset white glow.*
-2. *Create a 4-column feature grid on #030014 canvas. Each cell: outlined icon (1.5px stroke, #f4f0ff, 24px) top-left, then AeonikPro 500 20px title in #f4f0ff, then Inter V 15px weight 400 description in #918ea0. 16px gap between cards, no card backgrounds.*
+1. *Create a centered hero section on #030014 canvas. A 32px-radius pill badge ("AI-powered") with #060317 background, #5046e4 border, Inter V 13px weight 500 in #f4f0ff, and an inset violet glow shadow. Below it, a headline "Think better with [Brand]" in DM Sans 500 at 72px, #f4f0ff. Subtitle in Inter V 18px weight 400, #a8a6b7. A product screenshot below at 16px border-radius with subtle inset white glow.*
+2. *Create a 4-column feature grid on #030014 canvas. Each cell: outlined icon (1.5px stroke, #f4f0ff, 24px) top-left, then DM Sans 500 20px title in #f4f0ff, then Inter V 15px weight 400 description in #918ea0. 16px gap between cards, no card backgrounds.*
 3. *Create a testimonial card: #060317 background, 16px border-radius, 24px padding, inset rgba(255,255,255,0.04) glow shadow. Top: 40px circular avatar. Name in Inter V 15px weight 500 #f4f0ff, handle in Inter V 14px weight 400 #918ea0. Quote in Inter V 15px weight 400 #f4f0ff with @mentions in #9382ff.*
 No distinct primary action color was observed; use the extracted neutral button treatments instead of inventing a filled CTA color.
 
 **Spacing & Type Rules for All Prompts**
 - Base unit: 4px. Element gap: 8–16px. Section gap: 96–120px. Card padding: 24–32px.
-- Headlines: AeonikPro 500 only — never bold. Body: Inter V 400/500. Font features: "calt" 0, "cv10", "liga" 0, "ss01".
+- Headlines: DM Sans 500 only — never bold. Body: Inter V 400/500. Font features: "calt" 0, "cv10", "liga" 0, "ss01".
 - Radii: buttons 5px, cards 16px, badges 32px, nav 999px. Never use 8/10/12px for buttons or 20/24px for cards.
 
 ## Similar Brands
@@ -270,7 +270,7 @@ No distinct primary action color was observed; use the extracted neutral button 
   --gradient-aurora: linear-gradient(180deg, rgba(183,164,251,0) 0%, #b7a4fb 50%, #8562ff 100%, rgba(133,98,255,0) 100%);
 
   /* Typography — Font Families */
-  --font-aeonikpro: 'AeonikPro', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-dm-sans: 'DM Sans', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-inter-v: 'Inter V', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 
   /* Typography — Scale */
@@ -380,7 +380,7 @@ No distinct primary action color was observed; use the extracted neutral button 
   --color-aurora: #7d62ff;
 
   /* Typography */
-  --font-aeonikpro: 'AeonikPro', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-dm-sans: 'DM Sans', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-inter-v: 'Inter V', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 
   /* Typography — Scale */

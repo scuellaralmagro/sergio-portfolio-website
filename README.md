@@ -40,7 +40,7 @@ public/         fonts, favicon, og images, robots.txt
 
 ## Design system
 
-`src/styles/theme.css` is the **verbatim source of truth** for tokens (colors, type, spacing, radii, shadows) in Tailwind v4 `@theme` format. Component styles must reference tokens via `var(--…)` — never hardcode hex/spacing (enforced by Stylelint). Core rules: glassmorphism via **inset rim-light glows** (not drop shadows), AeonikPro 500 headings (never bold), single lavender accent, no semantic colors.
+`src/styles/theme.css` is the **verbatim source of truth** for tokens (colors, type, spacing, radii, shadows) in Tailwind v4 `@theme` format. Component styles must reference tokens via `var(--…)` — never hardcode hex/spacing (enforced by Stylelint). Core rules: glassmorphism via **inset rim-light glows** (not drop shadows), DM Sans 500 headings (never bold), single lavender accent, no semantic colors.
 
 ## Deployment (Cloudflare Workers)
 

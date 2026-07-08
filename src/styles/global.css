@@ -9,27 +9,6 @@
 @import './theme.css';
 
 /* ------------------------------------------------------------------ *
- * AeonikPro — self-hosted heading face (display/headings only; body
- * stays Inter). Regular 400 + Medium 500; headings use 500, the brand's
- * signature weight. font-display: swap renders Inter first, then swaps.
- * ------------------------------------------------------------------ */
-@font-face {
-  font-family: AeonikPro;
-  src: url('/fonts/aeonik-pro-regular.woff2') format('woff2');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: AeonikPro;
-  src: url('/fonts/aeonik-pro-medium.woff2') format('woff2');
-  font-weight: 500;
-  font-style: normal;
-  font-display: swap;
-}
-
-/* ------------------------------------------------------------------ *
  * Decorative gradients — kept as full multi-stop gradients (the
  * @theme token reduces these to a single solid for color utilities).
  * Per the design system: gradients are used ONLY on text and thin
@@ -37,17 +16,16 @@
  * ------------------------------------------------------------------ */
 :root {
   /* Font-family resolution overrides.
-     @fontsource-variable/inter registers the family as 'Inter Variable',
-     so we prepend it to the token stacks (theme.css stays verbatim — this
-     only reflects which face is actually loaded). AeonikPro is now self-hosted
-     (see @font-face above) and resolves first for headings; Inter remains the
-     graceful fallback while the face loads (font-display: swap). */
+     @fontsource-variable/inter and @fontsource-variable/dm-sans register their
+     families as 'Inter Variable' and 'DM Sans Variable', so we prepend those to
+     the token stacks (theme.css stays verbatim — this only reflects which face
+     is actually loaded). */
   --font-inter-v:
     'Inter Variable', 'Inter V', 'Inter', ui-sans-serif, system-ui, -apple-system,
     BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-aeonikpro:
-    'AeonikPro', 'Inter Variable', 'Inter V', 'Inter', ui-sans-serif, system-ui, -apple-system,
-    BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-dm-sans:
+    'DM Sans Variable', 'DM Sans', 'Inter Variable', 'Inter V', 'Inter', ui-sans-serif, system-ui,
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 
   --gradient-cosmic: linear-gradient(90.01deg, #e59cff 0.01%, #ba9cff 50.01%, #9cb2ff 100%);
   --gradient-aurora: linear-gradient(
@@ -103,7 +81,7 @@
   h2,
   h3,
   h4 {
-    font-family: var(--font-aeonikpro);
+    font-family: var(--font-dm-sans);
     font-weight: 500; /* medium — never bold; the medium weight IS the brand */
     color: var(--color-lilac-white);
     margin: 0;

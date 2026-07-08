@@ -5,6 +5,7 @@
  * and the global stylesheet. Keep page components free of <head> concerns.
  */
 import '@fontsource-variable/inter';
+import '@fontsource-variable/dm-sans';
 import '../styles/global.css';
 import { site, personSchema } from '../data/site';
 import { useTranslations, localizedPath, type Locale } from '../i18n/utils';
@@ -81,15 +82,6 @@ const detectScript = `(function(){if(/^\\/es(\\/|$)/.test(location.pathname))ret
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <meta name="generator" content={Astro.generator} />
     <meta name="theme-color" content="#030014" />
-
-    <!-- Preload the heading face (above-the-fold hero headline) -->
-    <link
-      rel="preload"
-      href="/fonts/aeonik-pro-medium.woff2"
-      as="font"
-      type="font/woff2"
-      crossorigin
-    />
 
     <title>{pageTitle}</title>
     <meta name="description" content={resolvedDescription} />
