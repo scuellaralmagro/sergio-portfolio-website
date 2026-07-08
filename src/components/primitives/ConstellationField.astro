@@ -81,7 +81,7 @@ const { class: className, density = 1, reach = 1 } = Astro.props;
         vx: (Math.random() - 0.5) * 0.18,
         vy: (Math.random() - 0.5) * 0.18,
         r: Math.random() * 1.1 + 0.5,
-        a: Math.random() * 0.5 + 0.45,
+        a: Math.random() * 0.5 + 0.55,
         tw: Math.random() * Math.PI * 2,
       }));
       linkDist = Math.min(150, Math.hypot(w, h) / 9) * reach;
@@ -148,7 +148,7 @@ const { class: className, density = 1, reach = 1 } = Astro.props;
           const dy = a.y - b.y;
           const d = Math.hypot(dx, dy);
           if (d < linkDist) {
-            const o = (1 - d / linkDist) * 0.2;
+            const o = (1 - d / linkDist) * 0.26;
             ctx.strokeStyle = `rgba(${line[0]},${line[1]},${line[2]},${o})`;
             ctx.beginPath();
             ctx.moveTo(a.x, a.y);
@@ -159,7 +159,7 @@ const { class: className, density = 1, reach = 1 } = Astro.props;
         if (pointer.on) {
           const d = Math.hypot(a.x - pointer.x, a.y - pointer.y);
           if (d < R) {
-            const o = (1 - d / R) * 0.24;
+            const o = (1 - d / R) * 0.3;
             ctx.strokeStyle = `rgba(${line[0]},${line[1]},${line[2]},${o})`;
             ctx.beginPath();
             ctx.moveTo(a.x, a.y);
