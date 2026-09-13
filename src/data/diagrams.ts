@@ -64,3 +64,50 @@ export const ragEdges: DiagramEdge[] = [
   { from: 'store', to: 'retrieve' },
   { from: 'retrieve', to: 'answer' },
 ];
+
+/**
+ * Agentic Job Engine — the offer side (discovery → embedding prefilter → LLM
+ * rubric) and the Profile side converge on the adaptation draft, whose output
+ * is keys, not prose; a pure validator rejects any key the Profile lacks.
+ * Extraction is folded into the Profile node, and the human review queue and
+ * PDF rendering are carried in the caption to keep the graph legible.
+ */
+export const jobEngineNodes: DiagramNode[] = [
+  { id: 'profile', x: 0, y: 0, label: 'Profile', sub: 'CV → keyed items', kind: 'store' },
+  { id: 'discovery', x: 0, y: 200, label: 'Discovery', sub: 'job boards · dedup', kind: 'io' },
+  { id: 'prefilter', x: 200, y: 200, label: 'Prefilter', sub: 'embedding gate', kind: 'tool' },
+  { id: 'rubric', x: 400, y: 200, label: 'Rubric', sub: 'LLM · 4 dimensions', kind: 'agent' },
+  { id: 'draft', x: 600, y: 100, label: 'Draft', sub: 'LLM cites keys', kind: 'agent' },
+  { id: 'validator', x: 800, y: 100, label: 'Validator', sub: 'pure · no LLM', kind: 'tool' },
+];
+export const jobEngineEdges: DiagramEdge[] = [
+  { from: 'discovery', to: 'prefilter' },
+  { from: 'profile', to: 'prefilter' },
+  { from: 'prefilter', to: 'rubric' },
+  { from: 'rubric', to: 'draft' },
+  { from: 'profile', to: 'draft' },
+  { from: 'draft', to: 'validator' },
+];
+
+/**
+ * The anchored-generation guardrail at the core of Agentic Job Engine: the
+ * draft is keys, not prose; a pure validator either rejects it (nothing is
+ * persisted) or lets its keys resolve back to real Profile text for the PDF.
+ */
+export const guardrailNodes: DiagramNode[] = [
+  { id: 'profile', x: 0, y: 0, label: 'Profile', sub: 'keyed items', kind: 'store' },
+  { id: 'match', x: 0, y: 110, label: 'Match', sub: 'scored offer', kind: 'io' },
+  { id: 'draft', x: 210, y: 55, label: 'Draft', sub: 'LLM → source_keys', kind: 'agent' },
+  { id: 'validator', x: 420, y: 55, label: 'Validator', sub: 'pure · no LLM', kind: 'tool' },
+  { id: 'rejected', x: 630, y: 0, label: 'Rejected', sub: 'nothing persisted', kind: 'io' },
+  { id: 'resolve', x: 630, y: 110, label: 'Resolve keys', sub: 'key → Profile text', kind: 'tool' },
+  { id: 'cv', x: 840, y: 110, label: 'Tailored CV', sub: 'PDF · human review', kind: 'io' },
+];
+export const guardrailEdges: DiagramEdge[] = [
+  { from: 'profile', to: 'draft' },
+  { from: 'match', to: 'draft' },
+  { from: 'draft', to: 'validator' },
+  { from: 'validator', to: 'rejected' },
+  { from: 'validator', to: 'resolve' },
+  { from: 'resolve', to: 'cv' },
+];

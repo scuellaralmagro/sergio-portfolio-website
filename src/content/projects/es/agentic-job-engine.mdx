@@ -1,0 +1,125 @@
+---
+title: 'Agentic Job Engine — Búsqueda de Empleo y CVs a Medida sin Invenciones'
+summary: 'Una búsqueda de empleo agéntica y local: pipelines de LangGraph descubren y puntúan ofertas frente a un Perfil estructurado y redactan CVs a medida en los que cada línea cita una clave del Perfil — así un validador determinista rechaza cualquier cosa que el modelo se haya inventado.'
+role: 'Ingeniero full-stack y de IA en solitario'
+period: '2026'
+stack:
+  - LangGraph
+  - FastAPI
+  - OpenAI
+  - SQLite + sqlite-vec
+  - APScheduler
+  - Playwright
+  - React PWA
+repo: 'https://github.com/scuellaralmagro/agentic-job-engine'
+order: 1
+featured: true
+---
+
+import ArchDiagram from '../../../components/islands/ArchDiagram.tsx';
+import Card from '../../../components/primitives/Card.astro';
+import { jobEngineNodes, jobEngineEdges } from '../../../data/diagrams';
+
+## Problema
+
+Buscar empleo es revisar cientos de ofertas y reescribir el mismo CV para cada una. Delegar esa
+reescritura en un LLM lo empeora justo donde más importa: un modelo al que se le pide "adaptar"
+un CV lo pulirá sin problema con una habilidad que no tienes o un puesto que nunca ocupaste — en
+un documento que leerá y juzgará un desconocido. Pedirle en el prompt que "no se invente nada" es
+una petición, no una garantía.
+
+Agentic Job Engine parte de una idea: al modelo no hay que *pedirle* que no invente tu
+experiencia — tiene que ser estructuralmente *incapaz* de hacerlo.
+
+## Arquitectura
+
+<figure class="diagram">
+  <Card strong padding="lg">
+    <ArchDiagram
+      client:visible
+      nodes={jobEngineNodes}
+      edges={jobEngineEdges}
+      viewWidth={960}
+      viewHeight={260}
+    />
+  </Card>
+  <figcaption>
+    Las ofertas descubiertas pasan un prefiltro barato por embeddings frente al Perfil antes de
+    cualquier llamada al LLM; las que lo superan se puntúan con una rúbrica de cuatro dimensiones
+    y, por encima del umbral, llegan a una cola de revisión. Para las ofertas que elige una
+    persona, el modelo redacta un CV hecho de claves del Perfil, no de texto libre — y un
+    validador puro rechaza cualquier clave que el Perfil no contenga antes de guardar nada o
+    generar el PDF.
+  </figcaption>
+</figure>
+
+Cuatro pipelines de **LangGraph** (`StateGraph` con estado tipado), con un backend FastAPI y una
+React 19 PWA — todo ejecutándose en local sobre SQLite con la extensión `sqlite-vec`.
+
+- **Extracción — documentos → Perfil.** Los CVs subidos (PDF/DOCX) y las exportaciones de perfil
+  se procesan y un LLM los fusiona en **un único** Perfil estructurado, deduplicando por
+  significado (`React` y `ReactJS` son la misma habilidad). Nada posterior lee tus documentos;
+  todo lee el Perfil.
+- **Descubrimiento — términos de búsqueda → ofertas.** Un LLM amplía la consulta con variantes en
+  español e inglés y un pool de hilos lanza la búsqueda en paralelo contra cada fuente activa —
+  primero una API oficial de empleo y, además, portales de empleo públicos. Las ofertas se
+  normalizan, se deduplican con un hash de contenido y se etiquetan como remoto / híbrido /
+  presencial mediante detección determinista, no con una llamada al LLM. Si un portal falla, la
+  ejecución pasa a `partial`; nunca falla entera.
+- **Puntuación — ofertas → matches.** Un prefiltro por fuerza bruta con `vec_distance_cosine`
+  evita que las ofertas claramente ajenas cuesten una llamada al LLM. Las que pasan reciben una
+  única llamada estructurada que puntúa habilidades, seniority, dominio e idioma, junto con
+  carencias y un indicador de dealbreaker. La puntuación ponderada final se calcula **en
+  Python**, así que los pesos se reajustan sin volver a puntuar nada.
+- **Adaptación — match → CV + carta de presentación.** El modelo devuelve un `TailoredCv` de
+  **referencias `source_key`** — `experience:acme|backend engineer`, `skill:python` — nunca texto
+  libre sobre tu trayectoria. Un validador lo comprueba, las claves se resuelven de vuelta al
+  texto del Perfil y Jinja2 + Playwright generan el PDF.
+- **Planificación.** APScheduler lanza las búsquedas guardadas por cron, con el almacén de jobs
+  en la misma base de datos para que sobrevivan a los reinicios; las ejecuciones huérfanas se
+  concilian al arrancar.
+
+## Mi papel y decisiones
+
+Diseñado y construido de extremo a extremo, en solitario. Las decisiones que importaron:
+
+- **Anclaje en lugar de confianza.** Cada línea de un CV generado debe citar una clave que exista
+  en el Perfil. El validador es una función pura — sin base de datos, sin red, sin un modelo
+  decidiendo si el modelo se ha portado bien — y aplica tres reglas: toda clave existe, ninguna
+  experiencia del Perfil desaparece en silencio, y el titular y el resumen en texto libre nunca
+  mencionan una tecnología que la oferta pide y el Perfil no tiene. El modelo no puede inventarse
+  un puesto que nunca tuviste, porque no hay clave que citar.
+- **Las claves son un mecanismo del CV, no de la prosa.** Las cartas de presentación se muestran
+  tal cual a una persona, así que se redactan a partir del Perfil *sin* claves (se colarían en el
+  texto) y aun así pasan la comprobación de habilidades no respaldadas.
+- **Nunca envía ninguna candidatura.** No existe ninguna ruta de envío en el código. El pipeline
+  termina en una cola de revisión (`new` → `accepted` / `dismissed`); cada candidatura la envía
+  una persona que la ha leído antes.
+- **El gasto como restricción de primer nivel.** Un modelo por tarea — uno barato para ampliar
+  consultas, uno potente para extracción y puntuación, y el más capaz para el CV que llega a una
+  empresa. Cada ejecución lleva un límite de ofertas y la interfaz muestra el gasto máximo antes
+  de lanzarla.
+- **Medido, no supuesto.** Los hallazgos que dieron forma al código:
+  - *El prompt caching no ahorraba nada.* Reordené el prompt de la rúbrica para compartir un
+    prefijo de 1.302 tokens entre ofertas y lo verifiqué contra la API real: un prompt idéntico
+    byte a byte se cacheaba al ~100 %, dos ofertas con el mismo prefijo no cacheaban nada. El
+    proveedor solo reconocía prompts completos, así que revertí el cambio en lugar de mantener un
+    prompt diseñado para una caché que no existía.
+  - *Los resultados de un portal se descartaban en silencio.* Un único adaptador de scraping para
+    varios portales truncaba sus resultados combinados, ordenados alfabéticamente — así que las
+    ofertas de un portal se descargaban y se tiraban en cada ejecución mientras el registro
+    parecía sano. Dividirlo en un adaptador por portal dio a cada uno su propio presupuesto,
+    aislamiento de errores y fila de resultados.
+  - *Las ejecuciones programadas no tenían límite de gasto.* Una búsqueda nocturna puntuó 76
+    ofertas nuevas por ~0,84 $ — unos 25 $/mes frente a una estimación de diseño de 2–12 $.
+    Ahora todas las rutas (ad hoc, "ejecutar ahora" y cron) pasan por una única función que
+    aplica el límite y una protección de concurrencia.
+
+## Resultado
+
+Una herramienta funcional, pública y con licencia MIT que se ejecuta íntegramente en tu máquina —
+de ella no sale nada salvo las llamadas al LLM hechas en tu nombre. Puntuar cuesta alrededor de
+**1,1 céntimos por oferta**, y 318 tests de backend y 59 de frontend se ejecutan casi sin red,
+con proveedores de LLM falsos y fixtures guardados de los portales. Es mi ejemplo más claro de lo
+que creo que trata de verdad el trabajo con LLMs en producción: poner garantías deterministas
+alrededor de un modelo en lugar de confiar en que un prompt aguante.

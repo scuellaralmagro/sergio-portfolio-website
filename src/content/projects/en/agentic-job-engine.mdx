@@ -1,0 +1,118 @@
+---
+title: 'Agentic Job Engine — Grounded Job Search & CV Tailoring'
+summary: 'A local-first agentic job search: LangGraph pipelines discover and score offers against a structured Profile, then draft tailored CVs whose every line cites a Profile key — so a deterministic validator rejects anything the model invented.'
+role: 'Solo full-stack & AI engineer'
+period: '2026'
+stack:
+  - LangGraph
+  - FastAPI
+  - OpenAI
+  - SQLite + sqlite-vec
+  - APScheduler
+  - Playwright
+  - React PWA
+repo: 'https://github.com/scuellaralmagro/agentic-job-engine'
+order: 1
+featured: true
+---
+
+import ArchDiagram from '../../../components/islands/ArchDiagram.tsx';
+import Card from '../../../components/primitives/Card.astro';
+import { jobEngineNodes, jobEngineEdges } from '../../../data/diagrams';
+
+## Problem
+
+Job searching is a grind of skimming hundreds of postings and rewriting the same CV for each
+one. Handing the rewrite to an LLM makes it worse in the way that matters most: a model
+asked to "tailor" a CV will happily polish it with a skill you don't have or a role you never
+held — in a document a stranger will read and judge you on. Prompting it to "not make things
+up" is a request, not a guarantee.
+
+The Agentic Job Engine is built on one idea: the model shouldn't be *asked* not to fabricate
+your experience — it should be structurally *unable* to.
+
+## Architecture
+
+<figure class="diagram">
+  <Card strong padding="lg">
+    <ArchDiagram
+      client:visible
+      nodes={jobEngineNodes}
+      edges={jobEngineEdges}
+      viewWidth={960}
+      viewHeight={260}
+    />
+  </Card>
+  <figcaption>
+    Discovered offers pass a cheap embedding prefilter against the Profile before any LLM
+    call; survivors are scored by a four-dimension rubric and, above threshold, land in a
+    review queue. For offers a human picks, the model drafts a CV made of Profile keys, not
+    prose — and a pure validator rejects any key the Profile doesn't contain before anything
+    is saved or rendered to PDF.
+  </figcaption>
+</figure>
+
+Four **LangGraph** `StateGraph` pipelines with typed state, behind a FastAPI backend and a
+React 19 PWA — all running locally against SQLite with the `sqlite-vec` extension.
+
+- **Extraction — documents → Profile.** CV uploads (PDF/DOCX) and profile exports are parsed
+  and merged by an LLM into **one** structured Profile, deduplicating semantically (`React`
+  and `ReactJS` are one skill). Nothing downstream reads your documents; everything reads
+  the Profile.
+- **Discovery — search terms → offers.** An LLM expands the query into Spanish and English
+  variants, then a thread pool fans out to every enabled source — an official job-board API
+  first, plus public job boards. Offers are normalized, deduplicated by a content hash, and
+  tagged remote / hybrid / on-site by deterministic detection, not an LLM call. One board
+  failing degrades the run to `partial`; it never fails it.
+- **Scoring — offers → matches.** A brute-force `vec_distance_cosine` prefilter keeps
+  obviously unrelated postings from ever costing an LLM call. Survivors get one structured
+  rubric call scoring skills, seniority, domain and language, plus gaps and a dealbreaker
+  flag. The weighted fitness score is computed **in Python**, so weights can be retuned
+  without re-scoring anything.
+- **Adaptation — match → CV + cover letter.** The model returns a `TailoredCv` of
+  **`source_key` references** — `experience:acme|backend engineer`, `skill:python` — never
+  free text about your history. A validator checks it, keys are resolved back to Profile
+  text, and Jinja2 + Playwright render the PDF.
+- **Scheduling.** APScheduler runs saved searches on cron, with the job store in the same
+  database so schedules survive restarts; orphaned runs are reconciled on startup.
+
+## My role & decisions
+
+Designed and built end-to-end, solo. The decisions that mattered:
+
+- **Anchoring instead of trust.** Every line of a generated CV must cite a key that exists in
+  the Profile. The validator is a pure function — no DB, no network, no model deciding whether
+  the model behaved — and enforces three rules: every key exists, no Profile experience is
+  silently dropped, and the free-prose headline and summary never name a technology the offer
+  wants but the Profile lacks. The model can't invent a job you never had, because there is no
+  key for it to cite.
+- **Anchors are a CV mechanism, not a prose one.** Cover letters render verbatim to a human,
+  so they're drafted from the Profile *without* keys (which would leak into the text) and
+  still pass the unsupported-skills check.
+- **It never applies to anything.** There is no submission path in the codebase. The pipeline
+  ends in a review queue (`new` → `accepted` / `dismissed`); every application is sent by a
+  human who read it first.
+- **Spend as a first-class constraint.** A model per task — a cheap one for query expansion,
+  a strong one for extraction and scoring, the strongest for the CV that reaches an employer.
+  Every run carries an offer cap, and the UI shows a spend ceiling before a run starts.
+- **Measured, not assumed.** The findings that shaped the code:
+  - *Prompt caching earned $0.* I reordered the rubric prompt to share a 1,302-token prefix
+    across offers, then verified it against the live API: a byte-identical prompt cached
+    ~100%, two offers sharing the prefix cached nothing. The provider only matched whole
+    prompts, so I reverted the change rather than keep a prompt shaped for a cache that
+    didn't exist.
+  - *A board's results were silently thrown away.* One scraper adapter covering several
+    boards truncated its combined, alphabetically sorted results — so one board's postings
+    were fetched and discarded on every run while the run record looked healthy. Splitting it
+    into one adapter per site gave each board its own budget, error isolation and result row.
+  - *Scheduled runs had no spend cap.* One nightly search scored 76 new offers for ~$0.84 —
+    about $25/month against a $2–12 design estimate. Now every path (ad-hoc, "run now" and
+    cron) goes through one function that applies the cap and a concurrency guard.
+
+## Outcome
+
+A working, public, MIT-licensed tool that runs entirely on your machine — nothing leaves it
+except the LLM calls made on your behalf. Scoring costs roughly **1.1¢ per offer**, and 318
+backend plus 59 frontend tests run almost entirely offline, with fake LLM providers and stored
+board fixtures. It's my clearest example of what I think production LLM work is actually
+about: putting deterministic guarantees around a model instead of hoping a prompt holds.

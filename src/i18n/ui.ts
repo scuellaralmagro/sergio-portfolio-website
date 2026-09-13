@@ -47,12 +47,18 @@ export const ui = {
     'showcase.title': 'How I build agentic systems',
     'showcase.subtitle':
       'The real architectures behind my work — agents are stars, orchestration is the lines between them.',
-    'showcase.sourcePre': 'Both are the real architecture behind ',
+    'showcase.sourcePre': 'The orchestration and RAG diagrams are the real architecture behind ',
     'showcase.sourceLink': 'Kynetix',
-    'showcase.sourcePost': ' — my full-stack AI training & nutrition coach.',
+    'showcase.sourcePost':
+      ' — my full-stack AI training & nutrition coach. The guardrail is the core of ',
+    'showcase.source2Link': 'Agentic Job Engine',
+    'showcase.source2Post': ', the job-search engine I built and use in my own search.',
     'showcase.diagram1Title': 'Multi-agent orchestration',
     'showcase.diagram1Caption':
       'A LangGraph supervisor classifies each message and routes it to one of six specialists — single-workout or full-week programming, profile updates, the nutrition sub-graph, post-workout analysis, or general chat. Programming grounds plans in a pgvector RAG store and deterministic services (1RM, fatigue, TDEE); analysis reads the relational workout history; nutrition commits via a human-in-the-loop confirm. Conversation state persists through a Postgres checkpointer and replies stream token-by-token over SSE.',
+    'showcase.guardrailTitle': 'Guardrails: anchored generation',
+    'showcase.guardrailCaption':
+      "The model never writes free prose about a candidate's experience — it drafts a CV out of source_key references to Profile items. A pure validator, with no database, network or LLM in the loop, rejects any key the Profile doesn't contain, so an invented job or skill fails before anything is saved. Only a draft that passes has its keys resolved back to real Profile text and rendered to PDF for a human to review.",
     'showcase.diagram2Title': 'RAG retrieval pipeline',
     'showcase.diagram2Caption':
       "Reference knowledge (kinesiology, nutrition) is embedded and stored once; at query time the question is embedded, matched against a pgvector HNSW index, and the top-k chunks ground the model's answer — no ungrounded guessing.",
@@ -66,8 +72,8 @@ export const ui = {
     // Projects
     'projects.eyebrow': 'Projects',
     'projects.title': 'Flagship work',
-    'projects.subtitle':
-      'Selected projects I designed and built — from agentic systems to deep-learning vision and NLP.',
+    'projects.subtitle': 'Selected agentic and LLM systems I designed and built end to end.',
+    'projects.more': 'More of my work on GitHub',
     'projects.caseStudy': 'Case study',
     'projects.code': 'Code',
     'projects.live': 'Live',
@@ -157,12 +163,19 @@ export const ui = {
     'showcase.title': 'Cómo construyo sistemas agénticos',
     'showcase.subtitle':
       'Las arquitecturas reales detrás de mi trabajo — los agentes son estrellas; la orquestación, las líneas que los unen.',
-    'showcase.sourcePre': 'Ambas son la arquitectura real de ',
+    'showcase.sourcePre': 'Los diagramas de orquestación y RAG son la arquitectura real de ',
     'showcase.sourceLink': 'Kynetix',
-    'showcase.sourcePost': ' — mi entrenador de IA full-stack de entrenamiento y nutrición.',
+    'showcase.sourcePost':
+      ' — mi entrenador de IA full-stack de entrenamiento y nutrición. El guardrail es el núcleo de ',
+    'showcase.source2Link': 'Agentic Job Engine',
+    'showcase.source2Post':
+      ', el motor de búsqueda de empleo que construí y uso en mi propia búsqueda.',
     'showcase.diagram1Title': 'Orquestación multiagente',
     'showcase.diagram1Caption':
       'Un supervisor de LangGraph clasifica cada mensaje y lo enruta a uno de seis especialistas — programación de un solo entrenamiento o de la semana completa, actualización de perfil, el subgrafo de nutrición, análisis post-entrenamiento o conversación general. La programación fundamenta los planes en un almacén RAG con pgvector y en servicios deterministas (1RM, fatiga, TDEE); el análisis lee el historial relacional de entrenamientos; la nutrición se confirma con validación humana. El estado de la conversación persiste mediante un checkpointer de Postgres y las respuestas se transmiten token a token por SSE.',
+    'showcase.guardrailTitle': 'Guardrails: generación anclada',
+    'showcase.guardrailCaption':
+      'El modelo nunca escribe texto libre sobre la experiencia de un candidato: redacta el CV a partir de referencias source_key a elementos del Perfil. Un validador puro, sin base de datos, red ni LLM de por medio, rechaza cualquier clave que el Perfil no contenga, de modo que un puesto o una habilidad inventados fallan antes de guardar nada. Solo un borrador que lo supera resuelve sus claves al texto real del Perfil y se genera en PDF para que lo revise una persona.',
     'showcase.diagram2Title': 'Pipeline de recuperación RAG',
     'showcase.diagram2Caption':
       'El conocimiento de referencia (kinesiología, nutrición) se vectoriza y almacena una vez; en tiempo de consulta la pregunta se vectoriza, se compara con un índice HNSW de pgvector y los fragmentos más relevantes fundamentan la respuesta del modelo — sin conjeturas infundadas.',
@@ -177,7 +190,8 @@ export const ui = {
     'projects.eyebrow': 'Proyectos',
     'projects.title': 'Trabajo destacado',
     'projects.subtitle':
-      'Proyectos seleccionados que diseñé y construí — desde sistemas agénticos hasta visión por computador con deep learning y NLP.',
+      'Sistemas agénticos y de LLM seleccionados que diseñé y construí de extremo a extremo.',
+    'projects.more': 'Más de mi trabajo en GitHub',
     'projects.caseStudy': 'Ver más',
     'projects.code': 'Código',
     'projects.live': 'En vivo',

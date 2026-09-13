@@ -2,11 +2,15 @@
 /**
  * Projects — flagship project grid. Reads from the typed `projects` content
  * collection (single source shared with /projects/[slug]); each card links to
- * its case study, with a pointer-driven tilt + hover rim-light (Phase 6).
+ * its case study, with a pointer-driven tilt + hover rim-light (Phase 6). A
+ * GitHub CTA below the grid points recruiters at the rest of my repos.
  */
 import Section from './Section.astro';
 import Card from '../primitives/Card.astro';
 import TextLink from '../primitives/TextLink.astro';
+import Button from '../primitives/Button.astro';
+import Icon from '../primitives/Icon.astro';
+import { socials } from '../../data/site';
 import { getCollection } from 'astro:content';
 import { useTranslations, localizedPath, type Locale } from '../../i18n/utils';
 
@@ -64,11 +68,18 @@ const projects = (await getCollection('projects', ({ data }) => !data.draft))
       })
     }
   </div>
+  <div class="more">
+    <Button variant="ghost" href={socials.github} target="_blank" rel="noopener noreferrer">
+      <Icon name="github" size={18} />
+      {t('projects.more')}
+      <Icon name="arrow-up-right" size={16} />
+    </Button>
+  </div>
 </Section>
 
 <style>
   /* Flex-wrap (not grid) so the last row's cards center under the row above:
-     five cards render 3 + 2, with the trailing two centred. Cards keep an
+     e.g. five cards render 3 + 2, with the trailing two centred. Cards keep an
      identical width and reflow to 2-up, then 1-up, as the viewport narrows. */
   .grid {
     display: flex;
@@ -138,6 +149,12 @@ const projects = (await getCollection('projects', ({ data }) => !data.draft))
     align-items: center;
     gap: var(--spacing-20);
   }
+  .more {
+    display: flex;
+    justify-content: center;
+    margin-top: var(--spacing-32);
+  }
+
   .note {
     color: var(--color-fog);
     font-size: var(--text-body-sm);

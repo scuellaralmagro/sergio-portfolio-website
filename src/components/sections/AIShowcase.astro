@@ -1,9 +1,11 @@
 ---
 /**
- * AIShowcase — "How I build agentic systems". Two animated, annotated diagrams
- * of the real architectures behind Kynetix and the RAG support work:
- *  1. a LangGraph multi-agent orchestration graph
- *  2. a RAG retrieval pipeline
+ * AIShowcase — "How I build agentic systems". Three animated, annotated diagrams
+ * of real architectures from my projects:
+ *  1. a LangGraph multi-agent orchestration graph (Kynetix)
+ *  2. an anchored-generation guardrail (Agentic Job Engine)
+ *  3. a RAG retrieval pipeline (Kynetix) — kept last so it sits directly above
+ *     the live "Ask my portfolio" chat, whose subtitle points at it
  * Diagrams are ArchDiagram islands hydrated `client:idle` — the heavy
  * framer-motion chunk is parsed during post-load idle time rather than
  * mid-scroll as the section enters view, which removes a scroll stutter on
@@ -17,6 +19,8 @@ import ArchDiagram from '../islands/ArchDiagram.tsx';
 import {
   orchestrationNodes,
   orchestrationEdges,
+  guardrailNodes,
+  guardrailEdges,
   ragNodes,
   ragEdges,
 } from '../../data/diagrams';
@@ -36,7 +40,9 @@ const t = useTranslations(locale);
   <p class="diagrams-source">
     {t('showcase.sourcePre')}<a href={localizedPath('/projects/kynetix', locale)}
       >{t('showcase.sourceLink')}</a
-    >{t('showcase.sourcePost')}
+    >{t('showcase.sourcePost')}<a href={localizedPath('/projects/agentic-job-engine', locale)}
+      >{t('showcase.source2Link')}</a
+    >{t('showcase.source2Post')}
   </p>
 
   <div class="diagrams">
@@ -52,6 +58,20 @@ const t = useTranslations(locale);
         />
       </Card>
       <figcaption>{t('showcase.diagram1Caption')}</figcaption>
+    </figure>
+
+    <figure class="diagram">
+      <h3 class="diagram-title">{t('showcase.guardrailTitle')}</h3>
+      <Card strong class="panel">
+        <ArchDiagram
+          client:idle
+          nodes={guardrailNodes}
+          edges={guardrailEdges}
+          viewWidth={1000}
+          viewHeight={170}
+        />
+      </Card>
+      <figcaption>{t('showcase.guardrailCaption')}</figcaption>
     </figure>
 
     <figure class="diagram">
