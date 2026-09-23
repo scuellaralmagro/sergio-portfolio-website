@@ -1,7 +1,7 @@
 ---
 /**
- * Badge — the "AI pill": 32px-radius pill on midnight surface with an iris
- * border and inset violet glow. Slot for icon + short label text.
+ * Badge — the "AI pill": 32px-radius pill on midnight surface with an accent-strong
+ * border and inset green glow. Slot for icon + short label text.
  */
 import Icon, { type IconName } from './Icon.astro';
 
@@ -24,11 +24,11 @@ const { icon = 'sparkle', class: className } = Astro.props;
     align-items: center;
     gap: var(--spacing-8);
     padding: var(--spacing-8) var(--spacing-16);
-    border: 1px solid var(--color-iris);
+    border: 1px solid var(--color-accent-strong);
     border-radius: var(--radius-3xl-2);
     background-color: var(--color-midnight-surface);
     box-shadow: var(--glass-badge);
-    color: var(--color-lilac-white);
+    color: var(--color-foreground);
     font-family: var(--font-inter-v);
     font-size: var(--text-caption);
     font-weight: 500;
@@ -36,7 +36,7 @@ const { icon = 'sparkle', class: className } = Astro.props;
   }
 
   .badge-icon {
-    color: var(--color-lavender-accent);
+    color: var(--color-accent);
     flex-shrink: 0;
   }
 

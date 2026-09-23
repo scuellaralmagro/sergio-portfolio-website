@@ -65,8 +65,8 @@ const initials = name
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    background-color: var(--color-deep-indigo);
-    color: var(--color-lilac-white);
+    background-color: var(--color-canvas-tint);
+    color: var(--color-foreground);
     font-size: var(--text-body-sm);
     font-weight: 500;
     box-shadow: var(--glass-rim);
@@ -77,7 +77,7 @@ const initials = name
     gap: 2px;
   }
   .name {
-    color: var(--color-lilac-white);
+    color: var(--color-foreground);
     font-size: 15px;
     font-weight: 500;
     line-height: 1.2;
@@ -89,12 +89,12 @@ const initials = name
   }
   .quote {
     margin: 0;
-    color: var(--color-lilac-white);
+    color: var(--color-foreground);
     font-size: 15px;
     line-height: 1.6;
   }
   /* Accent inline @mentions inside quotes. */
   .quote :global(.mention) {
-    color: var(--color-lavender-accent);
+    color: var(--color-accent);
   }
 </style>

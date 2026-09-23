@@ -60,8 +60,8 @@ const { class: className, density = 1, reach = 1 } = Astro.props;
     const density = Number(canvas.dataset.density) || 1;
     const reach = Number(canvas.dataset.reach) || 1;
 
-    const dot = tokenRgb('--color-lilac-white'); // the stars
-    const line = tokenRgb('--color-lavender-accent'); // the links
+    const dot = tokenRgb('--color-foreground'); // the stars
+    const line = tokenRgb('--color-accent'); // the links
 
     let w = 0;
     let h = 0;

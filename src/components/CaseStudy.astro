@@ -109,7 +109,7 @@ const projectHref = (e: CollectionEntry<'projects'>) =>
     font-size: var(--text-body-sm);
   }
   .back:hover {
-    color: var(--color-lilac-white);
+    color: var(--color-foreground);
   }
 
   .hero {
@@ -124,7 +124,7 @@ const projectHref = (e: CollectionEntry<'projects'>) =>
   }
   .meta {
     margin: 0;
-    color: var(--color-lavender-accent);
+    color: var(--color-accent);
     font-size: var(--text-body-sm);
   }
   .summary {
@@ -145,7 +145,7 @@ const projectHref = (e: CollectionEntry<'projects'>) =>
   }
   .chip {
     padding: var(--spacing-4) var(--spacing-12);
-    border: 1px solid var(--color-iris);
+    border: 1px solid var(--color-accent-strong);
     border-radius: var(--radius-3xl-2);
     color: var(--color-mercury);
     font-size: var(--text-caption);
@@ -171,7 +171,7 @@ const projectHref = (e: CollectionEntry<'projects'>) =>
   .prose :global(h2) {
     font-size: var(--text-subheading);
     line-height: var(--leading-subheading);
-    color: var(--color-lilac-white);
+    color: var(--color-foreground);
     margin-block: var(--spacing-48) var(--spacing-16);
   }
   .prose :global(p) {
@@ -188,29 +188,29 @@ const projectHref = (e: CollectionEntry<'projects'>) =>
     color: var(--color-ash);
   }
   .prose :global(li::marker) {
-    color: var(--color-lavender-accent);
+    color: var(--color-accent);
   }
   .prose :global(strong) {
-    color: var(--color-lilac-white);
+    color: var(--color-foreground);
     font-weight: 500;
   }
   .prose :global(code) {
     font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
     font-size: 0.9em;
     color: var(--color-mercury);
-    background-color: var(--color-deep-indigo);
+    background-color: var(--color-canvas-tint);
     padding: 0.1em 0.4em;
     border-radius: var(--radius-md);
   }
   .prose :global(a) {
-    color: var(--color-lavender-accent);
+    color: var(--color-accent);
     text-decoration: underline;
     text-underline-offset: 2px;
   }
   .prose :global(blockquote) {
     margin: var(--spacing-24) 0;
     padding: var(--spacing-16) var(--spacing-20);
-    border-left: 2px solid var(--color-lavender-accent);
+    border-left: 2px solid var(--color-accent);
     background-color: var(--color-midnight-surface);
     border-radius: var(--radius-md);
     color: var(--color-fog);
@@ -229,10 +229,10 @@ const projectHref = (e: CollectionEntry<'projects'>) =>
   .prose :global(td) {
     padding: var(--spacing-8) var(--spacing-12);
     text-align: left;
-    border-bottom: 1px solid var(--color-deep-indigo);
+    border-bottom: 1px solid var(--color-canvas-tint);
   }
   .prose :global(th) {
-    color: var(--color-lilac-white);
+    color: var(--color-foreground);
     font-weight: 500;
   }
   .prose :global(td) {
@@ -278,11 +278,11 @@ const projectHref = (e: CollectionEntry<'projects'>) =>
     color: var(--color-fog);
   }
   .pager-title {
-    color: var(--color-lilac-white);
+    color: var(--color-foreground);
     font-size: var(--text-body-sm);
   }
   .pager-link:hover .pager-title {
-    color: var(--color-lavender-accent);
+    color: var(--color-accent);
   }
 
   @media (min-width: 768px) {

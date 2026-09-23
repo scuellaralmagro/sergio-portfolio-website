@@ -37,10 +37,10 @@ const NODE_W = 150;
 const NODE_H = 54;
 
 const STROKE: Record<NodeKind, string> = {
-  io: 'var(--color-lavender-accent)',
-  agent: 'var(--color-iris)',
-  tool: 'var(--color-aurora)',
-  store: 'var(--color-iris)',
+  io: 'var(--color-accent)',
+  agent: 'var(--color-accent-strong)',
+  tool: 'var(--color-accent-glow)',
+  store: 'var(--color-accent-strong)',
 };
 
 const container: Variants = {
@@ -93,7 +93,7 @@ export default function ArchDiagram({ nodes, edges, viewWidth, viewHeight }: Pro
           refY="3"
           orient="auto"
         >
-          <path d="M0 0 L6 3 L0 6 z" fill="var(--color-lavender-accent)" />
+          <path d="M0 0 L6 3 L0 6 z" fill="var(--color-accent)" />
         </marker>
       </defs>
 
@@ -102,7 +102,7 @@ export default function ArchDiagram({ nodes, edges, viewWidth, viewHeight }: Pro
           key={`e-${i}`}
           d={edgePath(e)}
           fill="none"
-          stroke="var(--color-lavender-accent)"
+          stroke="var(--color-accent)"
           strokeWidth={1.25}
           markerEnd="url(#arrowhead)"
           variants={edgeV}
@@ -125,7 +125,7 @@ export default function ArchDiagram({ nodes, edges, viewWidth, viewHeight }: Pro
             x={n.x + NODE_W / 2}
             y={n.sub ? n.y + 23 : n.y + NODE_H / 2 + 4}
             textAnchor="middle"
-            fill="var(--color-lilac-white)"
+            fill="var(--color-foreground)"
             style={{ font: '500 13px var(--font-inter-v)' }}
           >
             {n.label}

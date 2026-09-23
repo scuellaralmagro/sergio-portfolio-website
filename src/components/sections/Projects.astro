@@ -112,12 +112,12 @@ const projects = (await getCollection('projects', ({ data }) => !data.draft))
     font-size: var(--text-body-lg);
   }
   .project-title a {
-    color: var(--color-lilac-white);
+    color: var(--color-foreground);
     text-decoration: none;
     transition: color 0.18s ease;
   }
   .project-title a:hover {
-    color: var(--color-lavender-accent);
+    color: var(--color-accent);
   }
   .project-summary {
     margin: 0;
@@ -136,7 +136,7 @@ const projects = (await getCollection('projects', ({ data }) => !data.draft))
   }
   .chip {
     padding: var(--spacing-4) var(--spacing-12);
-    border: 1px solid var(--color-iris);
+    border: 1px solid var(--color-accent-strong);
     border-radius: var(--radius-3xl-2);
     color: var(--color-mercury);
     font-size: var(--text-caption);

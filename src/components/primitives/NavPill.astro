@@ -148,7 +148,7 @@ const links = [
     display: inline-flex;
     align-items: center;
     gap: var(--spacing-8);
-    color: var(--color-lilac-white);
+    color: var(--color-foreground);
     text-decoration: none;
     font-family: var(--font-dm-sans);
     font-weight: 500;
@@ -156,7 +156,7 @@ const links = [
     white-space: nowrap;
   }
   .brand-mark {
-    color: var(--color-lavender-accent);
+    color: var(--color-accent);
     flex-shrink: 0;
   }
 
@@ -191,11 +191,11 @@ const links = [
     transition: transform 0.25s ease;
   }
   .links a:hover {
-    color: var(--color-lilac-white);
+    color: var(--color-foreground);
   }
   /* Active section — set by the inline scroll-spy script. */
   .links a[data-active] {
-    color: var(--color-lilac-white);
+    color: var(--color-foreground);
   }
   .links a:hover::after,
   .links a[data-active]::after {
@@ -225,12 +225,12 @@ const links = [
     background: transparent;
     border: 0;
     border-radius: var(--radius-full);
-    color: var(--color-lilac-white);
+    color: var(--color-foreground);
     cursor: pointer;
     transition: color 0.18s ease;
   }
   .menu-toggle:hover {
-    color: var(--color-lavender-accent);
+    color: var(--color-accent);
   }
   /* Three bars: the span is the middle bar, ::before/::after the outer two. */
   .bars,
@@ -295,10 +295,10 @@ const links = [
   }
   .menu-links a:hover,
   .menu-links a[data-active] {
-    color: var(--color-lilac-white);
+    color: var(--color-foreground);
   }
   .menu-links a[data-active] {
-    background-color: color-mix(in oklab, var(--color-lavender-accent) 12%, transparent);
+    background-color: color-mix(in oklab, var(--color-accent) 12%, transparent);
   }
   .menu .aurora-divider {
     margin: 0;

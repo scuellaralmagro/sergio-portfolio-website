@@ -1,6 +1,6 @@
 ---
 /**
- * Button — primary (filled iris) or ghost (text) action.
+ * Button — primary (filled accent-strong) or ghost (text) action.
  * Renders an <a> when `href` is set, otherwise a <button>.
  */
 interface Props {
@@ -59,12 +59,12 @@ const Tag = href ? 'a' : 'button';
   }
 
   .primary {
-    background-color: var(--color-iris);
+    background-color: var(--color-accent-strong);
     color: var(--color-pearl);
     padding: var(--spacing-12) var(--spacing-16);
   }
   .primary:hover {
-    background-color: color-mix(in oklab, var(--color-iris), white 12%);
+    background-color: color-mix(in oklab, var(--color-accent-strong), white 12%);
     box-shadow: var(--glass-badge);
   }
 
@@ -75,7 +75,7 @@ const Tag = href ? 'a' : 'button';
     padding: var(--spacing-8) var(--spacing-12);
   }
   .ghost:hover {
-    color: var(--color-lilac-white);
+    color: var(--color-foreground);
   }
 
   .sm {

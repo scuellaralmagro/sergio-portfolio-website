@@ -18,17 +18,17 @@ import NavPill from '../components/primitives/NavPill.astro';
 const surfaces = [
   { name: 'Void Canvas', token: '--color-void-canvas' },
   { name: 'Midnight Surface', token: '--color-midnight-surface' },
-  { name: 'Deep Indigo', token: '--color-deep-indigo' },
+  { name: 'Canvas Tint', token: '--color-canvas-tint' },
 ];
 const textColors = [
-  { name: 'Lilac White', token: '--color-lilac-white' },
+  { name: 'Foreground', token: '--color-foreground' },
   { name: 'Ash', token: '--color-ash' },
   { name: 'Fog', token: '--color-fog' },
   { name: 'Steel', token: '--color-steel' },
 ];
 const accents = [
-  { name: 'Lavender Accent', token: '--color-lavender-accent' },
-  { name: 'Iris', token: '--color-iris' },
+  { name: 'Accent', token: '--color-accent' },
+  { name: 'Accent Strong', token: '--color-accent-strong' },
   { name: 'Mercury', token: '--color-mercury' },
   { name: 'Dusk', token: '--color-dusk' },
 ];
@@ -279,7 +279,7 @@ const iconNames: IconName[] = [
   }
   .sg-h {
     font-size: var(--text-subheading);
-    color: var(--color-lilac-white);
+    color: var(--color-foreground);
   }
   .sg-rule {
     margin-block: var(--spacing-12);
@@ -342,7 +342,7 @@ const iconNames: IconName[] = [
   .type-sample {
     font-family: var(--font-dm-sans);
     font-weight: 500;
-    color: var(--color-lilac-white);
+    color: var(--color-foreground);
     line-height: 1.1;
   }
 
@@ -380,7 +380,7 @@ const iconNames: IconName[] = [
     align-items: center;
     gap: var(--spacing-8);
     padding: var(--spacing-16);
-    color: var(--color-lilac-white);
+    color: var(--color-foreground);
     background-color: var(--color-midnight-surface);
     border-radius: var(--radius-2xl);
     box-shadow: var(--glass-rim);
