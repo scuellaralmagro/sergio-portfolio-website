@@ -50,26 +50,10 @@ const t = useTranslations(locale);
     min-width: 0;
   }
 
-  /* --- Orb (outer = layout-morph box; core = gradient + breathing) ---- */
+  /* --- Orb (outer = layout-morph box; canvas = thinking-orbs) ------- */
   .ask-card :global(.orb) {
     display: inline-flex;
-    border-radius: 50%;
     flex: 0 0 auto;
-  }
-  .ask-card :global(.orb-core) {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    background: radial-gradient(circle at 30% 30%, var(--color-accent-soft), var(--color-accent-strong));
-  }
-  .ask-card :global(.orb-hero .orb-core) {
-    box-shadow: 0 0 34px color-mix(in oklab, var(--color-accent-strong) 55%, transparent);
-  }
-  .ask-card :global(.orb-avatar .orb-core) {
-    box-shadow: 0 0 10px color-mix(in oklab, var(--color-accent-strong) 45%, transparent);
-  }
-  .ask-card :global(.orb-active .orb-core) {
-    box-shadow: 0 0 18px color-mix(in oklab, var(--color-accent) 65%, transparent);
   }
 
   /* --- Hero (idle) ---------------------------------------------------- */

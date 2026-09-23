@@ -61,7 +61,9 @@ export default function Transcript({
             <span className="avatar">
               <Orb
                 size="avatar"
-                active={streaming && i === lastIndex}
+                phase={
+                  streaming && i === lastIndex ? (m.content ? 'composing' : 'searching') : 'done'
+                }
                 layoutId={i === firstAssistant ? 'assistant-orb' : undefined}
               />
             </span>

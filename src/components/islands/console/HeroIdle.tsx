@@ -10,7 +10,7 @@ interface HeroIdleProps {
 export default function HeroIdle({ starters, label, contactPre, onPick }: HeroIdleProps) {
   return (
     <div className="hero">
-      <Orb size="hero" layoutId="assistant-orb" />
+      <Orb size="hero" phase="idle" layoutId="assistant-orb" />
       <p className="hero-label">{label}</p>
       <ul className="starters">
         {starters.map((q) => (
