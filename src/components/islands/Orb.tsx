@@ -6,7 +6,7 @@ import { ThinkingOrb, type OrbState } from 'thinking-orbs';
  * - `idle`      — hero centerpiece before the first question;
  * - `searching` — question sent, no tokens yet (RAG retrieval);
  * - `composing` — the answer is streaming in;
- * - `done`      — a finished answer; the orb holds still.
+ * - `done`      — a finished answer; the orb keeps a slow, calm breath.
  */
 export type OrbPhase = 'idle' | 'searching' | 'composing' | 'done';
 
@@ -51,7 +51,7 @@ export default function Orb({ size, phase, layoutId }: OrbProps) {
         size={TUNED[size]}
         theme="dark"
         color={ACCENT}
-        paused={phase === 'done'}
+        speed={phase === 'done' ? 0.5 : 1}
         style={{ width: px, height: px }}
       />
     </motion.span>
