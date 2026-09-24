@@ -50,10 +50,15 @@ const t = useTranslations(locale);
     min-width: 0;
   }
 
-  /* --- Orb (outer = layout-morph box; canvas = thinking-orbs) ------- */
+  /* --- Orb (outer = layout-morph box; layers = crossfading canvases) -- */
   .ask-card :global(.orb) {
+    position: relative;
     display: inline-flex;
     flex: 0 0 auto;
+  }
+  .ask-card :global(.orb-layer) {
+    position: absolute;
+    inset: 0;
   }
 
   /* --- Hero (idle) ---------------------------------------------------- */
@@ -131,9 +136,16 @@ const t = useTranslations(locale);
   .ask-card :global(.turn-assistant) {
     align-self: flex-start;
   }
+  /* Fixed slot (= avatar orb px) so bubbles stay aligned on turns without the orb. */
   .ask-card :global(.avatar) {
-    flex: 0 0 auto;
+    flex: 0 0 32px;
     padding-top: 2px;
+  }
+  .ask-card :global(.turn-body) {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-8);
+    min-width: 0;
   }
   .ask-card :global(.bubble) {
     margin: 0;
@@ -154,6 +166,12 @@ const t = useTranslations(locale);
     border: 1px solid color-mix(in oklab, var(--color-accent-strong) 40%, transparent);
     border-bottom-right-radius: var(--radius-md);
   }
+  /* Error bubble eases from the neutral assistant bubble into red. */
+  .ask-card :global(.turn-assistant .bubble-error) {
+    background-color: color-mix(in oklab, var(--color-danger) 10%, transparent);
+    border-color: color-mix(in oklab, var(--color-danger) 45%, transparent);
+    animation: ai-to-danger 0.4s ease-out;
+  }
   .ask-card :global(.caret) {
     display: inline-block;
     width: 2px;
@@ -164,7 +182,7 @@ const t = useTranslations(locale);
     animation: ai-blink 1s steps(2, start) infinite;
   }
 
-  /* --- Sources + notice ---------------------------------------------- */
+  /* --- Sources ------------------------------------------------------- */
   .ask-card :global(.sources) {
     display: flex;
     flex-wrap: wrap;
@@ -183,17 +201,6 @@ const t = useTranslations(locale);
     background-color: color-mix(in oklab, var(--color-accent-strong) 16%, transparent);
     color: var(--color-foreground);
     font-size: var(--text-caption);
-  }
-  .ask-card :global(.notice) {
-    align-self: flex-start;
-    max-width: min(80%, 60ch);
-    padding: var(--spacing-12) var(--spacing-16);
-    border-radius: var(--radius-2xl);
-    border: 1px solid color-mix(in oklab, var(--color-accent) 30%, transparent);
-    background-color: color-mix(in oklab, var(--color-canvas-tint) 40%, transparent);
-    color: var(--color-ash);
-    font-size: var(--text-body-sm);
-    line-height: var(--leading-body-sm);
   }
 
   /* --- Composer ------------------------------------------------------- */
@@ -287,8 +294,15 @@ const t = useTranslations(locale);
       opacity: 0;
     }
   }
+  @keyframes ai-to-danger {
+    from {
+      background-color: color-mix(in oklab, var(--color-foreground) 4%, transparent);
+      border-color: color-mix(in oklab, var(--color-foreground) 10%, transparent);
+    }
+  }
   @media (prefers-reduced-motion: reduce) {
-    .ask-card :global(.caret) {
+    .ask-card :global(.caret),
+    .ask-card :global(.bubble-error) {
       animation: none;
     }
   }

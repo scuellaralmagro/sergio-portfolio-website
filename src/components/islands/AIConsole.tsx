@@ -1,6 +1,6 @@
 import { useReducer, useRef, useState } from 'react';
 import { AnimatePresence, LayoutGroup, motion, useReducedMotion } from 'framer-motion';
-import { reducer, initialState } from '@lib/askPortfolio/conversation';
+import { reducer, initialState, toHistory } from '@lib/askPortfolio/conversation';
 import { streamChat } from '@lib/askPortfolio/client';
 import { site } from '@data/site';
 import { useTurnstile } from './useTurnstile';
@@ -25,7 +25,7 @@ export default function AIConsole({ lang = 'en' }: { lang?: ConsoleLang }) {
   async function ask(text: string) {
     const trimmed = text.trim();
     if (!trimmed || streaming) return;
-    const history = [...state.messages, { role: 'user' as const, content: trimmed }];
+    const history = [...toHistory(state.messages), { role: 'user' as const, content: trimmed }];
     dispatch({ type: 'send', text: trimmed });
     setInput('');
     try {
@@ -68,7 +68,6 @@ export default function AIConsole({ lang = 'en' }: { lang?: ConsoleLang }) {
                   messages={state.messages}
                   status={state.status}
                   sources={state.sources}
-                  errorMessage={state.errorMessage}
                   strings={s}
                 />
               </motion.div>

@@ -1,6 +1,10 @@
+export type FailureStatus = 'error' | 'budget_exceeded' | 'rate_limited';
+
 export interface ChatMessage {
   role: 'user' | 'assistant';
   content: string;
+  /** UI-only: set on an assistant turn that errored. Never sent to the API (see toHistory). */
+  failure?: { status: FailureStatus; message?: string };
 }
 
 export interface SourceItem {

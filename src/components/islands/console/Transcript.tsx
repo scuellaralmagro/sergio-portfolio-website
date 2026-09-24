@@ -1,5 +1,5 @@
 import { motion, useReducedMotion } from 'framer-motion';
-import type { ChatMessage, SourceItem } from '@lib/askPortfolio/types';
+import type { ChatMessage, FailureStatus, SourceItem } from '@lib/askPortfolio/types';
 import type { Status } from '@lib/askPortfolio/conversation';
 import { splitIntoWords } from '@lib/askPortfolio/words';
 import type { ConsoleStrings } from './i18n';
@@ -9,7 +9,6 @@ interface TranscriptProps {
   messages: ChatMessage[];
   status: Status;
   sources: SourceItem[];
-  errorMessage?: string;
   strings: ConsoleStrings;
 }
 
@@ -35,23 +34,17 @@ function FadeText({ text, animate }: { text: string; animate: boolean }) {
   );
 }
 
-export default function Transcript({
-  messages,
-  status,
-  sources,
-  errorMessage,
-  strings,
-}: TranscriptProps) {
+export default function Transcript({ messages, status, sources, strings }: TranscriptProps) {
   const reduce = useReducedMotion();
   const streaming = status === 'streaming';
   const lastIndex = messages.length - 1;
-  const firstAssistant = messages.findIndex((m) => m.role === 'assistant');
-  const NOTICE: Partial<Record<Status, string>> = {
+  // Only the latest assistant turn carries the orb; it glides down turn to turn.
+  const lastAssistant = messages.map((m) => m.role).lastIndexOf('assistant');
+  const NOTICE: Record<FailureStatus, string> = {
     budget_exceeded: strings.noticeBudget,
     rate_limited: strings.noticeRate,
     error: strings.noticeError,
   };
-  const notice = NOTICE[status];
 
   return (
     <ol className="transcript" role="log" aria-live="polite" aria-label="Conversation">
@@ -59,21 +52,43 @@ export default function Transcript({
         <li key={i} className={`turn turn-${m.role}`}>
           {m.role === 'assistant' && (
             <span className="avatar">
-              <Orb
-                size="avatar"
-                phase={
-                  streaming && i === lastIndex ? (m.content ? 'composing' : 'searching') : 'done'
-                }
-                layoutId={i === firstAssistant ? 'assistant-orb' : undefined}
-              />
+              {i === lastAssistant && (
+                <Orb
+                  size="avatar"
+                  phase={
+                    m.failure
+                      ? 'failed'
+                      : streaming && i === lastIndex
+                        ? m.content
+                          ? 'composing'
+                          : 'searching'
+                        : 'done'
+                  }
+                  layoutId="assistant-orb"
+                />
+              )}
             </span>
           )}
-          <p className="bubble">
-            {m.role === 'assistant' ? <FadeText text={m.content} animate={!reduce} /> : m.content}
-            {streaming && i === lastIndex && m.role === 'assistant' && (
-              <span className="caret" aria-hidden="true" />
+          <div className="turn-body">
+            {/* A failed turn with no tokens shows only its error bubble. */}
+            {!(m.failure && !m.content) && (
+              <p className="bubble">
+                {m.role === 'assistant' ? (
+                  <FadeText text={m.content} animate={!reduce} />
+                ) : (
+                  m.content
+                )}
+                {streaming && i === lastIndex && m.role === 'assistant' && (
+                  <span className="caret" aria-hidden="true" />
+                )}
+              </p>
             )}
-          </p>
+            {m.failure && (
+              <p className="bubble bubble-error" role="status">
+                {m.failure.message ?? NOTICE[m.failure.status]}
+              </p>
+            )}
+          </div>
         </li>
       ))}
 
@@ -85,12 +100,6 @@ export default function Transcript({
               {s.title}
             </span>
           ))}
-        </li>
-      )}
-
-      {notice && (
-        <li className="notice" role="status">
-          {errorMessage ?? notice}
         </li>
       )}
     </ol>

@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { ThinkingOrb, type OrbState } from 'thinking-orbs';
 
 /**
@@ -6,9 +6,10 @@ import { ThinkingOrb, type OrbState } from 'thinking-orbs';
  * - `idle`      — hero centerpiece before the first question;
  * - `searching` — question sent, no tokens yet (RAG retrieval);
  * - `composing` — the answer is streaming in;
- * - `done`      — a finished answer; the orb keeps a slow, calm breath.
+ * - `done`      — a finished answer; the orb keeps a slow, calm breath;
+ * - `failed`    — the turn errored; the orb turns red and keeps solving.
  */
-export type OrbPhase = 'idle' | 'searching' | 'composing' | 'done';
+export type OrbPhase = 'idle' | 'searching' | 'composing' | 'done' | 'failed';
 
 interface OrbProps {
   size: 'hero' | 'avatar';
@@ -25,18 +26,21 @@ const STATE: Record<OrbPhase, OrbState> = {
   searching: 'searching',
   composing: 'composing',
   done: 'breathing',
+  failed: 'solving',
 };
 
 // thinking-orbs parses a literal color for its depth-shading ramp, so it can't
-// take a CSS var — this mirrors --color-accent in theme.css.
+// take a CSS var — these mirror --color-accent and --color-danger in theme.css.
 const ACCENT = '#3ddc84';
+const DANGER = '#f87171';
 
 /**
  * The OUTER span owns `layoutId` (the shared-layout morph from hero centerpiece
- * to avatar); the canvas inside is thinking-orbs, which handles its own
- * animation loop and reduced-motion fallback.
+ * to avatar); inside it, each phase's thinking-orbs canvas crossfades into the
+ * next, so a switch of animation or tint (e.g. red on failure) never jumps.
  */
 export default function Orb({ size, phase, layoutId }: OrbProps) {
+  const reduce = useReducedMotion();
   const px = PX[size];
 
   return (
@@ -46,14 +50,25 @@ export default function Orb({ size, phase, layoutId }: OrbProps) {
       aria-hidden="true"
       style={{ width: px, height: px }}
     >
-      <ThinkingOrb
-        state={STATE[phase]}
-        size={TUNED[size]}
-        theme="dark"
-        color={ACCENT}
-        speed={phase === 'done' ? 0.5 : 1}
-        style={{ width: px, height: px }}
-      />
+      <AnimatePresence initial={false}>
+        <motion.span
+          key={phase}
+          className="orb-layer"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: reduce ? 0 : 0.3 }}
+        >
+          <ThinkingOrb
+            state={STATE[phase]}
+            size={TUNED[size]}
+            theme="dark"
+            color={phase === 'failed' ? DANGER : ACCENT}
+            speed={phase === 'done' ? 0.5 : 1}
+            style={{ width: px, height: px }}
+          />
+        </motion.span>
+      </AnimatePresence>
     </motion.span>
   );
 }
